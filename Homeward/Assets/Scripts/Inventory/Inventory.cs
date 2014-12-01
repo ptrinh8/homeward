@@ -14,6 +14,9 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour 
 {
+    private MineralsStatus mineralsStatus;
+    private ItemDatabase itemDatabase;
+
 	[HideInInspector]
 	public bool showInventory; 
 	private KeyCode invKey = KeyCode.I; 
@@ -21,14 +24,16 @@ public class Inventory : MonoBehaviour
 	private int itemsSlotsPadding = 12; 
 	private int backpackRowsCount = 3; 
 	private int backpackColsCount = 3; 
-	private Rect inventorySize = new Rect(100, 100, 0, 0); // Used to add bground to backpack, in consideration with values of rows & cols.
+	private Rect inventorySize = new Rect(100, 200, 0, 0); // Used to add bground to backpack, in consideration with values of rows & cols.
 
 	public GUISkin GUIskin; 
-	private List<Item> inventory = new List<Item>(); // Holds player's items
+    [HideInInspector]
+	public List<Item> inventory = new List<Item>(); // Holds player's items
 	private ItemDatabase database; // Stores items in DB
 	private bool showInventoryItemDetails; // Each item information
 	private string inventoryItemDetailsText; // Item information text
-	private bool isItemBeingDragged; 
+    [HideInInspector]
+	public bool isItemBeingDragged; 
 	private Item thisItemIsBeingDragged; 
 
 	// Coordinate of the click to be able to draw the sprite at the correct off-set to the mouse
@@ -36,6 +41,9 @@ public class Inventory : MonoBehaviour
 	
 	void Start () 
     {
+        mineralsStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
+        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
+
 		// Loop to add an inventory slot for each slot based on the result of XxY
         for (int i = 0; i < (backpackRowsCount * backpackColsCount); i++)
         {
@@ -49,19 +57,15 @@ public class Inventory : MonoBehaviour
 		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
 
 		// Add items with following IDs
-		AddItem (0);
-		AddItem (1);
-		AddItem (2);
-        AddItem (3);
-     //   AddItem (4);
+	    //	AddItem (0);
+	    //	AddItem (1);
+
 	}
 
 	void Update()
 	{
 		if (Input.GetKeyDown(invKey))
 			showInventory = !showInventory;
-
-     //   Debug.Log("YAYYYYY! intValue = "  + intValue);
 	}
 
 	void OnGUI()
@@ -185,14 +189,65 @@ public class Inventory : MonoBehaviour
 			}
 		}
 
-		// Discard Item
+        if (itemDatabase.items[0].value == 0)
+        {
+            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconEmpty;
+        }
+        else
+        {
+            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconReplace;
+        }
+        if (itemDatabase.items[1].value == 0)
+        {
+            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconEmpty;
+        }
+        else
+        {
+            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconReplace;
+        }
+
+		// Discard item in trashcan
 		Rect trashcan = new Rect(inventorySize.x + inventorySize.width - 170, inventorySize.y + inventorySize.height - 4, 140, 30);
 		GUI.Box (trashcan,"Discard Item", GUIskin.GetStyle("Inventory Empty Slot"));
-        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition)) 
+
+        // If item[0] is being dragged and dropped in trashcan
+        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[0]) 
 		{
-			thisItemIsBeingDragged = null;
-			isItemBeingDragged = false;
+          
+            mineralsStatus.mineralsInInventory = 0;
+            itemDatabase.items[0].value = 0;
+
+            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconEmpty;
+
+            for (i = 0; i < inventory.Count; i++)
+            {
+                if (inventory[i].itemName == null)
+                {
+                    inventory[i] = thisItemIsBeingDragged;
+                    isItemBeingDragged = false;
+                    break;
+                }
+            }
 		}
+
+        // If item[1] is being dragged and dropped in trashcan
+        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[1])
+        {
+
+            itemDatabase.items[1].value = 0;
+
+            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconEmpty;
+
+            for (i = 0; i < inventory.Count; i++)
+            {
+                if (inventory[i].itemName == null)
+                {
+                    inventory[i] = thisItemIsBeingDragged;
+                    isItemBeingDragged = false;
+                    break;
+                }
+            }            
+        }
 
         Rect inventoryHeader = new Rect(inventorySize.x + inventorySize.width - 209, inventorySize.y + inventorySize.height - 233, 220, 40);
         GUI.Label(inventoryHeader, "Astronaut's Backpack ", GUIskin.GetStyle("Inventory Empty Slot"));
@@ -207,13 +262,18 @@ public class Inventory : MonoBehaviour
 	private void DrawItemDetails()
 	{
 		float tooltipHeight = GUIskin.GetStyle("Inventory Tooltip").CalcHeight(new GUIContent(inventoryItemDetailsText), 200);
-		GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 200, tooltipHeight), inventoryItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
+		GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 300, tooltipHeight), inventoryItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
 	}
 
     private string CreateItemDetails(Item item)
     {
         inventoryItemDetailsText = "";
-        inventoryItemDetailsText += "<color=#b8c7ff><b>" + item.itemName + "</b></color>\n\n" + item.itemDescription + "";
+        inventoryItemDetailsText += "<color=#b8c7ff><b>" + item.itemName + "</b></color>\n\n" + item.itemDescription + " \n\nAmount Collected: " + item.value;
+
+        if (mineralsStatus.maxMineralsHaveReached == true)
+        {
+            inventoryItemDetailsText += "\n\n<b><color=#ff0000>You can't carry more minerals.</color></b>";
+        }
 
         return inventoryItemDetailsText;
     }
