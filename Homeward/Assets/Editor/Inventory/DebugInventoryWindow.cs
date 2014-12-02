@@ -21,8 +21,12 @@ public class DebugInventoryWindow : EditorWindow
     private string desc = "Item Description";
     private Item.ItemType type;
     private Texture2D icon;
+    private Texture2D iconEmpty;
+    private Texture2D iconReplace;
     private GameObject obj;
     private Vector2 scrollPos;
+
+    private int value;
 
     // Where to locate the Editor Window?
     [MenuItem("Component/(Debug Tool) Homeward Inventory/MainPlayer Backpack")]
@@ -58,12 +62,14 @@ public class DebugInventoryWindow : EditorWindow
             type = (Item.ItemType)EditorGUILayout.EnumPopup("Type ", type);
             obj = EditorGUILayout.ObjectField("Game Object ", obj, typeof(GameObject), true) as GameObject;
             icon = (Texture2D)EditorGUILayout.ObjectField("Icon ", icon, typeof(Texture2D), false);
+            iconEmpty = (Texture2D)EditorGUILayout.ObjectField("Empty Icon ", iconEmpty, typeof(Texture2D), false);
+            iconReplace = (Texture2D)EditorGUILayout.ObjectField("Icon (acts as temp var) ", iconReplace, typeof(Texture2D), false);
 
             // Create new item (press button)
             GUI.backgroundColor = Color.green;
             if (GUILayout.Button("Create Item"))
             {
-                database.items.Add(new Item(iname, id, desc, type, icon, obj));
+                database.items.Add(new Item(iname, id, desc, type, icon, iconEmpty, iconReplace, obj, value));
             }
 
             EditorGUILayout.Space();
@@ -96,6 +102,8 @@ public class DebugInventoryWindow : EditorWindow
                 item.itemType = (Item.ItemType)EditorGUILayout.EnumPopup("Type ", item.itemType);
                 item.itemObject = (GameObject)EditorGUILayout.ObjectField("Game Object ", item.itemObject, typeof(GameObject), true);
                 item.itemIcon = (Texture2D)EditorGUILayout.ObjectField("Icon ", item.itemIcon, typeof(Texture2D), true);
+                item.itemIconEmpty = (Texture2D)EditorGUILayout.ObjectField("Empty Icon ", item.itemIconEmpty, typeof(Texture2D), true);
+                item.itemIconReplace = (Texture2D)EditorGUILayout.ObjectField("Icon (replace) ", item.itemIconReplace, typeof(Texture2D), true);
                 EditorGUILayout.Space();
                 EditorGUI.indentLevel--;
             }
