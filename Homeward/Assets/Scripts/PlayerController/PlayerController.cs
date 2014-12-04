@@ -80,8 +80,8 @@ public class PlayerController : MonoBehaviour
 	void Update () 
 	{
         // Function deals with everything related to zooming-in when on base
-        zoomInWhenOnBase();
-//		zoomInWhenIndoor();
+//        zoomInWhenOnBase();
+		zoomInWhenIndoor();
 
         // Mining control
         if ((isMining) && (miningTimer < miningSpeed))
