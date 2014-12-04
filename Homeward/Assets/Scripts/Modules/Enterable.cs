@@ -2,46 +2,40 @@
 using System.Collections;
 
 public class Enterable : MonoBehaviour {
-	public static bool isEnter;
-	private GameObject mainPlayer;
-	private PlayerController playerC;
-//	private float x, y;
 
-	private Animator anim;
+	public bool xEnter;
+	private GameObject mainPlayer;
+	private PlayerController playerController;
+	private float x, y;
+
 	// Use this for initialization
 	void Start () {
-		anim = gameObject.GetComponentInParent<Animator>();
-		Enterable.isEnter = true;
+		mainPlayer = GameObject.Find("MainPlayer");
+		playerController = mainPlayer.GetComponent<PlayerController>();
+		x = y = 0;
+		int rotation = (int) gameObject.transform.root.rotation.eulerAngles.z;
+		if (rotation == 90 || rotation == 270)
+			xEnter = !xEnter;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		anim.SetBool("isEnter", Enterable.isEnter);
-		Debug.Log(Enterable.isEnter);
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
-
+		if (other.gameObject.tag == "Player") {
+			x = playerController.x;
+			y = playerController.y;
+		}
 	}
 
 	void OnTriggerExit2D (Collider2D other) {
-
-			Enterable.isEnter = !Enterable.isEnter;
-	//		anim.SetBool("isEnter", isEnter);
-		/** 
-		 * Lagcy Code (Incase new code dosen't work)
-		 * 
-		int rotation = (int)transform.rotation.eulerAngles.z;
-		if (rotation == 90 || rotation == 270)
-			if (playerC.y == y) {
-			isEnter = !isEnter;
-			anim.SetBool("isEnter", isEnter);
-			}
-		if (rotation == 0 || rotation == 180)
-			if (playerC.x == x) {
-			isEnter = !isEnter;
-			anim.SetBool("isEnter", isEnter);
-		**/
-
+		if (other.gameObject.tag == "Player") {
+			if (xEnter) {
+				if (playerController.x == x)
+					SpriteController.isEnter = !SpriteController.isEnter;
+			} else if (playerController.y == y)
+				SpriteController.isEnter = !SpriteController.isEnter;
+		}
 	}	
 }

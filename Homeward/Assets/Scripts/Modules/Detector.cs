@@ -7,7 +7,6 @@ public class Detector : MonoBehaviour {
 	[HideInInspector] public bool matched;
 	// Use this for initialization
 	void Start () {
-//		relation = new Vector3();
 		matched = false;
 	}
 	
