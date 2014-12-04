@@ -35,7 +35,12 @@ public class HabitatModuleDeployable : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		gameObject.SetActive(!SpriteController.isEnter);
+
+		if (SpriteController.isEnter) Reset();
+		else {
+			gameObject.SetActive(!SpriteController.isEnter);
+		}
+
 		if (Input.GetKeyDown(deployKey) && deployable) {
 			Instantiate(habitatModuleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
 			isDeploying = false;
@@ -64,6 +69,7 @@ public class HabitatModuleDeployable : MonoBehaviour {
 		if (Mathf.Abs(gameObject.transform.localPosition.x) > maxLength || Mathf.Abs(gameObject.transform.localPosition.y) > maxLength) {
 			gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		}
+
 	}
 	
 	void OnTriggerStay2D (Collider2D other) {
