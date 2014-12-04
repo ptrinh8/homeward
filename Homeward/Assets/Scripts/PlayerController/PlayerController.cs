@@ -40,10 +40,11 @@ public class PlayerController : MonoBehaviour
     private float zoomExitDuration = 1.0f;
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
-
 	private float healthTimer;
 	private float foodTimer;
 	private float sleepTimer;
+	[HideInInspector]
+	public float x, y;
 
     // Do not delete, for test/debug purpose only
     public int testVariable = 10;
@@ -88,7 +89,8 @@ public class PlayerController : MonoBehaviour
 	void Update () 
 	{
         // Function deals with everything related to zooming-in when on base
-        zoomInWhenOnBase();
+//        zoomInWhenOnBase();
+		zoomInWhenIndoor();
 
 		if (health > 0)
 		{
@@ -115,8 +117,8 @@ public class PlayerController : MonoBehaviour
 	            isMining = false;
 	        }
 
-			float x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-			float y = Input.GetAxisRaw("Vertical");
+			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+			y = Input.GetAxisRaw("Vertical");
 			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 			rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
@@ -308,4 +310,42 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+	void zoomInWhenIndoor()
+	{
+		GameObject mainPlayerGameObject = GameObject.Find("MainPlayer");
+		var mainPlayerPos = mainPlayerGameObject.transform.position;
+		int playerPosY = (int)mainPlayerPos.y;
+		int playerPosX = (int)mainPlayerPos.x;
+		
+		// If inside the falcon's boundaries, set zoomTransition = true
+		zoomTransition = SpriteController.isEnter;
+		
+		if (zoomTransition)
+		{
+			// Variables used in 'else' condition below
+			zoomExitDuration = 1.0f;
+			zoomExitElapsed = 0.0f;
+			
+			zoomElapsed += Time.deltaTime / zoomDuration;
+			Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
+			zoomTransition = false;
+		}
+		else 
+		{
+			// Variables used in 'if' condition above
+			zoomDuration = 1.0f;
+			zoomElapsed = 0.0f;
+			
+			zoomExitElapsed += Time.deltaTime / zoomExitDuration;
+			if (Time.timeSinceLevelLoad < 1f)
+			{
+				Camera.main.orthographicSize = Mathf.Lerp(5, 5, zoomExitElapsed);
+			}
+			else
+			{
+				Camera.main.orthographicSize = Mathf.Lerp(2, 5, zoomExitElapsed);
+			}
+		}
+	}
 }

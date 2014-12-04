@@ -5,9 +5,12 @@ public class Deployable : MonoBehaviour {
 
 	private SpriteRenderer spriteRenderer;
 	private KeyCode deployKey = KeyCode.F;
+	private KeyCode rotateKey = KeyCode.R;
 	private Building building;
 	private bool deployable;
 	private Detector[] detector;
+	[HideInInspector]
+	public bool isDeploying;
 	public float maxLength;
 	public GameObject haitatModuleUnfinished;
 	private int matchedPoint;
@@ -21,20 +24,25 @@ public class Deployable : MonoBehaviour {
 
 		color = new Color (0.5f, 0, 0, 0.7f);
 		spriteRenderer.color = color;
-		building = GameObject.Find("Module Building").GetComponent<Building>();
 		detector = gameObject.GetComponentsInChildren<Detector>();
-	
+
 		deployable = true;
+		isDeploying = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (Input.GetKeyDown(deployKey) && building.isDeploying && deployable && matchedPoint != -1) {
+		gameObject.SetActive(!SpriteController.isEnter);
+		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
 			Instantiate(haitatModuleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
-			building.isDeploying = false;
+			isDeploying = false;
 			Reset();
 		}
+		if (Input.GetKeyDown(rotateKey)) {
+			gameObject.transform.Rotate(new Vector3(0, 0, 90));
+			Debug.Log("rotated!");
+		}
+
 		for (int i = 0; i < detector.Length; i++) {
 			if (detector[i].matched) {
 				matchedPoint = i;
@@ -47,34 +55,20 @@ public class Deployable : MonoBehaviour {
 			if (deployable && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) {
 				spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
 			}
-		} else if (spriteRenderer.color != color) {
+		} else if (spriteRenderer.color != color && deployable) {
 			spriteRenderer.color = color;
 		}
-		/**
-		for (int i = 0; i < detector.Length; i++){
-			if (detector[i].matched) {
-				gameObject.transform.position += detector[i].relation;
-				detector[i].matched = false;
-				if (deployable) {
-					Debug.Log("green");
-					spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
-					break;
-				}
-			} else if (deployable) {
-				Debug.Log("gray");
-				spriteRenderer.color = color;
-			}
-		}
-		**/
+
 		if (Mathf.Abs(gameObject.transform.localPosition.x) > maxLength || Mathf.Abs(gameObject.transform.localPosition.y) > maxLength) {
 			gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		}
 
+
 	}
 
 	void OnTriggerStay2D (Collider2D other) {
-			deployable = false;
-			spriteRenderer.color = Color.red;
+		deployable = false;
+		spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
 	}
 
 	void OnTriggerExit2D (Collider2D other) {

@@ -8,6 +8,7 @@ public class Buildable : MonoBehaviour {
 	private int buildingProgress;
 	private SpriteRenderer spriteRenderer;
 	private KeyCode buildKey = KeyCode.F;
+	private KeyCode cancelKey = KeyCode.E;
 	private Color color;
 	private Detector detector;
 
@@ -26,14 +27,15 @@ public class Buildable : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (buildingProgress == materialsRequired) {
-			Instantiate(habitatModule, gameObject.transform.position, Quaternion.identity);
+			Instantiate(habitatModule, gameObject.transform.position, gameObject.transform.rotation);
 			Destroy(gameObject);
-//			Enterable.isEnter = true;
+			SpriteController.isEnter = true;
 		}
-
 	}
 
 	void OnTriggerStay2D (Collider2D other) {
+		if (Input.GetKeyDown(cancelKey))
+			Destroy(gameObject);
 		if (Input.GetKeyDown(buildKey)) {
 			buildingProgress++;
 			color.a += 0.4f/materialsRequired;
