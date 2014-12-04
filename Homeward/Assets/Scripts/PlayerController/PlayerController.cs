@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     private Minerals minerals;
 	private DayNightController dayNightController;
 
-	public int health; //astronaut's health
+	public float health; //astronaut's health
 	public int stamina; //astronaut's stamina
 	public float speed;
 	public Sprite[] sprites;
@@ -41,6 +41,10 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
+	private float healthTimer;
+	private float foodTimer;
+	private float sleepTimer;
+
     // Do not delete, for test/debug purpose only
     public int testVariable = 10;
 
@@ -62,6 +66,7 @@ public class PlayerController : MonoBehaviour
         // Initialize monobehavior of initialized classes
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
+		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 
 		speed = 2.5f;
 		animateSpeed = .1f;
@@ -70,6 +75,7 @@ public class PlayerController : MonoBehaviour
 		frameDescending = false;
 		health = 100;
 		stamina = 100;
+		healthTimer = 0;
 
 		miningTimer = 0;
 		miningNow = false;
@@ -86,6 +92,16 @@ public class PlayerController : MonoBehaviour
 
 		if (health > 0)
 		{
+			//UpdateHealth();
+			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
+			{
+				healthTimer += Time.deltaTime;
+				if (healthTimer > 1)
+				{
+					health -= 10;
+					healthTimer = 0;
+				}
+			}
 	        // Mining control
 	        if ((isMining) && (miningTimer < miningSpeed))
 	        {
@@ -292,9 +308,4 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-	void UpdateHealth()
-	{
-
-	}
 }
