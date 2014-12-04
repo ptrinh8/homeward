@@ -10,11 +10,8 @@ public class Enterable : MonoBehaviour {
 	private Animator anim;
 	// Use this for initialization
 	void Start () {
-		mainPlayer = GameObject.Find("MainPlayer");
-		playerC = mainPlayer.GetComponent<PlayerController>();
 		anim = gameObject.GetComponentInParent<Animator>();
 		Enterable.isEnter = true;
-//		x = y = 0;
 	}
 	
 	// Update is called once per frame
@@ -24,8 +21,7 @@ public class Enterable : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
-//		x = playerC.x;
-//		y = playerC.y;
+
 	}
 
 	void OnTriggerExit2D (Collider2D other) {
