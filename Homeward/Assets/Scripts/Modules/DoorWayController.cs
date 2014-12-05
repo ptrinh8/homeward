@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// This class is for destroying the doorway(gameobject) when two finished modules are connected
 public class DoorWayController : MonoBehaviour {
 
 	private Transform childObject;

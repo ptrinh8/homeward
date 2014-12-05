@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Building class is for getting module building key, a "on-player-blueprint" will generate after player press the keys
 public class Building : MonoBehaviour {
 
-	public GameObject habitatModuleDeploying;
-	public GameObject connectorModuleDeploying;
-	private HabitatModuleDeployable habitatModuleDeployable;
-	private Deployable connectorModuleDeployable;
+	public GameObject habitatModuleDeploying;	// "on-player-blueprint" in prefabs
+	public GameObject connectorModuleDeploying;		// "on-player-blueprint" in prefabs
+	private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
+	private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
 	private KeyCode habitatModuleKey = KeyCode.Alpha1;
 	private KeyCode connectorModuleKey = KeyCode.Alpha2;
 
 	// Use this for initialization
 	void Start () {
-
+		// Instantiate the "on-player-blueprint", setActive(true) when needed
 		habitatModuleDeploying = Instantiate(habitatModuleDeploying) as GameObject;
 		habitatModuleDeploying.SetActive(false);
 		connectorModuleDeploying = Instantiate(connectorModuleDeploying) as GameObject;
@@ -25,10 +26,12 @@ public class Building : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown(habitatModuleKey)) {
+			// Handle condition which other modules are deploying
 			if (connectorModuleDeployable.isDeploying) {
 				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
 				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
 			}
+			// isDeploying means whether this module is deploying
 			habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
 			habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
 			
