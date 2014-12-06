@@ -17,7 +17,7 @@ public class SpriteController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(spriteRenderer.sortingLayerID);
+//		Debug.Log(spriteRenderer.sortingLayerID);
 		if (isEnter) {
 			spriteRenderer.sprite = indoorSprite;
 			spriteRenderer.sortingOrder = -2;

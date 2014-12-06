@@ -3,12 +3,14 @@ using System.Collections;
 
 public class HabitatModule : MonoBehaviour {
 
-	private GameObject bed;
+	public GameObject bed;
 	private GameObject connectPoint;
 	private GameObject doorway;
 
 	// Use this for initialization
 	void Start () {
+
+		bed = transform.Find("Bed").gameObject;
 	
 	}
 	

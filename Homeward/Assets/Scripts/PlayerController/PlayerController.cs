@@ -38,6 +38,10 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
+	public int health;
+
+	public bool canSleep;
+
 	[HideInInspector]
 	public float x, y;
 
@@ -73,6 +77,10 @@ public class PlayerController : MonoBehaviour
 		miningNow = false;
 		isMining = false;
 
+		health = 100;
+
+		canSleep = false;
+
         // Enables camera zooming-in
         Camera.main.orthographic = true;
 	}
@@ -83,44 +91,47 @@ public class PlayerController : MonoBehaviour
 //        zoomInWhenOnBase();
 		zoomInWhenIndoor();
 
-        // Mining control
-        if ((isMining) && (miningTimer < miningSpeed))
-        {
-            if (playerStatus.maxMineralsHaveReached == false)
-            miningTimer += Time.deltaTime;
-        }
-        else if (miningTimer > miningSpeed)
-        {
-            miningNow = true;
-            miningTimer = 0;
-            isMining = false;
-        }
+		if (health > 0)
+		{
+	        // Mining control
+	        if ((isMining) && (miningTimer < miningSpeed))
+	        {
+	            if (playerStatus.maxMineralsHaveReached == false)
+	            miningTimer += Time.deltaTime;
+	        }
+	        else if (miningTimer > miningSpeed)
+	        {
+	            miningNow = true;
+	            miningTimer = 0;
+	            isMining = false;
+	        }
 
-		x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-		y = Input.GetAxisRaw("Vertical");
-		Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-		rigidbody2D.velocity = direction * speed;   // speed is changable by us
+			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+			y = Input.GetAxisRaw("Vertical");
+			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+			rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
-		//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-		if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
-		{
-			AnimateFrames(1);
-			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
-		}
-		else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
-		{
-			AnimateFrames(0);
-			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
-		}
-		else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
-		{
-			AnimateFrames(3);
-			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-		}
-		else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
-		{
-			AnimateFrames(2);
-			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
+			if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
+			{
+				AnimateFrames(1);
+				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+			}
+			else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
+			{
+				AnimateFrames(0);
+				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+			}
+			else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
+			{
+				AnimateFrames(3);
+				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+			}
+			else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
+			{
+				AnimateFrames(2);
+				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+			}
 		}
 	}
     
