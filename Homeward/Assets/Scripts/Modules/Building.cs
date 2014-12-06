@@ -6,10 +6,13 @@ public class Building : MonoBehaviour {
 
 	public GameObject habitatModuleDeploying;	// "on-player-blueprint" in prefabs
 	public GameObject connectorModuleDeploying;		// "on-player-blueprint" in prefabs
+	public GameObject refineryModuleDeploying;
 	private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
 	private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
+	private Deployable refineryModuleDeployable;
 	private KeyCode habitatModuleKey = KeyCode.Alpha1;
 	private KeyCode connectorModuleKey = KeyCode.Alpha2;
+	private KeyCode refineryModuleKey = KeyCode.Alpha3;
 
 	// Use this for initialization
 	void Start () {
@@ -18,8 +21,12 @@ public class Building : MonoBehaviour {
 		habitatModuleDeploying.SetActive(false);
 		connectorModuleDeploying = Instantiate(connectorModuleDeploying) as GameObject;
 		connectorModuleDeploying.SetActive(false);
+		refineryModuleDeploying = Instantiate(refineryModuleDeploying) as GameObject;
+		refineryModuleDeploying.SetActive(false);
+
 		habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
 		connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
+		refineryModuleDeployable = refineryModuleDeploying.GetComponent<Deployable>();
 
 	}
 	
@@ -30,6 +37,10 @@ public class Building : MonoBehaviour {
 			if (connectorModuleDeployable.isDeploying) {
 				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
 				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
+			}
+			if (refineryModuleDeployable.isDeploying) {
+				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
+				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
 			}
 			// isDeploying means whether this module is deploying
 			habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
@@ -42,8 +53,25 @@ public class Building : MonoBehaviour {
 				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
 				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
 			}
+			if (refineryModuleDeployable.isDeploying) {
+				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
+				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
+			}
 			connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
 			connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
+		}
+
+		if (Input.GetKeyDown(refineryModuleKey)) {
+			if (habitatModuleDeployable.isDeploying){
+				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
+				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
+			}
+			if (connectorModuleDeployable.isDeploying) {
+				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
+				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
+			}
+			refineryModuleDeployable.isDeploying = !refineryModuleDeployable.isDeploying;
+			refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
 		}
 
 	}
