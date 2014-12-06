@@ -1,4 +1,4 @@
-﻿// =======================================================================
+// =======================================================================
 // <file="PlayerController.cs" product="Homeward">
 // <date>2014-11-12</date>
 // <summary>Contains a base, abstract class for PlayerController</summary>
@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 
 	public float health; //astronaut's health
 	public int stamina; //astronaut's stamina
+	public bool isInsideModule; //whether astronaut is inside a module or not
 	public float speed;
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
@@ -40,6 +41,7 @@ public class PlayerController : MonoBehaviour
     private float zoomExitDuration = 1.0f;
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
+
 	private float healthTimer;
 	private float foodTimer;
 	private float sleepTimer;
@@ -91,11 +93,12 @@ public class PlayerController : MonoBehaviour
         // Function deals with everything related to zooming-in when on base
 //        zoomInWhenOnBase();
 		zoomInWhenIndoor();
+		isInsideModule = SpriteController.isEnter;
 
 		if (health > 0)
 		{
 			//UpdateHealth();
-			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
+			if (dayNightController.currentPhase == DayNightController.DayPhase.Night && isInsideModule == false)
 			{
 				healthTimer += Time.deltaTime;
 				if (healthTimer > 1)
@@ -142,6 +145,13 @@ public class PlayerController : MonoBehaviour
 			{
 				AnimateFrames(2);
 				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+			}
+
+			if (Input.GetKey (KeyCode.F))
+			{
+				/*----------------------------------
+				 * DAU REMOVE AN ITEM HERE
+				 * ---------------------------------*/
 			}
 		}
 	}
