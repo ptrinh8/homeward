@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     // Instance of another classes
     private MineralsStatus playerStatus;
     private Minerals minerals;
+	private DayNightController dayNightController;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -39,6 +40,11 @@ public class PlayerController : MonoBehaviour
     private bool zoomTransition = false;
 
 	public int health;
+	public int stamina;
+	private float healthTimer;
+	private float staminaTimer;
+	private float dayLength;
+	private float timeUntilSleepPenalty;
 
 	public bool canSleep;
 
@@ -66,6 +72,7 @@ public class PlayerController : MonoBehaviour
         // Initialize monobehavior of initialized classes
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
+		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 
 		speed = 2.5f;
 		animateSpeed = .1f;
@@ -78,11 +85,15 @@ public class PlayerController : MonoBehaviour
 		isMining = false;
 
 		health = 100;
+		stamina = 100;
 
 		canSleep = false;
 
         // Enables camera zooming-in
         Camera.main.orthographic = true;
+
+		dayLength = dayNightController.dayCycleLength;
+		timeUntilSleepPenalty = (dayLength / 10) * 8;
 	}
 
 	void Update () 
@@ -93,6 +104,23 @@ public class PlayerController : MonoBehaviour
 
 		if (health > 0)
 		{
+			staminaTimer += Time.deltaTime;
+			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
+			{
+				healthTimer += Time.deltaTime;
+				if (healthTimer > 1.0f)
+				{
+					health -= 10;
+					healthTimer = 0;
+				}
+			}
+
+			if (staminaTimer > timeUntilSleepPenalty / 10)
+			{
+				stamina -= 5;
+				staminaTimer = 0;
+			}
+
 	        // Mining control
 	        if ((isMining) && (miningTimer < miningSpeed))
 	        {
