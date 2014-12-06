@@ -36,6 +36,7 @@ public class Buildable : MonoBehaviour {
 			Destroy(gameObject);
 		if (Input.GetKeyDown(buildKey)) {
 			// Need to integriate with inventory
+			/** remove materials by one**/
 			buildingProgress++;
 			color.a += 0.4f/materialsRequired;
 			spriteRenderer.color = color;

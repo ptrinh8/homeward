@@ -112,7 +112,7 @@ public class Refining : MonoBehaviour
 	            if (stopMineralsIntake == false)
 	            {
 	                mineralStatus.mineralsInInventory--;
-	                itemDatabase.items[0].value -= 1;
+	                itemDatabase.items[0].value -= 1; // removes the value of material, if itemID = 1
 	                if (mineralStatus.mineralsInInventory > -1)
 	                {
 	                    mineralsDeposited++;
