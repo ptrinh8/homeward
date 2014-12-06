@@ -105,27 +105,28 @@ public class Refining : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
+		if (other.gameObject.tag == "Player")
         // Press F to activate refining module
-        if ((Input.GetKeyDown(KeyCode.F)) == true)
-        {
-            if (stopMineralsIntake == false)
-            {
-                mineralStatus.mineralsInInventory--;
-                itemDatabase.items[0].value -= 1;
-                if (mineralStatus.mineralsInInventory > -1)
-                {
-                    mineralsDeposited++;
-                    totalMineralsDeposited++;
-                }
-                else
-                {
-                    // Do nothing
-                }
-            }
-            else
-            {
-                
-            }
+	        if ((Input.GetKeyDown(KeyCode.F)) == true)
+	        {
+	            if (stopMineralsIntake == false)
+	            {
+	                mineralStatus.mineralsInInventory--;
+	                itemDatabase.items[0].value -= 1;
+	                if (mineralStatus.mineralsInInventory > -1)
+	                {
+	                    mineralsDeposited++;
+	                    totalMineralsDeposited++;
+	                }
+	                else
+	                {
+	                    // Do nothing
+	                }
+	            }
+	            else
+	            {
+	                
+	            }
         }
     }
 

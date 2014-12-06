@@ -8,19 +8,22 @@ public class SpriteController : MonoBehaviour {
 	public Sprite indoorSprite;
 	public Sprite outdoorSprite;
 	private SpriteRenderer spriteRenderer;
-//	private bool taylor;
 
 	// Use this for initialization
 	void Start () {
-//		isEnter = false;
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-//		taylor = isEnter;
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (isEnter) spriteRenderer.sprite = indoorSprite;
-		else spriteRenderer.sprite = outdoorSprite;
+		Debug.Log(spriteRenderer.sortingLayerID);
+		if (isEnter) {
+			spriteRenderer.sprite = indoorSprite;
+			spriteRenderer.sortingOrder = -2;
+		} else {
+			spriteRenderer.sprite = outdoorSprite;
+			spriteRenderer.sortingOrder = -1;
+		}
 	}
 }
