@@ -1,4 +1,4 @@
-// =======================================================================
+﻿// =======================================================================
 // <file="PlayerController.cs" product="Homeward">
 // <date>2014-11-12</date>
 // <summary>Contains a base, abstract class for PlayerController</summary>
@@ -16,11 +16,7 @@ public class PlayerController : MonoBehaviour
     // Instance of another classes
     private MineralsStatus playerStatus;
     private Minerals minerals;
-	private DayNightController dayNightController;
 
-	public float health; //astronaut's health
-	public int stamina; //astronaut's stamina
-	public bool isInsideModule; //whether astronaut is inside a module or not
 	public float speed;
 	public Sprite[] sprites;
 	private SpriteRenderer spriteRenderer;
@@ -42,9 +38,6 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
-	private float healthTimer;
-	private float foodTimer;
-	private float sleepTimer;
 	[HideInInspector]
 	public float x, y;
 
@@ -69,16 +62,12 @@ public class PlayerController : MonoBehaviour
         // Initialize monobehavior of initialized classes
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
-		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 
 		speed = 2.5f;
 		animateSpeed = .1f;
 		animateTime = 0f;
 		frameAscending = true;
 		frameDescending = false;
-		health = 100;
-		stamina = 100;
-		healthTimer = 0;
 
 		miningTimer = 0;
 		miningNow = false;
@@ -93,66 +82,45 @@ public class PlayerController : MonoBehaviour
         // Function deals with everything related to zooming-in when on base
 //        zoomInWhenOnBase();
 		zoomInWhenIndoor();
-		isInsideModule = SpriteController.isEnter;
 
-		if (health > 0)
+        // Mining control
+        if ((isMining) && (miningTimer < miningSpeed))
+        {
+            if (playerStatus.maxMineralsHaveReached == false)
+            miningTimer += Time.deltaTime;
+        }
+        else if (miningTimer > miningSpeed)
+        {
+            miningNow = true;
+            miningTimer = 0;
+            isMining = false;
+        }
+
+		x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+		y = Input.GetAxisRaw("Vertical");
+		Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+		rigidbody2D.velocity = direction * speed;   // speed is changable by us
+
+		//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
+		if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
 		{
-			//UpdateHealth();
-			if (dayNightController.currentPhase == DayNightController.DayPhase.Night && isInsideModule == false)
-			{
-				healthTimer += Time.deltaTime;
-				if (healthTimer > 1)
-				{
-					health -= 10;
-					healthTimer = 0;
-				}
-			}
-	        // Mining control
-	        if ((isMining) && (miningTimer < miningSpeed))
-	        {
-	            if (playerStatus.maxMineralsHaveReached == false)
-	            miningTimer += Time.deltaTime;
-	        }
-	        else if (miningTimer > miningSpeed)
-	        {
-	            miningNow = true;
-	            miningTimer = 0;
-	            isMining = false;
-	        }
-
-			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-			y = Input.GetAxisRaw("Vertical");
-			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-			rigidbody2D.velocity = direction * speed;   // speed is changable by us
-
-			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-			if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
-			{
-				AnimateFrames(1);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
-			}
-			else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
-			{
-				AnimateFrames(0);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
-			}
-			else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
-			{
-				AnimateFrames(3);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
-			else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
-			{
-				AnimateFrames(2);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
-
-			if (Input.GetKey (KeyCode.F))
-			{
-				/*----------------------------------
-				 * DAU REMOVE AN ITEM HERE
-				 * ---------------------------------*/
-			}
+			AnimateFrames(1);
+			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+		}
+		else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
+		{
+			AnimateFrames(0);
+			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+		}
+		else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
+		{
+			AnimateFrames(3);
+			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+		}
+		else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
+		{
+			AnimateFrames(2);
+			this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
 		}
 	}
     
