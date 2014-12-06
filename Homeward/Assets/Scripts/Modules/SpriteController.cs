@@ -17,10 +17,9 @@ public class SpriteController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(spriteRenderer.sortingLayerID);
 		if (isEnter) {
 			spriteRenderer.sprite = indoorSprite;
-			spriteRenderer.sortingOrder = -2;
+			spriteRenderer.sortingOrder = -3;
 		} else {
 			spriteRenderer.sprite = outdoorSprite;
 			spriteRenderer.sortingOrder = -1;
