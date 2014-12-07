@@ -55,7 +55,7 @@ public class Inventory : MonoBehaviour
 		showInventory = false;
 
         // Set DB instance = DB.component
-		//database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
+		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
 
 		// Add items with following IDs
 	    //	AddItem (0);
