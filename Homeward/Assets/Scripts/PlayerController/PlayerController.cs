@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
 	private float healthTimer;
 	private float staminaTimer;
 	private float dayLength;
+	private float nightLength;
 	private float timeUntilSleepPenalty;
 
 	public bool canSleep;
@@ -93,6 +94,7 @@ public class PlayerController : MonoBehaviour
         Camera.main.orthographic = true;
 
 		dayLength = dayNightController.dayCycleLength;
+		nightLength = dayNightController.dayCycleLength / 4;
 		timeUntilSleepPenalty = (dayLength / 10) * 8;
 	}
 
@@ -107,11 +109,14 @@ public class PlayerController : MonoBehaviour
 			staminaTimer += Time.deltaTime;
 			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
 			{
-				healthTimer += Time.deltaTime;
-				if (healthTimer > 1.0f)
+				if (SpriteController.isEnter == false)
 				{
-					health -= 10;
-					healthTimer = 0;
+					healthTimer += Time.deltaTime;
+					if (healthTimer > nightLength / 5)
+					{
+						health -= 26;
+						healthTimer = 0;
+					}
 				}
 			}
 

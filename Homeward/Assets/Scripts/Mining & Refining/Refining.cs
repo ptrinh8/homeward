@@ -158,7 +158,7 @@ public class Refining : MonoBehaviour
         debugMineralsRefinedText.GetComponent<GUIText>().text = "Minerals Refined [OVERALL]: ";
 
         GUI.contentColor = Color.black;
-        GUI.Label(new Rect(14, 80, 550, 550), "\t\t\t\t\t\t\t\t\t  " + loadingPercent.ToString() + "%\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  " + mineralsDeposited + "\n\t\t\t\t\t\t\t\t\t\t\t " + refinedMineralsCreated, "color");
+        GUI.Label(new Rect(14, 80, 550, 550), "\t\t\t\t\t\t\t\t\t  " + loadingPercent.ToString() + "%\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  " + mineralsDeposited + "\n\t\t\t\t\t\t\t\t\t\t\t " + refinedMineralsCreated);
         
     }
 }
