@@ -38,6 +38,7 @@ public class Inventory : MonoBehaviour
 
 	// Coordinate of the click to be able to draw the sprite at the correct off-set to the mouse
     private Vector2 mouseDragCoordinates;
+    private bool pause = false;
 	
 	void Start () 
     {
@@ -54,7 +55,7 @@ public class Inventory : MonoBehaviour
 		showInventory = false;
 
         // Set DB instance = DB.component
-		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
+		//database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
 
 		// Add items with following IDs
 	    //	AddItem (0);
@@ -64,8 +65,18 @@ public class Inventory : MonoBehaviour
 
 	void Update()
 	{
-		if (Input.GetKeyDown(invKey))
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            pause = !pause;
+        }
+
+        if(!pause)
+        {
+            if (Input.GetKeyDown(invKey))
 			showInventory = !showInventory;
+            pause = false;
+        }
+		
 	}
 
 	void OnGUI()
