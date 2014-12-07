@@ -18,33 +18,37 @@ public class Instruction : MonoBehaviour {
     [HideInInspector]
     public bool showInstruction;
     private KeyCode instKey = KeyCode.B;
-    private int itemsSlotsSize = 100;
+    private int itemsSlotWidth = 70;
+    private int itemsSlotHeight = 70;
     private int itemsSlotsPadding = 12;
-    private int backpackRowsCount = 3;
-    private int backpackColsCount = 3;
-    private Rect inventorySize = new Rect(100, 200, 0, 0); // Used to add bground to backpack, in consideration with values of rows & cols.
+    private int instructionRowsCount = 1;
+    private int instructionColsCount = 6;
+    private Rect instructionBook = new Rect(50, 200, 0, 0); // Rect (x, y, width, height); Used to add bground to instruction, in consideration with values of rows & cols.
 
     public GUISkin GUIskin;
-    public List<InstructionItem> instItems = new List<InstructionItem>(); // Holds instructions
+    private List<InstructionItem> instItems = new List<InstructionItem>(); // Holds instructions
     private InstructionDatabase database; // Stores items in DB
     private bool showInstructionItemDetails; // Each item information
-    private string inventoryItemDetailsText; // Item information text
-    [HideInInspector]
-    public bool isItemBeingDragged;
-    private Item thisItemIsBeingDragged;
+    private string instructionItemDetailsText; // Item information text
 
-    // Coordinate of the click to be able to draw the sprite at the correct off-set to the mouse
-    private Vector2 mouseDragCoordinates;
+    public Texture2D movePlayer;
+    public Texture2D interaction;
+    public Texture2D placingModule;
+    public Texture2D rotatingModule;
+    public Texture2D eating;
+    public Texture2D inventory;
 
 	// Use this for initialization
 	void Start () {
         instructionDatabase = FindObjectOfType(typeof(InstructionDatabase)) as InstructionDatabase;
 
-		// Loop to add an inventory slot for each slot based on the result of XxY
-        for (int i = 0; i < (backpackRowsCount * backpackColsCount); i++)
-        {
-            instItems.Add(new InstructionItem());
-        }
+		//database = instItems.Add(new InstructionItem("Player Moving", 0, "'w,a,s,d'or arrow keys to move the player around", movePlayer));
+        instItems.Add(new InstructionItem("Move Player", 0, "Press a, s, d, f, or arrow keys", movePlayer));
+        instItems.Add(new InstructionItem("Interact with World", 1, "Press f to mine, refine, place modules", interaction));
+        instItems.Add(new InstructionItem("Prepare Module", 2, "Num Key 1: Habitat Module \nNum Key 2: Connector Module \nNum Key 3: Refinary Module \nNum Key 4: Food Module", placingModule));
+        instItems.Add(new InstructionItem("Rotate Module", 3, "Press r", rotatingModule));
+        instItems.Add(new InstructionItem("Eat Foods", 4, "Press e", eating));
+        instItems.Add(new InstructionItem("Look Inventory", 5, "Press i", inventory));
 
         GUIskin = Resources.Load<GUISkin>("InvGUIskin");
 		showInstruction = false;
@@ -57,7 +61,12 @@ public class Instruction : MonoBehaviour {
     void Update()
     {
         if (Input.GetKeyDown(instKey))
+        {
+            if (Time.timeScale == 1) Time.timeScale = 0; // pause
+            else if (Time.timeScale == 0) Time.timeScale = 1; // continue
+                        
             showInstruction = !showInstruction;
+        }
     }
 
     void OnGUI()
@@ -65,27 +74,21 @@ public class Instruction : MonoBehaviour {
         GUI.skin = GUIskin;
 
         // Set item information as blank
-        inventoryItemDetailsText = "";
+        instructionItemDetailsText = "";
 
         // is inventory visible?
         if (showInstruction)
         {
             DrawInstruction();
 
-            // is mouse on item?, which makes showInventoryItemDetails = true
+            // screen texture to make the screen dark when the gameplay is paused
+            //screenTexture = new Texture2D(100, 100, TextureFormat.ARGB32, false);
+            //screenTexture.SetPixel(0, 0, new Color(1.5f, 1.5f, 0, 1.5f)); // making it a little darker
+            //screenTexture.Apply();
+
+            // is mouse on item?, which makes showInstructionItemDetails = true
             if (showInstructionItemDetails)
                 DrawInstructionDetails();
-
-            // is item being dragged? make icon follow mouse
-            if (isItemBeingDragged)
-                GUI.DrawTexture(new Rect(Event.current.mousePosition.x - mouseDragCoordinates.x, Event.current.mousePosition.y
-                - mouseDragCoordinates.y, itemsSlotsSize, itemsSlotsSize), thisItemIsBeingDragged.itemIcon);
-        }
-
-        else if (isItemBeingDragged)
-        {
-            isItemBeingDragged = false;
-            thisItemIsBeingDragged = null;
         }
     }
 
@@ -93,26 +96,26 @@ public class Instruction : MonoBehaviour {
     {
         int i = 0;
 
-		// Calculate size of inventory window
-        inventorySize.width = (itemsSlotsSize + itemsSlotsPadding) * backpackColsCount + itemsSlotsPadding;
-        inventorySize.height = (itemsSlotsSize + itemsSlotsPadding) * backpackRowsCount + itemsSlotsPadding;
+		// Calculate size of instruction window
+        instructionBook.width = (itemsSlotWidth + itemsSlotsPadding) * instructionColsCount + itemsSlotsPadding;
+        instructionBook.height = (itemsSlotHeight + itemsSlotsPadding) * instructionRowsCount + itemsSlotsPadding;
 
 		// Draw background
-		GUI.Box(inventorySize, "", GUIskin.GetStyle("Inventory Background"));
+		GUI.Box(instructionBook, "", GUIskin.GetStyle("Inventory Background"));
 
 		// Current GUI input event stored in an Event variable
 		Event currentGUIevent = Event.current;
 
 		// Position and size of each item slot saved in a temp variable used for drawing the slots
-        Rect slotRect = new Rect(inventorySize.x, inventorySize.y, itemsSlotsSize, itemsSlotsSize);
+        Rect slotRect = new Rect(instructionBook.x, instructionBook.y, itemsSlotWidth, itemsSlotHeight);
 
-        for (int y = 0; y < backpackRowsCount; y++)
+        for (int y = 0; y < instructionRowsCount; y++)
         {
-            for (int x = 0; x < backpackColsCount; x++)
+            for (int x = 0; x < instructionColsCount; x++)
             {
                 // Modify slotRect based on the position of the inventory window and the current item the loop is on
-                slotRect.x = itemsSlotsPadding + inventorySize.x + x * (itemsSlotsSize + itemsSlotsPadding); // column position
-                slotRect.y = itemsSlotsPadding + inventorySize.y + y * (itemsSlotsSize + itemsSlotsPadding); // row position
+                slotRect.x = itemsSlotsPadding + instructionBook.x + x * (itemsSlotWidth + itemsSlotsPadding); // column position
+                slotRect.y = itemsSlotsPadding + instructionBook.y + y * (itemsSlotHeight + itemsSlotsPadding); // row position
 
                 InstructionItem instItem = instItems[i];
 
@@ -130,20 +133,34 @@ public class Instruction : MonoBehaviour {
                     // Is mouse position within the slot?
                     if (slotRect.Contains(Event.current.mousePosition))
                     {
-                        // Is left-click pressed? also, is item not being dragged?
-                        if (currentGUIevent.isMouse && currentGUIevent.button == 0 && currentGUIevent.type == EventType.mouseDown && !isItemBeingDragged)
-                        {
-                            
-                        }
+                        instructionItemDetailsText = CreateItemDetails(instItem);
+                        showInstructionItemDetails = true;
                     }
+
+                    if (instructionItemDetailsText == "")
+                        showInstructionItemDetails = false;
                 }
                 i++;
             }
         }
+
+        int headerWidth = 220;
+        int headerHeight = 40;
+        Rect instructionHeader = new Rect(instructionBook.x + instructionBook.width/2 - headerWidth/2, instructionBook.y - itemsSlotHeight/2, headerWidth, headerHeight);
+        GUI.Label(instructionHeader, "Instruction Book ", GUIskin.GetStyle("Inventory Empty Slot"));
     }
 
     void DrawInstructionDetails()
     {
+        //if (Event.current.mousePosition.x+10+300 < 'ScreenWidth') // currently working by Takahide : trying to make the box inside the screen
+        float tooltipHeight = GUIskin.GetStyle("Inventory Tooltip").CalcHeight(new GUIContent(instructionItemDetailsText), 200);
+        GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 300, tooltipHeight), instructionItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
+    }
 
+    private string CreateItemDetails(InstructionItem instItem)
+    {
+        instructionItemDetailsText = "";
+        instructionItemDetailsText += "<color=#b8c7ff><b>" + instItem.itemName + "</b></color>\n\n" + instItem.itemDescription;
+        return instructionItemDetailsText;
     }
 }
