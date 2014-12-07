@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: dafc10c2b7ad2fc4d9ae15eba888af71
+guid: 029c30c79cb97e64c9c7b53394656ab4
 TextureImporter:
   fileIDToRecycleName:
-    21300000: Refinery Module_0
-    21300002: Refinery Module_1
+    21300000: Food Machine_0
+    21300002: Food Machine_1
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -45,7 +45,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: Refinery Module_0
+    - name: Food Machine_0
       rect:
         serializedVersion: 2
         x: 2
@@ -55,7 +55,7 @@ TextureImporter:
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: Refinery Module_1
+    - name: Food Machine_1
       rect:
         serializedVersion: 2
         x: 66

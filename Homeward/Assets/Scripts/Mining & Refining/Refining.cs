@@ -56,9 +56,9 @@ public class Refining : MonoBehaviour
 	void Update () 
     {
         changeLoadingToPercent();
-
-        refineryModule = GameObject.Find("Refining");
-        var refineryModuleSpriteRenderer = refineryModule.GetComponentInChildren<SpriteRenderer>();
+		// Taylor
+		refineryModule = gameObject;
+        var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
 
         if (mineralStatus.mineralsInInventory == 0)
         {
@@ -127,7 +127,7 @@ public class Refining : MonoBehaviour
 	            {
 	                
 	            }
-        }
+        	}
     }
 
     void startTimer()
