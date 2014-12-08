@@ -77,7 +77,7 @@ public class Minerals : MonoBehaviour
 
                 if (!hasMineralBeenExtracted)
                 {
-                    if ((inventory.inventory[0].itemName == null) && (inventory.inventory[1].itemName == null) && (inventory.inventory[2].itemName == null)
+                    if ((inventory.inventory[1].itemName == null) && (inventory.inventory[2].itemName == null)
                      && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
                      && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
                     {                        
