@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     private MineralsStatus playerStatus;
     private Minerals minerals;
 	private DayNightController dayNightController;
+    private ItemDatabase itemDatabase;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -48,6 +49,9 @@ public class PlayerController : MonoBehaviour
 	private float timeUntilSleepPenalty;
 
 	public bool canSleep;
+    [HideInInspector]
+    public bool isKeyEnabled = true;
+    private KeyCode consumeFoodKey = KeyCode.K;
 
 	[HideInInspector]
 	public float x, y;
@@ -74,6 +78,7 @@ public class PlayerController : MonoBehaviour
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
+        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
 
 		speed = 2.5f;
 		animateSpeed = .1f;
@@ -101,8 +106,17 @@ public class PlayerController : MonoBehaviour
 	void Update () 
 	{
         // Function deals with everything related to zooming-in when on base
-//        zoomInWhenOnBase();
+        // zoomInWhenOnBase();
 		zoomInWhenIndoor();
+
+        if (Input.GetKeyDown(consumeFoodKey) == true)
+        {
+            if (isKeyEnabled)
+            {
+                itemDatabase.items[2].value -= 1;
+                // PATRICK STAR: Add your code here.
+            }
+        }
 
 		if (health > 0)
 		{
