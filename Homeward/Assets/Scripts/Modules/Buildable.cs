@@ -36,7 +36,6 @@ public class Buildable : MonoBehaviour
 		if (buildingProgress >= materialsRequired) {
 			Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
 			Destroy(gameObject);
-			SpriteController.isEnter = true;
 		}
 	}
 
@@ -47,7 +46,10 @@ public class Buildable : MonoBehaviour
 
         if (Input.GetKeyDown(buildKey))
         {
-            if (itemDatabase.items[1].value > 0)
+			buildingProgress++;
+			color.a += 0.4f / materialsRequired;
+			spriteRenderer.color = color;
+/**            if (itemDatabase.items[1].value > 0)
             {
                 itemDatabase.items[1].value -= 1;
                 buildingProgress++;
@@ -58,6 +60,7 @@ public class Buildable : MonoBehaviour
             {
                 // Do nothing.
             }
+            **/
         }
     }
 }

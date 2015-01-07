@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-		if (health > 0)
+//	if (health > 0)
 		{
 			staminaTimer += Time.deltaTime;
 			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
@@ -355,7 +355,7 @@ public class PlayerController : MonoBehaviour
 		int playerPosX = (int)mainPlayerPos.x;
 		
 		// If inside the falcon's boundaries, set zoomTransition = true
-		zoomTransition = SpriteController.isEnter;
+		zoomTransition = CentralControl.isInside;
 		
 		if (zoomTransition)
 		{
