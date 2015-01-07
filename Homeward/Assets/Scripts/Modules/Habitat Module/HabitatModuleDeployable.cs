@@ -36,9 +36,9 @@ public class HabitatModuleDeployable : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// Player cannot deploy blueprint when indoor
-		if (SpriteController.isEnter) Reset();
+		if (CentralControl.isInside) Reset();
 		else {
-			gameObject.SetActive(!SpriteController.isEnter);
+			gameObject.SetActive(!CentralControl.isInside);
 		}
 
 		// Condition to detach the blueprint

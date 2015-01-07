@@ -38,9 +38,9 @@ public class Enterable : MonoBehaviour {
 			if (xEnter) {
 				// should not show indoor if player enters and exits the trigger in same direction
 				if (playerController.x == x)
-					SpriteController.isEnter = !SpriteController.isEnter;
+					gameObject.SendMessageUpwards("DoorWayTriggered");
 			} else if (playerController.y == y)
-				SpriteController.isEnter = !SpriteController.isEnter;
+				gameObject.SendMessageUpwards("DoorWayTriggered");
 		}
 	}	
 }
