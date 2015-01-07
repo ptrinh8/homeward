@@ -16,6 +16,8 @@ public class Inventory : MonoBehaviour
 {
     private MineralsStatus mineralsStatus;
     private ItemDatabase itemDatabase;
+    private PlayerController playerController;
+    private Buildable buildable;
 
 	[HideInInspector]
 	public bool showInventory; 
@@ -44,6 +46,8 @@ public class Inventory : MonoBehaviour
     {
         mineralsStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
+        playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+        buildable = FindObjectOfType(typeof(Buildable)) as Buildable;
 
 		// Loop to add an inventory slot for each slot based on the result of XxY
         for (int i = 0; i < (backpackRowsCount * backpackColsCount); i++)
@@ -58,9 +62,9 @@ public class Inventory : MonoBehaviour
 		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
 
 		// Add items with following IDs
-	    //	AddItem (0);
-	    //	AddItem (1);
-
+        AddItem(2);
+        itemDatabase.items[2].value = 1;
+        itemDatabase.items[1].value = 6;
 	}
 
 	void Update()
@@ -68,7 +72,7 @@ public class Inventory : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.B))
         {
             pause = !pause;
-        }
+        }        
 
         if(!pause)
         {
@@ -208,13 +212,26 @@ public class Inventory : MonoBehaviour
         {
             itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconReplace;
         }
-        if (itemDatabase.items[1].value == 0)
+
+        if (itemDatabase.items[1].value < 1)
         {
             itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconEmpty;
+            itemDatabase.items[1].value = 0;            
         }
         else
         {
             itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconReplace;
+        }
+
+        if (itemDatabase.items[2].value < 1)
+        {
+            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconEmpty;
+            itemDatabase.items[2].value = 0;
+            playerController.isKeyEnabled = false;
+        }
+        else
+        {
+            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconReplace;
         }
 
 		// Discard item in trashcan

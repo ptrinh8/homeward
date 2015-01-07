@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// This class is for handling any modules "on-player-blueprint" 
 public class Deployable : MonoBehaviour {
 
-	private SpriteRenderer spriteRenderer;
+	private SpriteRenderer spriteRenderer;	// Change the color of sprite when needed
 	private KeyCode deployKey = KeyCode.F;
-	private Building building;
-	private bool deployable;
-	private Detector[] detector;
-	public float maxLength;
-	public GameObject haitatModuleUnfinished;
-	private int matchedPoint;
+	private KeyCode rotateKey = KeyCode.R;
+	private bool deployable;	// Whether the blueprint can be deployed 
+	private Detector[] detector;	// Scripts in children gameobject that handle the "snap" or trigger
+	[HideInInspector]
+	public bool isDeploying;	// Whether this module is deploying
+	public float maxLength;		// Max stretch length 
+	public GameObject haitatModuleUnfinished;	// Detached blueprint(prefabs)
+	private int matchedPoint;	// record which detector is "matched"
 
 	private Color color;
 	// Use this for initialization
@@ -19,22 +22,36 @@ public class Deployable : MonoBehaviour {
 		transform.localPosition = new Vector3 (0, 0, 0);
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();
 
-		color = new Color (0.5f, 0, 0, 0.7f);
+		color = new Color (0.5f, 0, 0, 0.7f);	// record the original sprite color
 		spriteRenderer.color = color;
-		building = GameObject.Find("Module Building").GetComponent<Building>();
 		detector = gameObject.GetComponentsInChildren<Detector>();
-	
+
 		deployable = true;
+		isDeploying = true;
+
+		matchedPoint = -1;	// -1 means no match
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
-		if (Input.GetKeyDown(deployKey) && building.isDeploying && deployable && matchedPoint != -1) {
+		// Player cannot deploy blueprint when indoor
+		if (CentralControl.isInside) Reset();
+		else {
+			gameObject.SetActive(!CentralControl.isInside);
+		}
+		// Condition to detach the blueprint
+		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
 			Instantiate(haitatModuleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
-			building.isDeploying = false;
+			isDeploying = false;
 			Reset();
 		}
+
+		// Rotation
+		if (Input.GetKeyDown(rotateKey)) {
+			gameObject.transform.Rotate(new Vector3(0, 0, 90));
+		}
+
+		// See if any snap trigger is matched
 		for (int i = 0; i < detector.Length; i++) {
 			if (detector[i].matched) {
 				matchedPoint = i;
@@ -43,38 +60,25 @@ public class Deployable : MonoBehaviour {
 		}
 
 		if (matchedPoint != -1) {
-			gameObject.transform.position += detector[matchedPoint].relation;
+			gameObject.transform.position += detector[matchedPoint].relation;	// Snap!
+			// Change the sprite color to green
 			if (deployable && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) {
 				spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
 			}
-		} else if (spriteRenderer.color != color) {
+		} else if (spriteRenderer.color != color && deployable) {
 			spriteRenderer.color = color;
 		}
-		/**
-		for (int i = 0; i < detector.Length; i++){
-			if (detector[i].matched) {
-				gameObject.transform.position += detector[i].relation;
-				detector[i].matched = false;
-				if (deployable) {
-					Debug.Log("green");
-					spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
-					break;
-				}
-			} else if (deployable) {
-				Debug.Log("gray");
-				spriteRenderer.color = color;
-			}
-		}
-		**/
+
+		// Unsnap if on-player-blueprint get too far away from origin(player)
 		if (Mathf.Abs(gameObject.transform.localPosition.x) > maxLength || Mathf.Abs(gameObject.transform.localPosition.y) > maxLength) {
 			gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		}
-
 	}
 
+	// Cannot deploy when blocked
 	void OnTriggerStay2D (Collider2D other) {
-			deployable = false;
-			spriteRenderer.color = Color.red;
+		deployable = false;
+		spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
 	}
 
 	void OnTriggerExit2D (Collider2D other) {

@@ -56,9 +56,9 @@ public class Refining : MonoBehaviour
 	void Update () 
     {
         changeLoadingToPercent();
-
-        refineryModule = GameObject.Find("Refining");
-        var refineryModuleSpriteRenderer = refineryModule.GetComponentInChildren<SpriteRenderer>();
+		// Taylor
+		refineryModule = gameObject;
+        var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
 
         if (mineralStatus.mineralsInInventory == 0)
         {
@@ -105,28 +105,29 @@ public class Refining : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
+		if (other.gameObject.tag == "Player")
         // Press F to activate refining module
-        if ((Input.GetKeyDown(KeyCode.F)) == true)
-        {
-            if (stopMineralsIntake == false)
-            {
-                mineralStatus.mineralsInInventory--;
-                itemDatabase.items[0].value -= 1;
-                if (mineralStatus.mineralsInInventory > -1)
-                {
-                    mineralsDeposited++;
-                    totalMineralsDeposited++;
-                }
-                else
-                {
-                    // Do nothing
-                }
-            }
-            else
-            {
-                
-            }
-        }
+	        if ((Input.GetKeyDown(KeyCode.F)) == true)
+	        {
+	            if (stopMineralsIntake == false)
+	            {
+	                mineralStatus.mineralsInInventory--;
+	                itemDatabase.items[0].value -= 1; // removes the value of material, if itemID = 1
+	                if (mineralStatus.mineralsInInventory > -1)
+	                {
+	                    mineralsDeposited++;
+	                    totalMineralsDeposited++;
+	                }
+	                else
+	                {
+	                    // Do nothing
+	                }
+	            }
+	            else
+	            {
+	                
+	            }
+        	}
     }
 
     void startTimer()
@@ -157,7 +158,7 @@ public class Refining : MonoBehaviour
         debugMineralsRefinedText.GetComponent<GUIText>().text = "Minerals Refined [OVERALL]: ";
 
         GUI.contentColor = Color.black;
-        GUI.Label(new Rect(14, 80, 550, 550), "\t\t\t\t\t\t\t\t\t  " + loadingPercent.ToString() + "%\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  " + mineralsDeposited + "\n\t\t\t\t\t\t\t\t\t\t\t " + refinedMineralsCreated, "color");
+        GUI.Label(new Rect(14, 80, 550, 550), "\t\t\t\t\t\t\t\t\t  " + loadingPercent.ToString() + "%\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t  " + mineralsDeposited + "\n\t\t\t\t\t\t\t\t\t\t\t " + refinedMineralsCreated);
         
     }
 }

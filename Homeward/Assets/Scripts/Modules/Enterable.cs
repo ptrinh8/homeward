@@ -1,51 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// This script is attached to doorway(gameobject in any finished module) to detect whether the player is in
 public class Enterable : MonoBehaviour {
-	public static bool isEnter;
-	private GameObject mainPlayer;
-	private PlayerController playerC;
-//	private float x, y;
 
-	private Animator anim;
+	public bool xEnter;	// whether the doorway open for x axis
+	private GameObject mainPlayer;
+	private PlayerController playerController;
+	private float x, y;	// Record the direction when player enters the trigger
+
 	// Use this for initialization
 	void Start () {
 		mainPlayer = GameObject.Find("MainPlayer");
-		playerC = mainPlayer.GetComponent<PlayerController>();
-		anim = gameObject.GetComponentInParent<Animator>();
-		Enterable.isEnter = true;
-//		x = y = 0;
+		playerController = mainPlayer.GetComponent<PlayerController>();
+		x = y = 0;
+		// Change the xEnter to meet the rotation
+		int rotation = (int) gameObject.transform.root.rotation.eulerAngles.z;
+		if (rotation == 90 || rotation == 270)
+			xEnter = !xEnter;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		anim.SetBool("isEnter", Enterable.isEnter);
-		Debug.Log(Enterable.isEnter);
 	}
 
 	void OnTriggerEnter2D (Collider2D other) {
-//		x = playerC.x;
-//		y = playerC.y;
+		// Record the direction when player enters the trigger
+		if (other.gameObject.tag == "Player") {
+			x = playerController.x;
+			y = playerController.y;
+		}
 	}
 
 	void OnTriggerExit2D (Collider2D other) {
-
-			Enterable.isEnter = !Enterable.isEnter;
-	//		anim.SetBool("isEnter", isEnter);
-		/** 
-		 * Lagcy Code (Incase new code dosen't work)
-		 * 
-		int rotation = (int)transform.rotation.eulerAngles.z;
-		if (rotation == 90 || rotation == 270)
-			if (playerC.y == y) {
-			isEnter = !isEnter;
-			anim.SetBool("isEnter", isEnter);
-			}
-		if (rotation == 0 || rotation == 180)
-			if (playerC.x == x) {
-			isEnter = !isEnter;
-			anim.SetBool("isEnter", isEnter);
-		**/
-
+		if (other.gameObject.tag == "Player") {
+			// should not show indoor if player enters and exits the trigger in a "z" route
+			if (xEnter) {
+				// should not show indoor if player enters and exits the trigger in same direction
+				if (playerController.x == x)
+					gameObject.SendMessageUpwards("DoorWayTriggered");
+			} else if (playerController.y == y)
+				gameObject.SendMessageUpwards("DoorWayTriggered");
+		}
 	}	
 }

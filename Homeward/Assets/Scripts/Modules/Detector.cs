@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// This class hanles the snap trigger
 public class Detector : MonoBehaviour {
 
-	[HideInInspector] public Vector3 relation;
-	[HideInInspector] public bool matched;
+	[HideInInspector] public Vector3 relation;	// Position change when snap
+	[HideInInspector] public bool matched;	// Whether the trigger is matched
 	// Use this for initialization
 	void Start () {
-//		relation = new Vector3();
 		matched = false;
 	}
 	
@@ -18,7 +18,7 @@ public class Detector : MonoBehaviour {
 
 	void OnTriggerStay2D (Collider2D other) {
 		if (other.gameObject.tag == "Connect Point") {
-			relation = other.gameObject.transform.position - gameObject.transform.position;
+			relation = other.gameObject.transform.position - gameObject.transform.position; //Calculate the position change
 			matched = true;
 		}
 	}

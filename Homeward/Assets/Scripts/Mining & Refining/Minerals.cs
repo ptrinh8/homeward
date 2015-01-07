@@ -77,7 +77,7 @@ public class Minerals : MonoBehaviour
 
                 if (!hasMineralBeenExtracted)
                 {
-                    if ((inventory.inventory[0].itemName == null) && (inventory.inventory[1].itemName == null) && (inventory.inventory[2].itemName == null)
+                    if ((inventory.inventory[1].itemName == null) && (inventory.inventory[2].itemName == null)
                      && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
                      && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
                     {                        
@@ -118,15 +118,20 @@ public class Minerals : MonoBehaviour
 
 	void OnTriggerStay2D(Collider2D other) 
     {
-		playerInMiningPosition = true;
-		// Show mine's randomMineralsQuantity
-        numberOfMineralQuantity.text = "Minerals left in this mine: " + randomMineralsQuantity.ToString();
+		//Taylor
+		if (other.gameObject.tag == "Player") {
+			playerInMiningPosition = true;
+			// Show mine's randomMineralsQuantity
+	        numberOfMineralQuantity.text = "Minerals left in this mine: " + randomMineralsQuantity.ToString();
+		}
 	}
     
 	void OnTriggerExit2D(Collider2D other) 
     {
-		playerInMiningPosition = false;
-		// Show default text when player walks away
-        numberOfMineralQuantity.text = "Minerals left in this mine: [GET CLOSE TO A ROCK]";
+		if (other.gameObject.tag == "Player") {
+			playerInMiningPosition = false;
+			// Show default text when player walks away
+	        numberOfMineralQuantity.text = "Minerals left in this mine: [GET CLOSE TO A ROCK]";
+		}
 	}
 }
