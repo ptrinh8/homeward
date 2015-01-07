@@ -36,9 +36,9 @@ public class HabitatModuleDeployable : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// Player cannot deploy blueprint when indoor
-		if (SpriteController.isEnter) Reset();
+		if (CentralControl.isInside) Reset();
 		else {
-			gameObject.SetActive(!SpriteController.isEnter);
+			gameObject.SetActive(!CentralControl.isInside);
 		}
 
 		// Condition to detach the blueprint
@@ -80,7 +80,7 @@ public class HabitatModuleDeployable : MonoBehaviour {
 
 	// Cannot deploy when blocked
 	void OnTriggerStay2D (Collider2D other) {
-		Debug.Log(other.gameObject);
+	//	Debug.Log(other.gameObject);
 		deployable = false;
 		spriteRenderer.color = new Color(0.5f, 0, 0, 0.7f);
 	// 12/6/2014
