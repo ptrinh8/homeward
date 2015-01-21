@@ -161,6 +161,7 @@ public class DayNightController : MonoBehaviour
     void Initialize()
     {
         //remainingTransition = skyTransitionTime; //Would indicate that the game should start with an active transition, if UpdateSkybox were used.
+		dayCycleLength = 600f;
         dayCount = 0;
         quarterDay = dayCycleLength * 0.25f;
         dawnTime = 0.0f;

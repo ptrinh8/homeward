@@ -42,13 +42,15 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
-	public int health;
-	public int stamina;
+	public float health;
+	public float stamina;
 	private float healthTimer;
 	private float staminaTimer;
 	private float dayLength;
 	private float nightLength;
 	private float timeUntilSleepPenalty;
+	public float staminaLostPerSecond;
+	public float healthLostPerSecond;
 
 	public bool canSleep;
     [HideInInspector]
@@ -62,9 +64,9 @@ public class PlayerController : MonoBehaviour
     private float healthbarPositionY, staminabarPositionY;
     private float healthbarPositionMinX, staminabarPositionMinX;
     private float healthbarPositionMaxX, staminabarPositionMaxX;
-    private int currentHealth, currentStamina;
+    private float currentHealth, currentStamina;
 
-    public int CurrentHealth
+    public float CurrentHealth
     {
         get { return currentHealth; }
         set { 
@@ -73,7 +75,7 @@ public class PlayerController : MonoBehaviour
             manageStamina();
         }
     }
-    public int maxHealth, maxStamina;
+    public float maxHealth, maxStamina;
     public Text healthText, staminaText;
     public Image healthImage, staminaImage;
     public float coolDown;
@@ -117,16 +119,18 @@ public class PlayerController : MonoBehaviour
 		isMining = false;
 
 		health = 100;
-		stamina = 100;
+		stamina = 100f;
 
 		canSleep = false;
 
         // Enables camera zooming-in
         Camera.main.orthographic = true;
 
-		dayLength = dayNightController.dayCycleLength;
-		nightLength = dayNightController.dayCycleLength / 4;
+		dayLength = dayNightController.dayCycleLength / 2;
+		nightLength = dayNightController.dayCycleLength / 2;
 		timeUntilSleepPenalty = (dayLength / 10) * 8;
+		staminaLostPerSecond = stamina / (dayLength + nightLength);
+		healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
 
         /*** Initializing GUI variables ***/
         healthbarPositionY = healthTransform.position.y;
@@ -155,10 +159,27 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-//	if (health > 0)
+		if (health > 0)
 		{
 			staminaTimer += Time.deltaTime;
-			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
+
+			if (stamina <= 50)
+			{
+				healthTimer += Time.deltaTime;
+				if (healthTimer > 1f)
+				{
+					if(currentHealth > 0)
+					{
+						StartCoroutine(CoolDownDamage());
+						currentHealth -= healthLostPerSecond;
+						manageHealth();
+					}
+					health -= healthLostPerSecond;
+					healthTimer = 0;
+				}
+			}
+
+			if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 			{
 				if (SpriteController.isEnter == false)
 				{
@@ -168,7 +189,7 @@ public class PlayerController : MonoBehaviour
                         if(currentHealth > 0)
                         {
                             StartCoroutine(CoolDownDamage());
-                            currentHealth -= 1;
+                            currentHealth -= healthLostPerSecond;
                             manageHealth();
                         }
 						health -= 26;
@@ -177,15 +198,15 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 
-			if (staminaTimer > timeUntilSleepPenalty / 10)
+			if (staminaTimer > 1f)
             {
                 if (currentStamina > 0){
                     StartCoroutine(CoolDownDamage());
-                    currentStamina -= 5;
+                    currentStamina -= staminaLostPerSecond;
                     manageStamina();
                 }
 
-                stamina -= 5;
+                stamina -= staminaLostPerSecond;
 				staminaTimer = 0;
 			}
 
