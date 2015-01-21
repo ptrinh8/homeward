@@ -1,22 +1,36 @@
-﻿using UnityEngine;
+﻿// ==================================================================================
+// <file="Menu.cs" product="Homeward">
+// <date>2015-01-11</date>
+// ==================================================================================
+
+#region Header Files
+
+using UnityEngine;
 using System.Collections;
 
-public class Menu : MonoBehaviour {
+#endregion
+
+public class Menu : MonoBehaviour 
+{
     public bool isQuit = false;
 
-	// Use this for initialization
-	void Start () {
+    void Awake()
+    {
+
+    }
+
+	void Start () 
+    {
 	
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
 
     void OnMouseEnter()
     {
-        guiText.material.color = Color.red;
+        guiText.material.color = Color.blue;
     }
 
     void OnMouseExit()
@@ -32,7 +46,7 @@ public class Menu : MonoBehaviour {
         }
         else
         {
-            Application.LoadLevel("Planet");
+            LevelLoader.Instance.LoadLevel("Planet",3.0F);
         }
     }
 }

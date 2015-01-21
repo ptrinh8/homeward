@@ -30,7 +30,10 @@ public class Minerals : MonoBehaviour
     private GUIText numberOfMineralQuantity;
     [HideInInspector]
 	public bool playerInMiningPosition = false;
-    private bool hasMineralBeenExtracted = false; 
+    private bool hasMineralBeenExtracted = false;
+    private bool isPlayerUsingPickaxe = false;
+    private bool isPlayerMining = false;
+    private int keyPressesCouter = 2;
 
 	void Start () 
     {
@@ -47,11 +50,14 @@ public class Minerals : MonoBehaviour
         numberOfMineralQuantity.text = "Minerals left in this mine: [GET CLOSE TO A ROCK]";
 
         // Generated randomMineralsQuantity based on RND range
-        randomMineralsQuantity = Random.Range(minimumMineralsThatCanBeExtracted, maximumMineralsThatCanBeExtracted);	
+        randomMineralsQuantity = Random.Range(minimumMineralsThatCanBeExtracted, maximumMineralsThatCanBeExtracted);
+
 	}
 	
     void Update () 
     {
+        PlayerHoldingMiningPickaxe();
+
 		// Destroy mine when exhausted
 		if ((randomMineralsQuantity == 0) && !animation.isPlaying && gameObject) 
         {
@@ -67,34 +73,41 @@ public class Minerals : MonoBehaviour
         {
             randomMineralsQuantity = 0;
         }
-	
-		// Add mineral in inventory when 
-		if (playerInMiningPosition && playerController.PlayerIsMiningNow) {
-            if (mineralStatus.mineralsInInventory < mineralStatus.maxMineralsLoadAllowed)
+
+        if (isPlayerUsingPickaxe == true)
+        {
+            // Add mineral in inventory when 
+            if (playerInMiningPosition && isPlayerMining)
             {
-                mineralStatus.mineralsInInventory++;
-				randomMineralsQuantity --;
-
-                if (!hasMineralBeenExtracted)
+                if (mineralStatus.mineralsInInventory < mineralStatus.maxMineralsLoadAllowed)
                 {
-                    if ((inventory.inventory[1].itemName == null) && (inventory.inventory[2].itemName == null)
-                     && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
-                     && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
-                    {                        
-                        inventory.AddItem(0);
-                    }
+                    mineralStatus.mineralsInInventory++;
+                    randomMineralsQuantity--;
 
-                    else
+                    if (!hasMineralBeenExtracted)
                     {
-                        // Don't do anything
-                    }
+                        if ((inventory.inventory[2].itemName == null)
+                         && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
+                         && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
+                        {
+                            inventory.AddItem(0);                            
+                        }
 
-                    hasMineralBeenExtracted = true;
+                        else
+                        {
+                            // Don't do anything
+                        }
+
+                        hasMineralBeenExtracted = true;
+                    }
+                    itemDatabase.items[0].value += 1;
                 }
-                itemDatabase.items[0].value += 1;
-			}
-			playerController.PlayerIsMiningNow = false;
-		}
+                isPlayerMining = false;
+            }
+        }
+        else
+        {
+        }
 
         if (itemDatabase.items[0].value == 1)
         {
@@ -104,7 +117,7 @@ public class Minerals : MonoBehaviour
         // Press F to activate mining state
         if ((Input.GetKeyDown(KeyCode.F)) && (playerController.miningTimer == 0) && playerInMiningPosition == true)
         {
-            playerController.isMining = true;
+            isPlayerMining = !isPlayerMining;
         }
 	} 
 
@@ -118,7 +131,6 @@ public class Minerals : MonoBehaviour
 
 	void OnTriggerStay2D(Collider2D other) 
     {
-		//Taylor
 		if (other.gameObject.tag == "Player") {
 			playerInMiningPosition = true;
 			// Show mine's randomMineralsQuantity
@@ -134,4 +146,22 @@ public class Minerals : MonoBehaviour
 	        numberOfMineralQuantity.text = "Minerals left in this mine: [GET CLOSE TO A ROCK]";
 		}
 	}
+
+    void PlayerHoldingMiningPickaxe()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            isPlayerUsingPickaxe = !isPlayerUsingPickaxe;
+            if (keyPressesCouter % 2 == 0)
+            {
+                itemDatabase.items[3].value = 0;
+                keyPressesCouter += 1;
+            }
+            else if (keyPressesCouter % 2 != 0)
+            {
+                itemDatabase.items[3].value = 1;
+                keyPressesCouter += 1;
+            }
+        }
+    }
 }
