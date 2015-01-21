@@ -63,25 +63,20 @@ public class Inventory : MonoBehaviour
 
 		// Add items with following IDs
         AddItem(2);
-        itemDatabase.items[2].value = 1;
+        AddItem(3);
+        itemDatabase.items[2].value = 3;
         itemDatabase.items[1].value = 6;
+        itemDatabase.items[3].value = 1;
 	}
 
-	void Update()
-	{
-        if(Input.GetKeyDown(KeyCode.B))
+    void Update()
+    {
+        if (Input.GetKeyDown(invKey))
         {
-            pause = !pause;
-        }        
-
-        if(!pause)
-        {
-            if (Input.GetKeyDown(invKey))
-			showInventory = !showInventory;
-            pause = false;
+            showInventory = !showInventory;
         }
-		
-	}
+
+    }
 
 	void OnGUI()
 	{
@@ -234,6 +229,15 @@ public class Inventory : MonoBehaviour
             itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconReplace;
         }
 
+        if (itemDatabase.items[3].value == 0)
+        {
+            itemDatabase.items[3].itemIcon = itemDatabase.items[3].itemIconEmpty;
+        }
+        else if (itemDatabase.items[3].value == 1)
+        {
+            itemDatabase.items[3].itemIcon = itemDatabase.items[3].itemIconReplace;
+        }
+                
 		// Discard item in trashcan
 		Rect trashcan = new Rect(inventorySize.x + inventorySize.width - 170, inventorySize.y + inventorySize.height - 4, 140, 30);
 		GUI.Box (trashcan,"Discard Item", GUIskin.GetStyle("Inventory Empty Slot"));
@@ -275,6 +279,25 @@ public class Inventory : MonoBehaviour
                     break;
                 }
             }            
+        }
+
+        // If item[2] is being dragged and dropped in trashcan
+        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[2])
+        {
+
+            itemDatabase.items[2].value = 0;
+
+            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconEmpty;
+
+            for (i = 0; i < inventory.Count; i++)
+            {
+                if (inventory[i].itemName == null)
+                {
+                    inventory[i] = thisItemIsBeingDragged;
+                    isItemBeingDragged = false;
+                    break;
+                }
+            }
         }
 
         Rect inventoryHeader = new Rect(inventorySize.x + inventorySize.width - 209, inventorySize.y + inventorySize.height - 233, 220, 40);
@@ -322,6 +345,40 @@ public class Inventory : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    // A method we use to remove a specific item and amount of the item from the inventory
+    public void RemoveItem(int id)
+    {
+     //   int itemCount = 0;
+
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            if (inventory[i].itemID == id)
+            {
+                inventory[i].value = 0;
+
+            }
+        }
+    }
+
+    // A method we use to remove a specific item and amount of the item from the inventory
+    public void RemoveItem(int id, int amount)
+    {
+        int itemCount = 0;
+
+        for (int i = 0; i < inventory.Count; i++)
+        {
+            if (inventory[i].itemID == id && itemCount < amount)
+            {
+                inventory[i] = new Item();
+
+                itemCount++;
+            }
+
+            if (itemCount >= amount)
+                break;
         }
     }
 
