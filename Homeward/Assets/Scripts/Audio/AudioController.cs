@@ -20,7 +20,7 @@ public class AudioController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		stemTrigger.setValue(stemTriggerValue);
+		//stemTrigger.setValue(25f);
 	
 	}
 
