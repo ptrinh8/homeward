@@ -8,6 +8,8 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 #endregion
 
@@ -52,6 +54,30 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public bool isKeyEnabled = true;
     private KeyCode consumeFoodKey = KeyCode.K;
+
+    /*** variables for GUI ***/
+    public Canvas canvas;
+    public RectTransform healthTransform;
+    public RectTransform staminaTransform;
+    private float healthbarPositionY, staminabarPositionY;
+    private float healthbarPositionMinX, staminabarPositionMinX;
+    private float healthbarPositionMaxX, staminabarPositionMaxX;
+    private int currentHealth, currentStamina;
+
+    public int CurrentHealth
+    {
+        get { return currentHealth; }
+        set { 
+            currentHealth = value;
+            manageHealth();
+            manageStamina();
+        }
+    }
+    public int maxHealth, maxStamina;
+    public Text healthText, staminaText;
+    public Image healthImage, staminaImage;
+    public float coolDown;
+    private bool onCoolDown;
 
 	[HideInInspector]
 	public float x, y;
@@ -101,6 +127,17 @@ public class PlayerController : MonoBehaviour
 		dayLength = dayNightController.dayCycleLength;
 		nightLength = dayNightController.dayCycleLength / 4;
 		timeUntilSleepPenalty = (dayLength / 10) * 8;
+
+        /*** Initializing GUI variables ***/
+        healthbarPositionY = healthTransform.position.y;
+        healthbarPositionMaxX = healthTransform.position.x;
+        healthbarPositionMinX = healthTransform.position.x - healthTransform.rect.width;
+        staminabarPositionY = staminaTransform.position.y;
+        staminabarPositionMaxX = staminaTransform.position.x;
+        staminabarPositionMinX = staminaTransform.position.x - staminaTransform.rect.width;
+        currentHealth = maxHealth;
+        currentStamina = maxStamina;
+        onCoolDown = false;
 	}
 
 	void Update () 
@@ -127,7 +164,13 @@ public class PlayerController : MonoBehaviour
 				{
 					healthTimer += Time.deltaTime;
 					if (healthTimer > nightLength / 5)
-					{
+                    {
+                        if(currentHealth > 0)
+                        {
+                            StartCoroutine(CoolDownDamage());
+                            currentHealth -= 1;
+                            manageHealth();
+                        }
 						health -= 26;
 						healthTimer = 0;
 					}
@@ -135,8 +178,14 @@ public class PlayerController : MonoBehaviour
 			}
 
 			if (staminaTimer > timeUntilSleepPenalty / 10)
-			{
-				stamina -= 5;
+            {
+                if (currentStamina > 0){
+                    StartCoroutine(CoolDownDamage());
+                    currentStamina -= 5;
+                    manageStamina();
+                }
+
+                stamina -= 5;
 				staminaTimer = 0;
 			}
 
@@ -384,4 +433,53 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
+
+    private float mapValues(float currentX, float inMin, float inMax, float minX, float maxX)
+    {
+        return (currentX - inMin) * (maxX - minX) / (inMax - inMin) + minX;
+    }
+
+    private void manageHealth()
+    {
+        healthText.text = "Health:  " + currentHealth;
+        float currentXHealth = mapValues(currentHealth, 0, maxHealth, healthbarPositionMinX, healthbarPositionMaxX);
+        
+        healthTransform.position = new Vector3(currentXHealth, healthbarPositionY);
+
+        if (currentHealth > maxHealth / 2)
+        {
+            healthImage.color = new Color32((byte)mapValues(currentHealth, maxHealth / 2, maxHealth, 255, 0), 255, 0, 255);
+        }
+        else
+        {
+            healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
+        }
+    }
+
+    private void manageStamina()
+    {
+        staminaText.text = "Stamina:    " + currentStamina;
+
+        Debug.Log("staminabarPositionY: "+staminabarPositionY+", maxstamina: " + maxStamina + ", staminaMinX: " + staminabarPositionMinX + ", staminaMaxX: " + staminabarPositionMaxX);
+
+
+        float currentXStamina = mapValues(currentStamina, 0, maxStamina, staminabarPositionMinX, staminabarPositionMaxX);
+        staminaTransform.position = new Vector3(currentXStamina, staminabarPositionY);
+
+        if (currentStamina > maxStamina / 2)
+        {
+            staminaImage.color = new Color32((byte)mapValues(currentStamina, maxStamina / 2, maxStamina, 255, 0), 255, 0, 255);
+        }
+        else
+        {
+            staminaImage.color = new Color32(255, (byte)mapValues(currentStamina, 0, maxStamina / 2, 0, 255), 0, 255);
+        }
+    }
+
+    IEnumerator CoolDownDamage()
+    {
+        onCoolDown = true;
+        yield return new WaitForSeconds(coolDown);
+        onCoolDown = false;
+    }
 }
