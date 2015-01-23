@@ -181,7 +181,7 @@ public class PlayerController : MonoBehaviour
 
 			if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 			{
-				if (SpriteController.isEnter == false)
+				if (CentralControl.isInside == false)
 				{
 					healthTimer += Time.deltaTime;
 					if (healthTimer > nightLength / 5)

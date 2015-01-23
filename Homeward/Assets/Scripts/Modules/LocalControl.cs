@@ -41,12 +41,12 @@ public class LocalControl : MonoBehaviour {
 	void Update () {
 //		Debug.Log(powerLevel);
 		if (checkFlag) {
-//			CheckPowerSupply();
+			CheckPowerSupply();
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;
 		}
 		if (Input.GetKeyDown(KeyCode.C))
-			CheckPowerSupply();
+			center.SendMessage("CheckPowerSupply");
 	}
 
 	void DoorWayTriggered () {
@@ -87,7 +87,12 @@ public class LocalControl : MonoBehaviour {
 //		center.SendMessage("BFS", 0, SendMessageOptions.DontRequireReceiver);
 		Text showPower;
 		showPower = gameObject.GetComponentInChildren<Text>();
-		showPower.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
+		if (powerConsumption > 0)
+			showPower.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
+		else if (powerConsumption == 0)
+			showPower.text = " ";
+		else
+			showPower.text = "+" + -powerConsumption;
 		if (!isOn) 
 			showPower.text = "Off";
 		else if (powerLevel >= minimumPowerLevel) {
@@ -107,6 +112,7 @@ public class LocalControl : MonoBehaviour {
 
 	void SwitchTriggered () {
 		isOn = !isOn;
+		center.SendMessage("CheckPowerSupply");
 		if (!isOn) {
 			foreach (Transform child in transform) 
 				if (child.gameObject.tag == "Machine") {
@@ -122,7 +128,7 @@ public class LocalControl : MonoBehaviour {
 //			center.GetComponent<CentralControl>().powerInGeneral -= powerConsumption;
 		} else spriteRenderer.sprite = noPowerSprite;
 		spriteRenderer.sortingOrder = -3;
-		center.SendMessage("CheckPowerSupply");
+//		checkFlag = true;
 	}
 
 	void OnTriggerStay2D(Collider2D other){

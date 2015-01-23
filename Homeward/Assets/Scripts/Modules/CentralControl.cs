@@ -10,6 +10,7 @@ public class CentralControl : MonoBehaviour {
 	private SpriteRenderer spriteRenderer;
 	private bool isEnter;
 	private int moduleID;
+	private static bool[] visited;
 
 	private List <GameObject> locals; // List of all the modules within the outpost
 //	private List <GameObject> connections;
@@ -29,8 +30,6 @@ public class CentralControl : MonoBehaviour {
 		}
 		else ShowOutside();
 //		Debug.Log(powerInGeneral);
-		if (Input.GetKeyDown(KeyCode.B))
-			BFS(0);
 	}
 
 	void ShowInside () {
@@ -63,28 +62,41 @@ public class CentralControl : MonoBehaviour {
 		locals.Add(local);
 	}
 
-	void BFS(int startModuleId) {
-		bool[] visited = new bool[locals.Count];
+	void BFS(int startModuleId, bool isWholeMap) {
+		while (!locals[startModuleId].GetComponent<LocalControl>().isOn) {
+			startModuleId++;
+		}
+		bool[] justVisited = new bool[locals.Count];
 		Queue Q = new Queue();
 		float powerInGeneral = 0;
-		float powerConsumptionInGeneral = locals[startModuleId].GetComponent<LocalControl>().powerConsumption;
+		float powerConsumptionInGeneral = 0;
+		if (locals[startModuleId].GetComponent<LocalControl>().powerConsumption > 0)
+			powerConsumptionInGeneral = locals[startModuleId].GetComponent<LocalControl>().powerConsumption;
+		else powerInGeneral = -(locals[startModuleId].GetComponent<LocalControl>().powerConsumption);
 		for (int i = 0; i < locals.Count; i++)
-			visited[i] = false;
+			justVisited[i] = false;
+		if (isWholeMap) {
+			visited = new bool[locals.Count];
+			for (int i = 0; i < locals.Count; i++)
+				visited[i] = false;
+		}
+		justVisited[startModuleId] = true;
 		visited[startModuleId] = true;
 		Q.Enqueue(startModuleId);
-		Debug.Log(locals[startModuleId]);
+//		Debug.Log(locals[startModuleId]);
 		while (Q.Count != 0) {
 			int front = (int)Q.Peek();
-			Debug.Log(front);
+//			Debug.Log(front);
 			Q.Dequeue();
 			foreach (GameObject connection in locals[front].GetComponent<LocalControl>().connections) {
-				Debug.Log(connection);
+//				Debug.Log(connection);
 				if (connection.tag == "HabitatModule") {
 					powerInGeneral += 2;
 				} else if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
 					Debug.Log(connection);
 					Q.Enqueue(connection.GetComponent<LocalControl>().moduleID);
 					visited[connection.GetComponent<LocalControl>().moduleID] = true;
+					justVisited[connection.GetComponent<LocalControl>().moduleID] = true;
 					if (connection.GetComponent<LocalControl>().powerConsumption > 0)
 						powerConsumptionInGeneral += connection.GetComponent<LocalControl>().powerConsumption;
 					else 
@@ -93,14 +105,16 @@ public class CentralControl : MonoBehaviour {
 			}
 		}
 //		Debug.Log(powerConsumptionInGeneral);
-//		Fix needed here 1/19
-		for (int i = 0; i < locals.Count; i++)
-			locals[i].GetComponent<LocalControl>().powerLevel = powerInGeneral / powerConsumptionInGeneral;
-
+		for (int i = 0; i < locals.Count; i++) {
+			if (justVisited[i])
+				locals[i].GetComponent<LocalControl>().powerLevel = powerInGeneral / powerConsumptionInGeneral;
+			if (!visited[i] && locals[i].GetComponent<LocalControl>().isOn && isWholeMap)
+				BFS(i, false);
+		}
 	}
 
 	void CheckPowerSupply() {
-		BFS (0);
+		BFS (0, true);
 		foreach (GameObject local in locals)
 			local.SendMessage("CheckPowerSupply");
 	}
