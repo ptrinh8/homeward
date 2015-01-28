@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,12 +10,22 @@ public class CentralControl : MonoBehaviour {
 	public Sprite outdoorSprite;
 	public static bool isInside; // This static variable is the general location of player(whether inside)
 	private SpriteRenderer spriteRenderer;
-	private bool isEnter;
+	[HideInInspector]
+	public bool isEnter;
 	private int moduleID;
 	private static bool[] visited;
 
 	private List <GameObject> locals; // List of all the modules within the outpost
-//	private List <GameObject> connections;
+
+	private int durability;
+	private DayNightController dayNightController;
+	private float durabilityTimer;
+	private float durabilityLossTime;
+	public float durabilityLossSpeed;
+	private bool isBroken;
+	private Text moduleStatusText;
+	private int pos; 
+
 	// Use this for initialization
 	void Start () {
 		locals = new List<GameObject>(); 
@@ -21,6 +33,13 @@ public class CentralControl : MonoBehaviour {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		isEnter = true;
 		isInside = isEnter;
+
+		moduleStatusText = gameObject.GetComponentInChildren<Text>();
+		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
+		durability = 100;
+		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
+		durabilityLossSpeed = 1;
+
 	}
 	
 	// Update is called once per frame
@@ -29,6 +48,7 @@ public class CentralControl : MonoBehaviour {
 			ShowInside();
 		}
 		else ShowOutside();
+		
 //		Debug.Log(powerInGeneral);
 	}
 
@@ -118,4 +138,21 @@ public class CentralControl : MonoBehaviour {
 		foreach (GameObject local in locals)
 			local.SendMessage("CheckPowerSupply");
 	}
+
+/**	void DurabilityLoss() {
+		if (durability > 0)
+		{
+			durabilityTimer += Time.deltaTime * durabilityLossSpeed;
+			if (durabilityTimer > durabilityLossTime)
+			{
+				durability -= 1;
+				durabilityTimer = 0;
+			}
+		} else {
+			isBroken = true;
+			SwitchTriggered(false);
+			checkFlag = true;
+		}
+	}
+	**/
 }

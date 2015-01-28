@@ -11,7 +11,9 @@ public class LocalControl : MonoBehaviour {
 	public Sprite noPowerSprite;
 	public Sprite turnedOffSprite;
 	public int powerConsumption;
+	private SpriteRenderer spriteRenderer;
 	public float minimumPowerLevel;
+	private bool isPowered;
 	[HideInInspector]
 	public float powerLevel;
 	[HideInInspector]
@@ -24,17 +26,28 @@ public class LocalControl : MonoBehaviour {
 	public int moduleID;
 	[HideInInspector]
 	public bool checkFlag = false;
-	private SpriteRenderer spriteRenderer;
-	private bool isPowered;
 	[HideInInspector]
 	public bool isOn;
 	private KeyCode turnKey = KeyCode.T;
 
+	private int durability;
+	private DayNightController dayNightController;
+	private float durabilityTimer;
+	private float durabilityLossTime;
+	public float durabilityLossSpeed;
+	private bool isBroken;
+	private Text moduleStatusText;
+	private int pos; 
 	// Use this for initialization
 	void Start () {
 		connections = new List<GameObject>();
 		CentralControl.isInside = true;
 		isOn = true;
+		moduleStatusText = gameObject.GetComponentInChildren<Text>();
+		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
+		durability = 100;
+		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
+		durabilityLossSpeed = 1;
 	}
 	
 	// Update is called once per frame
@@ -45,8 +58,16 @@ public class LocalControl : MonoBehaviour {
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;
 		}
-		if (Input.GetKeyDown(KeyCode.C))
-			center.SendMessage("CheckPowerSupply");
+		DurabilityLoss();
+		if (!isBroken) {
+//			Debug.Log(moduleStatusText.text);
+			if (pos < moduleStatusText.text.Length)
+				moduleStatusText.text = moduleStatusText.text.Remove(pos);
+
+			moduleStatusText.text += durability.ToString();
+		}
+		else
+			moduleStatusText.text = "Broken";
 	}
 
 	void DoorWayTriggered () {
@@ -59,7 +80,7 @@ public class LocalControl : MonoBehaviour {
 
 	void ShowInside () {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();	
-		if (!isOn) {
+		if (!isOn || isBroken) {
 			spriteRenderer.sprite = turnedOffSprite;
 		} else if (isPowered)
 			spriteRenderer.sprite = indoorSprite;
@@ -85,40 +106,47 @@ public class LocalControl : MonoBehaviour {
 
 	void CheckPowerSupply () {
 //		center.SendMessage("BFS", 0, SendMessageOptions.DontRequireReceiver);
-		Text showPower;
-		showPower = gameObject.GetComponentInChildren<Text>();
-		if (powerConsumption > 0)
-			showPower.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
-		else if (powerConsumption == 0)
-			showPower.text = " ";
-		else
-			showPower.text = "+" + -powerConsumption;
-		if (!isOn) 
-			showPower.text = "Off";
-		else if (powerLevel >= minimumPowerLevel) {
-			isPowered = true;
-			foreach (Transform child in transform) 
-			if (child.gameObject.tag == "Machine") {
-				child.gameObject.SetActive(true);
-			}
+
+		if (isBroken) {
+			// do nothing
 		} else {
-			isPowered = false;
-			foreach (Transform child in transform) {
-				if (child.gameObject.tag == "Machine")
-					child.gameObject.SetActive(false);
+			if (powerConsumption > 0)
+				moduleStatusText.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
+			else if (powerConsumption == 0)
+				moduleStatusText.text = " ";
+			else
+				moduleStatusText.text = "+" + -powerConsumption;
+			if (!isOn) 
+				moduleStatusText.text = "Off";
+			else if (powerLevel >= minimumPowerLevel) {
+				isPowered = true;
+				foreach (Transform child in transform) 
+				if (child.gameObject.tag == "Machine") {
+					child.gameObject.SetActive(true);
+				}
+			} else {
+				isPowered = false;
+				foreach (Transform child in transform) {
+					if (child.gameObject.tag == "Machine")
+						child.gameObject.SetActive(false);
+				}
 			}
 		}
+		if (powerConsumption != 0 && !isBroken)
+			moduleStatusText.text += ", ";
+		pos = moduleStatusText.text.Length;
 	}
 
-	void SwitchTriggered () {
-		isOn = !isOn;
+	void SwitchTriggered (bool flag) {
+		isOn = flag;
 		center.SendMessage("CheckPowerSupply");
 		if (!isOn) {
 			foreach (Transform child in transform) 
 				if (child.gameObject.tag == "Machine") {
 					child.gameObject.SetActive(false);
 				}
-			spriteRenderer.sprite = turnedOffSprite;
+			if (center.GetComponent<CentralControl>().isEnter)
+				spriteRenderer.sprite = turnedOffSprite;
 		} else if (isPowered){
 			foreach (Transform child in transform) 
 				if (child.gameObject.tag == "Machine") {
@@ -135,7 +163,7 @@ public class LocalControl : MonoBehaviour {
 		if (other.gameObject.tag == "Player"){
 			Debug.Log("Press T to turn on/off module");
 			if (Input.GetKeyDown(turnKey)) {
-				SwitchTriggered();
+				SwitchTriggered(!isOn);
 			}
 		}
 	}
@@ -144,5 +172,21 @@ public class LocalControl : MonoBehaviour {
 		if (connections == null)
 			connections = new List<GameObject>();
 		connections.Add(other);
+	}
+
+	void DurabilityLoss() {
+		if (durability > 0)
+		{
+			durabilityTimer += Time.deltaTime * durabilityLossSpeed;
+			if (durabilityTimer > durabilityLossTime)
+			{
+				durability -= 1;
+				durabilityTimer = 0;
+			}
+		} else {
+			isBroken = true;
+			SwitchTriggered(false);
+			checkFlag = true;
+		}
 	}
 }
