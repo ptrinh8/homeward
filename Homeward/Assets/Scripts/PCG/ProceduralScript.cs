@@ -18,7 +18,7 @@ public class ProceduralScript : MonoBehaviour
 
     private PlayerController playerController = new PlayerController();
     private TriggerA triggerA = new TriggerA();
-    private Inventory inventory = new Inventory();
+    //private Inventory inventory = new Inventory(); //delete
 
     // Stores Player.Position X and Y values
     private float playerLocationX;
@@ -99,7 +99,7 @@ public class ProceduralScript : MonoBehaviour
     void Start()
     {
         triggerA = FindObjectOfType(typeof(TriggerA)) as TriggerA;
-        inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
+        //inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
 
         RndNosGenerationRock1();
         RndNosGenerationRock2();

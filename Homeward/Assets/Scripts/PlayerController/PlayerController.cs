@@ -15,11 +15,11 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour 
 {
+
     // Instance of another classes
     private MineralsStatus playerStatus;
     private Minerals minerals;
 	private DayNightController dayNightController;
-    private ItemDatabase itemDatabase;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
 	public float miningSpeed;	        // mining speed per sec
 	public float miningTimer;	        // record mining time
 	public bool miningNow, isMining;    // miningNow is the signal for mineral class
+    public static bool isRepairing;
 	public GameObject textFinder;
 
     private float zoomDuration = 1.0f;
@@ -100,13 +101,33 @@ public class PlayerController : MonoBehaviour
         get { return miningNow; }
     }
 
+    public static bool holdingRepairTool;
+    
+    public GameObject playerInventory;
+    
+    private static bool showPlayerInventory;
+
+    public static bool ShowPlayerInventory
+    {
+        get { return showPlayerInventory; }
+        set { showPlayerInventory = value; }
+    }
+
+    private static bool keyCode_I_Works;
+
+    public static bool KeyCode_I_Works
+    {
+        get { return keyCode_I_Works; }
+        set { keyCode_I_Works = value; }
+    }
+
 	void Start () 
 	{
         // Initialize monobehavior of initialized classes
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
+        //itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase; //delete
 
 		speed = 2.5f;
 		animateSpeed = .1f;
@@ -117,6 +138,8 @@ public class PlayerController : MonoBehaviour
 		miningTimer = 0;
 		miningNow = false;
 		isMining = false;
+        isRepairing = false;
+        holdingRepairTool = false;
 
 		health = 100;
 		stamina = 100f;
@@ -142,6 +165,14 @@ public class PlayerController : MonoBehaviour
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         onCoolDown = false;
+
+        /*** PlayerInventory ***/
+        playerInventory = Instantiate(playerInventory) as GameObject;
+        playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
+        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f); // follows the player
+        showPlayerInventory = false;
+        keyCode_I_Works = true;
+        playerInventory.SetActive(showPlayerInventory);
 	}
 
 	void Update () 
@@ -154,7 +185,7 @@ public class PlayerController : MonoBehaviour
         {
             if (isKeyEnabled)
             {
-                itemDatabase.items[2].value -= 1;
+                //itemDatabase.items[2].value -= 1;
                 // PATRICK STAR: Add your code here.
             }
         }
@@ -162,6 +193,68 @@ public class PlayerController : MonoBehaviour
 		if (health > 0)
 		{
 			staminaTimer += Time.deltaTime;
+
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                //TODO
+            }
+
+            if (Input.GetKeyDown(KeyCode.I) == true && keyCode_I_Works)
+            {
+                showPlayerInventory = !showPlayerInventory;
+                playerInventory.SetActive(showPlayerInventory);
+                playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
+                if(showPlayerInventory) playerInventory.GetComponent<Inventory>().DebugShowInventory();
+            }
+
+            /****************************************************************
+             * Inventory: This is how you add items to playerInventory
+             * **************************************************************/
+            if (showPlayerInventory) // player is able to control inventory only when inventory is visible
+            {
+                playerInventory.SetActive(true);
+                playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
+                playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
+        
+                if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
+                {
+                    Item item = GameObject.Find("Mineral").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                }
+
+                if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
+                {
+                    Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                }
+
+                // get item from player inventory and put it in the inventory he is at
+                if (Input.GetKeyDown(KeyCode.J)) // J is temporary. Delete this once you find how to add item.
+                {
+                    Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+                }
+            }
+            else
+            {
+                playerInventory.SetActive(false);
+                playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
+            }
+            /*******************************************************************
+             * Inventory END
+             * *****************************************************************/
+
+            if (CentralControl.isInside)
+            {
+                if (holdingRepairTool)
+                {
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        isRepairing = true;
+                    }
+                }
+
+
+            }
 
 			if (stamina <= 50)
 			{
@@ -181,7 +274,7 @@ public class PlayerController : MonoBehaviour
 
 			if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 			{
-				if (SpriteController.isEnter == false)
+				if (CentralControl.isInside == false)
 				{
 					healthTimer += Time.deltaTime;
 					if (healthTimer > nightLength / 5)
@@ -481,7 +574,7 @@ public class PlayerController : MonoBehaviour
     {
         staminaText.text = "Stamina:    " + currentStamina;
 
-        Debug.Log("staminabarPositionY: "+staminabarPositionY+", maxstamina: " + maxStamina + ", staminaMinX: " + staminabarPositionMinX + ", staminaMaxX: " + staminabarPositionMaxX);
+        //Debug.Log("staminabarPositionY: "+staminabarPositionY+", maxstamina: " + maxStamina + ", staminaMinX: " + staminabarPositionMinX + ", staminaMaxX: " + staminabarPositionMaxX);
 
 
         float currentXStamina = mapValues(currentStamina, 0, maxStamina, staminabarPositionMinX, staminabarPositionMaxX);

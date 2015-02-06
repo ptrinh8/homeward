@@ -15,7 +15,7 @@ public class Minerals : MonoBehaviour
 {
     // Instances of other classes
     private Inventory inventory;
-    private ItemDatabase itemDatabase;
+    //private ItemDatabase itemDatabase; //delete
     private PlayerController playerController;
     private MineralsStatus mineralStatus;
 
@@ -39,7 +39,7 @@ public class Minerals : MonoBehaviour
     {
         // Initialize monobehavior of other initialized classes
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
-        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
+        //itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
 
 		mainPlayer = GameObject.Find ("MainPlayer");
 		playerController = mainPlayer.GetComponent<PlayerController>();
@@ -86,21 +86,20 @@ public class Minerals : MonoBehaviour
 
                     if (!hasMineralBeenExtracted)
                     {
-                        if ((inventory.inventory[2].itemName == null)
-                         && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
-                         && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
-                        {
-                            inventory.AddItem(0);                            
-                        }
-
-                        else
+                        //if ((inventory.inventory[2].itemName == null)
+                        // && (inventory.inventory[3].itemName == null) && (inventory.inventory[4].itemName == null) && (inventory.inventory[5].itemName == null)
+                        // && (inventory.inventory[6].itemName == null) && (inventory.inventory[7].itemName == null) && (inventory.inventory[8].itemName == null))
+                        //{
+                        //    inventory.AddItem(0);                            
+                        //}
+                        //else
                         {
                             // Don't do anything
                         }
 
                         hasMineralBeenExtracted = true;
                     }
-                    itemDatabase.items[0].value += 1;
+                    //itemDatabase.items[0].value += 1;
                 }
                 isPlayerMining = false;
             }
@@ -109,10 +108,10 @@ public class Minerals : MonoBehaviour
         {
         }
 
-        if (itemDatabase.items[0].value == 1)
-        {
-            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconReplace;
-        }
+        //if (itemDatabase.items[0].value == 1)
+        //{
+        //    itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconReplace;
+        //}
 
         // Press F to activate mining state
         if ((Input.GetKeyDown(KeyCode.F)) && (playerController.miningTimer == 0) && playerInMiningPosition == true)
@@ -154,12 +153,12 @@ public class Minerals : MonoBehaviour
             isPlayerUsingPickaxe = !isPlayerUsingPickaxe;
             if (keyPressesCouter % 2 == 0)
             {
-                itemDatabase.items[3].value = 0;
+                //itemDatabase.items[3].value = 0;
                 keyPressesCouter += 1;
             }
             else if (keyPressesCouter % 2 != 0)
             {
-                itemDatabase.items[3].value = 1;
+                //itemDatabase.items[3].value = 1;
                 keyPressesCouter += 1;
             }
         }
