@@ -25,8 +25,8 @@ public class Building : MonoBehaviour {
 	private KeyCode refineryModuleKey = KeyCode.Alpha3;
 	private KeyCode foodModuleKey = KeyCode.Alpha4;
 	private KeyCode powerModuleKey = KeyCode.Alpha5;
-	private KeyCode storageModuleKey = KeyCode.Alpha6;
-	private KeyCode robotModuleKey = KeyCode.Alpha7;
+	private KeyCode storageModuleKey = KeyCode.Alpha9;
+	private KeyCode robotModuleKey = KeyCode.Alpha0;
 
 	public GameObject habitatModule;
 	public GameObject refineryModule;
