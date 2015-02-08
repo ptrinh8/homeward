@@ -13,7 +13,7 @@ public class LocalControl : MonoBehaviour {
 	public int powerConsumption;
 	private SpriteRenderer spriteRenderer;
 	public float minimumPowerLevel;
-	private bool isPowered;
+	private bool isPowered, isEnter;
 	[HideInInspector]
 	public float powerLevel;
 	[HideInInspector]
@@ -35,43 +35,56 @@ public class LocalControl : MonoBehaviour {
 	private float durabilityTimer;
 	private float durabilityLossTime;
 	public float durabilityLossSpeed;
-	private bool isBroken;
+	private bool isBroken, flag;
 	private Text moduleStatusText;
 	private int pos; 
+	private KeyCode repairKey = KeyCode.F;
+
+	public bool IsEnter 
+	{
+		get {
+			return isEnter;
+		}
+		set {
+			this.isEnter = value;
+		}
+	}
+	public bool IsPowered 
+	{
+		get {
+			return isPowered;
+		}
+	}
 	// Use this for initialization
 	void Start () {
 		connections = new List<GameObject>();
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		spriteRenderer.sprite = indoorSprite;
+		spriteRenderer.sortingOrder = -3;
 		CentralControl.isInside = true;
 		isOn = true;
 		moduleStatusText = gameObject.GetComponentInChildren<Text>();
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
-		durabilityLossSpeed = 1;
+		durabilityLossSpeed = 10;
+		isEnter = true;
+		flag = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-//		Debug.Log(powerLevel);
 		if (checkFlag) {
-			CheckPowerSupply();
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;
 		}
 		DurabilityLoss();
-		if (!isBroken) {
-//			Debug.Log(moduleStatusText.text);
-			if (pos < moduleStatusText.text.Length)
-				moduleStatusText.text = moduleStatusText.text.Remove(pos);
-
-			moduleStatusText.text += durability.ToString();
-		}
-		else
-			moduleStatusText.text = "Broken";
 	}
 
-	void DoorWayTriggered () {
-		center.SendMessage("DoorWayTriggered");
+	void DoorWayTriggered (bool isDoorway) {
+		if (isDoorway)
+			center.SendMessage("DoorWayTriggered", SendMessageOptions.RequireReceiver);
+		isEnter = !isEnter;
 	}
 
 	void ChangeLocation (bool isEnter) {
@@ -100,13 +113,10 @@ public class LocalControl : MonoBehaviour {
 			this.center = center;
 			center.SendMessage("AddLocal", gameObject);
 			centerLock = true;
-//			CheckPowerSupply();
 		}
 	}
 
 	void CheckPowerSupply () {
-//		center.SendMessage("BFS", 0, SendMessageOptions.DontRequireReceiver);
-
 		if (isBroken) {
 			// do nothing
 		} else {
@@ -121,8 +131,8 @@ public class LocalControl : MonoBehaviour {
 			else if (powerLevel >= minimumPowerLevel) {
 				isPowered = true;
 				foreach (Transform child in transform) 
-				if (child.gameObject.tag == "Machine") {
-					child.gameObject.SetActive(true);
+					if (child.gameObject.tag == "Machine") {
+						child.gameObject.SetActive(true);
 				}
 			} else {
 				isPowered = false;
@@ -145,7 +155,7 @@ public class LocalControl : MonoBehaviour {
 				if (child.gameObject.tag == "Machine") {
 					child.gameObject.SetActive(false);
 				}
-			if (center.GetComponent<CentralControl>().isEnter)
+			if (center.GetComponent<CentralControl>().isEnterOutpost)
 				spriteRenderer.sprite = turnedOffSprite;
 		} else if (isPowered){
 			foreach (Transform child in transform) 
@@ -153,10 +163,8 @@ public class LocalControl : MonoBehaviour {
 					child.gameObject.SetActive(true);
 			}
 			spriteRenderer.sprite = indoorSprite;
-//			center.GetComponent<CentralControl>().powerInGeneral -= powerConsumption;
 		} else spriteRenderer.sprite = noPowerSprite;
 		spriteRenderer.sortingOrder = -3;
-//		checkFlag = true;
 	}
 
 	void OnTriggerStay2D(Collider2D other){
@@ -175,6 +183,7 @@ public class LocalControl : MonoBehaviour {
 	}
 
 	void DurabilityLoss() {
+
 		if (durability > 0)
 		{
 			durabilityTimer += Time.deltaTime * durabilityLossSpeed;
@@ -185,8 +194,30 @@ public class LocalControl : MonoBehaviour {
 			}
 		} else {
 			isBroken = true;
-			SwitchTriggered(false);
-			checkFlag = true;
+			if (flag) {
+				SwitchTriggered(false);
+				flag = false;
+			}
 		}
+
+		if (isEnter && Input.GetKeyDown(repairKey)) {
+			if (!isBroken) {
+				if (durability + 5 <= 100)
+					durability += 5;
+				else durability = 100;
+			} else {
+				durability += 5;
+				isBroken = false;
+				SwitchTriggered(true);
+				flag = true;
+			}
+		}
+
+		if (durability > 0) {
+			if (pos < moduleStatusText.text.Length)
+				moduleStatusText.text = moduleStatusText.text.Remove(pos);
+			moduleStatusText.text += durability.ToString();
+		}else
+			moduleStatusText.text = "Broken";
 	}
 }

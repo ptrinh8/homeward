@@ -11,12 +11,10 @@ public class CentralControl : MonoBehaviour {
 	public static bool isInside; // This static variable is the general location of player(whether inside)
 	private SpriteRenderer spriteRenderer;
 	[HideInInspector]
-	public bool isEnter;
+	public bool isEnterOutpost, isEnter;
 	private int moduleID;
 	private static bool[] visited;
-
 	private List <GameObject> locals; // List of all the modules within the outpost
-
 	private int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
@@ -24,32 +22,33 @@ public class CentralControl : MonoBehaviour {
 	public float durabilityLossSpeed;
 	private bool isBroken;
 	private Text moduleStatusText;
-	private int pos; 
+	private KeyCode repairKey = KeyCode.F;
 
 	// Use this for initialization
 	void Start () {
 		locals = new List<GameObject>(); 
-
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		isEnter = true;
-		isInside = isEnter;
-
+		isEnterOutpost = true;
+		isInside = isEnterOutpost;
+		ShowInside();
 		moduleStatusText = gameObject.GetComponentInChildren<Text>();
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
 		durabilityLossSpeed = 1;
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (isEnter) {
-			ShowInside();
+		if (isEnterOutpost) {
+			if (spriteRenderer.sprite != indoorSprite)
+				ShowInside();
 		}
-		else ShowOutside();
-		
-//		Debug.Log(powerInGeneral);
+		else if (spriteRenderer.sprite != outdoorSprite)
+			ShowOutside();
+
+		DurabilityLoss();
 	}
 
 	void ShowInside () {
@@ -69,12 +68,20 @@ public class CentralControl : MonoBehaviour {
 	}
 
 	void DoorWayTriggered () {
-		isEnter = !isEnter;
-		isInside = isEnter;
+		isEnterOutpost = !isEnterOutpost;
+		isInside = isEnterOutpost; 
 	}
 
-	void ChangeLocation (bool isEnter) {
-		this.isEnter = isEnter;
+	void HabitatModuleDoorWayTriggered (bool isDoorway) {
+		if (isDoorway) {
+			isEnterOutpost = !isEnterOutpost;
+			isInside = isEnterOutpost;
+		} 
+		isEnter = !isEnter;
+	}
+
+	void ChangeLocation (bool isEnterOutpost) {
+		this.isEnterOutpost = isEnterOutpost;
 	}
 
 	void AddLocal (GameObject local) {
@@ -83,8 +90,12 @@ public class CentralControl : MonoBehaviour {
 	}
 
 	void BFS(int startModuleId, bool isWholeMap) {
+		if (locals.Count == 0)
+			return;
 		while (!locals[startModuleId].GetComponent<LocalControl>().isOn) {
 			startModuleId++;
+			if (startModuleId >= locals.Count)
+				return;
 		}
 		bool[] justVisited = new bool[locals.Count];
 		Queue Q = new Queue();
@@ -103,17 +114,14 @@ public class CentralControl : MonoBehaviour {
 		justVisited[startModuleId] = true;
 		visited[startModuleId] = true;
 		Q.Enqueue(startModuleId);
-//		Debug.Log(locals[startModuleId]);
 		while (Q.Count != 0) {
 			int front = (int)Q.Peek();
-//			Debug.Log(front);
 			Q.Dequeue();
 			foreach (GameObject connection in locals[front].GetComponent<LocalControl>().connections) {
-//				Debug.Log(connection);
 				if (connection.tag == "HabitatModule") {
-					powerInGeneral += 2;
+					if (!isBroken)
+						powerInGeneral += 2;
 				} else if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
-					Debug.Log(connection);
 					Q.Enqueue(connection.GetComponent<LocalControl>().moduleID);
 					visited[connection.GetComponent<LocalControl>().moduleID] = true;
 					justVisited[connection.GetComponent<LocalControl>().moduleID] = true;
@@ -124,7 +132,6 @@ public class CentralControl : MonoBehaviour {
 				}
 			}
 		}
-//		Debug.Log(powerConsumptionInGeneral);
 		for (int i = 0; i < locals.Count; i++) {
 			if (justVisited[i])
 				locals[i].GetComponent<LocalControl>().powerLevel = powerInGeneral / powerConsumptionInGeneral;
@@ -139,7 +146,7 @@ public class CentralControl : MonoBehaviour {
 			local.SendMessage("CheckPowerSupply");
 	}
 
-/**	void DurabilityLoss() {
+	void DurabilityLoss() {
 		if (durability > 0)
 		{
 			durabilityTimer += Time.deltaTime * durabilityLossSpeed;
@@ -150,9 +157,20 @@ public class CentralControl : MonoBehaviour {
 			}
 		} else {
 			isBroken = true;
-			SwitchTriggered(false);
-			checkFlag = true;
+			CheckPowerSupply();
+		}
+
+		if (!isBroken) {
+			moduleStatusText.text = "+2, " + durability;
+		}
+		else
+			moduleStatusText.text = "Broken";
+		
+		if (isEnter && Input.GetKeyDown(repairKey)) {
+			//	Inventary code here
+			if (durability + 5 <= 100)
+				durability += 5;
+			else durability = 100;
 		}
 	}
-	**/
 }

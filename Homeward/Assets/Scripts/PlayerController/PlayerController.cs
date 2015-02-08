@@ -15,6 +15,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour 
 {
+	public static bool isRepairing;
+
     // Instance of another classes
     private MineralsStatus playerStatus;
     private Minerals minerals;
@@ -102,6 +104,8 @@ public class PlayerController : MonoBehaviour
 
 	void Start () 
 	{
+		isRepairing = false;
+
         // Initialize monobehavior of initialized classes
         playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
         minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
@@ -158,6 +162,18 @@ public class PlayerController : MonoBehaviour
                 // PATRICK STAR: Add your code here.
             }
         }
+
+		/*** if inside in a module turn the flag on ***/
+		if (CentralControl.isInside)
+		{
+//			if (hold repair tool)
+			{
+				if (Input.GetKeyDown(KeyCode.F))
+				{
+					isRepairing = true;
+				}
+			}
+		}
 
 		if (health > 0)
 		{
