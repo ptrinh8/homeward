@@ -20,7 +20,8 @@ public class DoorWayController : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D other) {
 		if (other.gameObject.tag == "Connect Point") {
 			childObject = transform.GetChild(0) as Transform;
-			childObject.gameObject.SetActive(false);
+			childObject.gameObject.GetComponent<Enterable>().isDoorway = false;
+//			childObject.gameObject.SetActive(false);
 			// Situations whether "other" module is habitat module or other modules
 			if (gameObject.transform.root.gameObject.tag != "HabitatModule") {
 				center = other.gameObject.transform.root.gameObject.GetComponent<CentralControl>();
@@ -31,10 +32,14 @@ public class DoorWayController : MonoBehaviour {
 					gameObject.SendMessageUpwards("SetCenter", local.center, SendMessageOptions.DontRequireReceiver);
 				} 	
 				gameObject.SendMessageUpwards("AddConnection", other.gameObject.transform.root.gameObject);
-	//			if ((gameObject.transform.root.gameObject.GetComponent<LocalControl>().moduleID 
-	//			    > other.gameObject.transform.root.gameObject.GetComponent<LocalControl>().moduleID))
-					gameObject.transform.root.gameObject.GetComponent<LocalControl>().checkFlag = true;
+				gameObject.transform.root.gameObject.GetComponent<LocalControl>().checkFlag = true;
+
+	// 			Lagecy Code Just In Case
+	//			if ((gameObject.transform.root.gameObject.GetComponent<LocalControl>().moduleID) 
+	//			    > (other.gameObject.transform.root.gameObject.GetComponent<LocalControl>().moduleID))
+	//			gameObject.transform.root.gameObject.GetComponent<LocalControl>().checkFlag = true;
 	//			gameObject.SendMessageUpwards("CheckPowerSupply", SendMessageOptions.DontRequireReceiver);
+	//			gameObject.SendMessageUpwards("DoorWayTriggered", true, SendMessageOptions.DontRequireReceiver);
 			}
 			gameObject.SendMessageUpwards("ChangeLocation", true);
 		}

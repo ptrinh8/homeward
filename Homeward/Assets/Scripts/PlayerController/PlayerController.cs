@@ -164,6 +164,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+		/*** if inside in a module turn the flag on ***/
+		if (CentralControl.isInside)
+		{
+//			if (hold repair tool)
+			{
+				if (Input.GetKeyDown(KeyCode.F))
+				{
+					isRepairing = true;
+				}
+			}
+		}
+
 		if (health > 0)
 		{
 			staminaTimer += Time.deltaTime;
