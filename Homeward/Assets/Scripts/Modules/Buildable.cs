@@ -4,8 +4,8 @@ using System.Collections;
 // This class is for handling detached blueprint
 public class Buildable : MonoBehaviour 
 {
-    private ItemDatabase itemDatabase;
-    private Inventory inventory;
+    //private ItemDatabase itemDatabase;
+    //private Inventory inventory;
 
 	public GameObject module;	// Completed module(prefabs)
 	public int materialsRequired;	// Materials required to complete the module
@@ -18,8 +18,8 @@ public class Buildable : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
-        inventory  = FindObjectOfType(typeof(Inventory)) as Inventory;
+        //itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
+        //inventory  = FindObjectOfType(typeof(Inventory)) as Inventory;
 
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
@@ -38,7 +38,7 @@ public class Buildable : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
-
+    
     void OnTriggerStay2D(Collider2D other)
     {
         if (Input.GetKeyDown(cancelKey))

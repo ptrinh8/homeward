@@ -11,50 +11,50 @@ using System.Collections;
 
 #endregion
 
-[System.Serializable]
-public class Item 
+public enum ItemName
 {
-	public enum ItemType 
-    {
-		Consumable,
-		Mineral,
-        Tool
-	}
+    MiningTool,
+    RepairingTool,
+    Mineral,
+    Water,
+    Food1,
+    Food2,
+    Food3,
+    Material
+}
 
+[System.Serializable]
+public class Item : MonoBehaviour
+{
     // Attributes
-	public string itemName;
-	public int itemID;
-	public string itemDescription;
-	public ItemType itemType;
-	public Texture2D itemIcon;
-    public Texture2D itemIconEmpty;
-    public Texture2D itemIconReplace;
-	public GameObject itemObject;
+    public ItemName itemName;
+    public string itemDescription;
+    public Sprite spriteNeutral;
+    public Sprite spriteHighLighted;
+    public int maxSize;
 
-    [HideInInspector]
-    public int value;
-	
-	public Item(string itemName, int itemID, string itemDescription, ItemType itemType, Texture2D itemIcon, Texture2D itemIconEmpty, Texture2D itemIconReplace, GameObject itemObject, int value)
-	{
-		this.itemName = itemName;
-		this.itemID = itemID;
-		this.itemDescription = itemDescription;
-		this.itemType = itemType;
-		this.itemIcon = itemIcon;
-        this.itemIconEmpty = itemIconEmpty;
-        this.itemIconReplace = itemIconReplace;
-		this.itemObject = itemObject;
-        this.value = value;
-	}
-
-	public Item()
-	{
-		this.itemID = 0;
-	}
-
-	public Item(ItemType itemType)
-	{
-		this.itemID = 0;
-		this.itemType = itemType;
-	}
+    public void Use()
+    {
+        switch (itemName)
+        {
+            case ItemName.Food1:
+                break;
+            case ItemName.Food2:
+                break;
+            case ItemName.Food3:
+                break;
+            case ItemName.Water:
+                break;
+            case ItemName.Mineral:
+                break;
+            case ItemName.MiningTool:
+                break;
+            case ItemName.Material:
+                break;
+            case ItemName.RepairingTool:
+                PlayerController.holdingRepairTool = true;
+                Debug.Log("RepairingTool Equiped");
+                break;
+        }
+    }
 }

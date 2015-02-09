@@ -1,390 +1,391 @@
-﻿// ==================================================================================
-// <file="Inventory.cs" product="Homeward">
-// <date>2014-11-11</date>
-// <summary>Contains a base, abstract class for Inventory Management</summary>
-// ==================================================================================
-
-#region Header Files
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-#endregion
+public class Inventory : MonoBehaviour {
+    
+    private KeyCode invKey = KeyCode.I;
 
-public class Inventory : MonoBehaviour 
-{
-    private MineralsStatus mineralsStatus;
-    private ItemDatabase itemDatabase;
-    private PlayerController playerController;
-    private Buildable buildable;
+    private RectTransform inventoryRect;
 
-	[HideInInspector]
-	public bool showInventory; 
-	private KeyCode invKey = KeyCode.I; 
-	private int itemsSlotsSize = 50; 
-	private int itemsSlotsPadding = 12; 
-	private int backpackRowsCount = 3; 
-	private int backpackColsCount = 3; 
-	private Rect inventorySize = new Rect(100, 200, 0, 0); // Used to add bground to backpack, in consideration with values of rows & cols.
+    private float inventoryWidth, inventoryHeight;
 
-	public GUISkin GUIskin; 
-    [HideInInspector]
-	public List<Item> inventory = new List<Item>(); // Holds player's items
-	private ItemDatabase database; // Stores items in DB
-	private bool showInventoryItemDetails; // Each item information
-	private string inventoryItemDetailsText; // Item information text
-    [HideInInspector]
-	public bool isItemBeingDragged; 
-	private Item thisItemIsBeingDragged; 
+    private bool showInventory;
 
-	// Coordinate of the click to be able to draw the sprite at the correct off-set to the mouse
-    private Vector2 mouseDragCoordinates;
-    private bool pause = false;
-	
+    public int slots; // set in inspector
+
+    public int rows;
+
+    public float slotPaddingLeft, slotPaddingTop;
+
+    public float slotSize;
+
+    public GameObject slotPrefab;
+
+    private List<GameObject> allSlots;
+
+    private static Slot from, to;
+
+    public GameObject iconPrefab; // icon to follow the cursor
+
+    private static GameObject hoverObject;
+
+    private Canvas canvas;
+
+    private float hoverYOffset;
+
+    private EventSystem eventSystem;
+
+    private int emptySlots;
+
+    public int EmptySlots
+    {
+        get { return emptySlots; }
+        set { emptySlots = value; }
+    }
+
+    public bool IsEmpty
+    {
+        get { return emptySlots == 0; }
+    }
+
 	void Start () 
     {
-        mineralsStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
-        itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
-        playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
-        buildable = FindObjectOfType(typeof(Buildable)) as Buildable;
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
 
-		// Loop to add an inventory slot for each slot based on the result of XxY
-        for (int i = 0; i < (backpackRowsCount * backpackColsCount); i++)
-        {
-            inventory.Add(new Item());
-        }
-
-        GUIskin = Resources.Load<GUISkin>("InvGUIskin");
-		showInventory = false;
-
-        // Set DB instance = DB.component
-		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
-
-		// Add items with following IDs
-        AddItem(2);
-        AddItem(3);
-        itemDatabase.items[2].value = 3;
-        itemDatabase.items[1].value = 6;
-        itemDatabase.items[3].value = 1;
+        createLayout();
 	}
 
-    void Update()
+    void createLayout()
     {
-        if (Input.GetKeyDown(invKey))
-        {
-            showInventory = !showInventory;
-        }
+        allSlots = new List<GameObject>();
 
+        hoverYOffset = slotSize * 0.01f;
+
+        emptySlots = slots;
+
+        inventoryWidth = (slots / rows) * (slotSize + slotPaddingLeft) + slotPaddingLeft;
+        inventoryHeight = rows * (slotSize + slotPaddingTop) + slotPaddingTop;
+
+        inventoryRect = GetComponent<RectTransform>();
+        inventoryRect.localScale = new Vector3(1, 1, 1);
+        inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
+        inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHeight);
+
+        int columns = slots / rows;
+
+        for (int y = 0; y < rows; y++)
+        {
+            for (int x = 0; x < columns; x++)
+            {
+                GameObject newSlot = Instantiate(slotPrefab) as GameObject;
+
+                RectTransform slotRect = newSlot.GetComponent<RectTransform>();
+
+                newSlot.name = "Slot";
+
+                newSlot.transform.SetParent(this.transform.parent);
+                newSlot.transform.localScale = new Vector3(1, 1, 1);
+
+                slotRect.localPosition = inventoryRect.localPosition + new Vector3(slotPaddingLeft * (x + 1) + (slotSize * x), -slotPaddingTop * (y + 1) - (slotSize * y));
+
+                slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize);
+                slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize);
+
+                allSlots.Add(newSlot);
+            }
+        }
     }
 
-	void OnGUI()
-	{
-		GUI.skin = GUIskin;
-
-		// Set item information as blank
-		inventoryItemDetailsText = "";
-
-        // is inventory visible?
-		if (showInventory)
-		{
-			DrawInventory();
-            
-            // is mouse on item?, which makes showInventoryItemDetails = true
-			if (showInventoryItemDetails)
-				DrawItemDetails();
-            
-            // is item being dragged? make icon follow mouse
-			if (isItemBeingDragged)
-				GUI.DrawTexture(new Rect(Event.current.mousePosition.x - mouseDragCoordinates.x, Event.current.mousePosition.y 
-                - mouseDragCoordinates.y, itemsSlotsSize, itemsSlotsSize), thisItemIsBeingDragged.itemIcon);
-		}
-
-		else if (isItemBeingDragged)
-		{
-			isItemBeingDragged = false;
-			thisItemIsBeingDragged = null;
-		}
+	void Update () 
+    {
+        //HandleMouseInput();
 	}
 
-	void DrawInventory()
-	{
-		int i = 0;
+    public bool AddItem(Item item)
+    {
+        if (item.maxSize == 1)
+        {
+            PlaceEmpty(item);
+            return true;
+        }
+        else
+        {
+            if (allSlots == null)
+            {
+                return false;
+            }
 
-		// Calculate size of inventory window
-        inventorySize.width = (itemsSlotsSize + itemsSlotsPadding) * backpackColsCount + itemsSlotsPadding;
-        inventorySize.height = (itemsSlotsSize + itemsSlotsPadding) * backpackRowsCount + itemsSlotsPadding;
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
 
-		// Draw background
-		GUI.Box(inventorySize, "", GUIskin.GetStyle("Inventory Background"));
-
-		// Current GUI input event stored in an Event variable
-		Event currentGUIevent = Event.current;
-
-		// Position and size of each item slot saved in a temp variable used for drawing the slots
-        Rect slotRect = new Rect(inventorySize.x, inventorySize.y, itemsSlotsSize, itemsSlotsSize);
-		
-        for (int y = 0; y < backpackRowsCount; y++)
-		{
-            for (int x = 0; x < backpackColsCount; x++)
-			{
-				// Modify slotRect based on the position of the inventory window and the current item the loop is on
-				slotRect.x = itemsSlotsPadding + inventorySize.x + x * (itemsSlotsSize + itemsSlotsPadding); // column position
-				slotRect.y = itemsSlotsPadding + inventorySize.y + y * (itemsSlotsSize + itemsSlotsPadding); // row position
-
-				Item item = inventory[i];
-
-				GUI.Box(slotRect, "", GUIskin.GetStyle("Box"));
-                
-                // Does slot have a name in it?
-				if (item.itemName != null)
-				{
-					// Yes, draw the icon
-                    if (item.itemIcon != null)
+                if (!tmp.IsEmpty)
+                {
+                    if (tmp.CurrentItem.itemName == item.itemName && tmp.IsAvailable)
                     {
-                        GUI.DrawTexture(slotRect, item.itemIcon);
+                        tmp.AddItem(item);
+                        return true;
                     }
-
-					// Is mouse position within the slot?
-					if (slotRect.Contains(Event.current.mousePosition))
-					{
-                        // Is left-click pressed? also, is item not being dragged?
-                        if (currentGUIevent.isMouse && currentGUIevent.button == 0 && currentGUIevent.type == EventType.mouseDown && !isItemBeingDragged)
-						{
-                            // Start dragging
-                            mouseDragCoordinates = GetIconCoordDifference(currentGUIevent.mousePosition, slotRect);
-							isItemBeingDragged = true;
-							thisItemIsBeingDragged = item;
-							inventory[i] = new Item();
-						}
-
-                        // Is no button pressed while item being dragged?
-                        if (currentGUIevent.isMouse && currentGUIevent.type == EventType.mouseUp && isItemBeingDragged)
-						{
-                            // Replace items
-							Item tempItem = item;
-							inventory[i] = thisItemIsBeingDragged;
-							thisItemIsBeingDragged = tempItem;
-						}
-
-                        // Is item being dragged?
-						if (!isItemBeingDragged)
-						{
-                            // No. Show item information
-							inventoryItemDetailsText = CreateItemDetails(item);
-							showInventoryItemDetails = true;
-						}
-					} 
-					// If item information text = "", show nothing
-					if (inventoryItemDetailsText == "")
-						showInventoryItemDetails = false;
-				}
-
-				else 
-				{
-                    // Is no button pressed while item being dragged?
-                    if (currentGUIevent.isMouse && currentGUIevent.type == EventType.mouseUp && isItemBeingDragged)
-					{
-						// If on top of a slot
-                        if (slotRect.Contains(currentGUIevent.mousePosition))
-						{
-							inventory[i] = thisItemIsBeingDragged;
-							isItemBeingDragged = false;
-							thisItemIsBeingDragged = null;
-						}
-					}
-				}
-
-				i++;
-			}
-		}
-
-        if (itemDatabase.items[0].value == 0)
-        {
-            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconEmpty;
-        }
-        else
-        {
-            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconReplace;
-        }
-
-        if (itemDatabase.items[1].value < 1)
-        {
-            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconEmpty;
-            itemDatabase.items[1].value = 0;            
-        }
-        else
-        {
-            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconReplace;
-        }
-
-        if (itemDatabase.items[2].value < 1)
-        {
-            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconEmpty;
-            itemDatabase.items[2].value = 0;
-            playerController.isKeyEnabled = false;
-        }
-        else
-        {
-            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconReplace;
-        }
-
-        if (itemDatabase.items[3].value == 0)
-        {
-            itemDatabase.items[3].itemIcon = itemDatabase.items[3].itemIconEmpty;
-        }
-        else if (itemDatabase.items[3].value == 1)
-        {
-            itemDatabase.items[3].itemIcon = itemDatabase.items[3].itemIconReplace;
-        }
-                
-		// Discard item in trashcan
-		Rect trashcan = new Rect(inventorySize.x + inventorySize.width - 170, inventorySize.y + inventorySize.height - 4, 140, 30);
-		GUI.Box (trashcan,"Discard Item", GUIskin.GetStyle("Inventory Empty Slot"));
-
-        // If item[0] is being dragged and dropped in trashcan
-        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[0]) 
-		{
-          
-            mineralsStatus.mineralsInInventory = 0;
-            itemDatabase.items[0].value = 0;
-
-            itemDatabase.items[0].itemIcon = itemDatabase.items[0].itemIconEmpty;
-
-            for (i = 0; i < inventory.Count; i++)
-            {
-                if (inventory[i].itemName == null)
-                {
-                    inventory[i] = thisItemIsBeingDragged;
-                    isItemBeingDragged = false;
-                    break;
-                }
-            }
-		}
-
-        // If item[1] is being dragged and dropped in trashcan
-        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[1])
-        {
-
-            itemDatabase.items[1].value = 0;
-
-            itemDatabase.items[1].itemIcon = itemDatabase.items[1].itemIconEmpty;
-
-            for (i = 0; i < inventory.Count; i++)
-            {
-                if (inventory[i].itemName == null)
-                {
-                    inventory[i] = thisItemIsBeingDragged;
-                    isItemBeingDragged = false;
-                    break;
-                }
-            }            
-        }
-
-        // If item[2] is being dragged and dropped in trashcan
-        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition) && thisItemIsBeingDragged == itemDatabase.items[2])
-        {
-
-            itemDatabase.items[2].value = 0;
-
-            itemDatabase.items[2].itemIcon = itemDatabase.items[2].itemIconEmpty;
-
-            for (i = 0; i < inventory.Count; i++)
-            {
-                if (inventory[i].itemName == null)
-                {
-                    inventory[i] = thisItemIsBeingDragged;
-                    isItemBeingDragged = false;
-                    break;
-                }
-            }
-        }
-
-        Rect inventoryHeader = new Rect(inventorySize.x + inventorySize.width - 209, inventorySize.y + inventorySize.height - 233, 220, 40);
-        GUI.Label(inventoryHeader, "Astronaut's Backpack ", GUIskin.GetStyle("Inventory Empty Slot"));
-	}
-
-	protected Vector2 GetIconCoordDifference(Vector2 m, Rect s)
-	{
-		Vector2 diff = new Vector2 (m.x - s.x, m.y - s.y);
-		return diff;
-	}
-
-	private void DrawItemDetails()
-	{
-		float tooltipHeight = GUIskin.GetStyle("Inventory Tooltip").CalcHeight(new GUIContent(inventoryItemDetailsText), 200);
-		GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 300, tooltipHeight), inventoryItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
-	}
-
-    private string CreateItemDetails(Item item)
-    {
-        inventoryItemDetailsText = "";
-        inventoryItemDetailsText += "<color=#b8c7ff><b>" + item.itemName + "</b></color>\n\n" + item.itemDescription + " \n\nAmount Collected: " + item.value;
-
-        if (mineralsStatus.maxMineralsHaveReached == true)
-        {
-            inventoryItemDetailsText += "\n\n<b><color=#ff0000>You can't carry more minerals.</color></b>";
-        }
-
-        return inventoryItemDetailsText;
-    }
-
-	// Add items from DB to player's inventory
-    public void AddItem(int itemID)
-    {
-        for (int i = 0; i < database.items.Count; i++)
-        {
-            if (itemID == database.items[i].itemID)
-            {
-                for (int j = 0; j < inventory.Count; j++)
-                {
-                    if (inventory[j].itemName == null)
+                    else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
                     {
-                        inventory[j] = database.items[i];
-                        break;
+                        return false;
                     }
                 }
             }
+
+            if (emptySlots > 0)
+            {
+                PlaceEmpty(item);
+            }
         }
+
+        return false;
     }
 
-    // A method we use to remove a specific item and amount of the item from the inventory
-    public void RemoveItem(int id)
+    private bool PlaceEmpty(Item item)
     {
-     //   int itemCount = 0;
-
-        for (int i = 0; i < inventory.Count; i++)
+        if (emptySlots > 0)
         {
-            if (inventory[i].itemID == id)
+            foreach (GameObject slot in allSlots)
             {
-                inventory[i].value = 0;
+                Slot tmp = slot.GetComponent<Slot>();
 
+                if (tmp.IsEmpty)
+                {
+                    tmp.AddItem(item);
+                    emptySlots--;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    
+
+    public void SetSlotsActive(bool show)
+    {
+        if (allSlots != null)
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                slot.SetActive(show);
             }
         }
     }
 
-    // A method we use to remove a specific item and amount of the item from the inventory
-    public void RemoveItem(int id, int amount)
+
+    /*******************************************************************************************
+     * Take care of the condition where this function returns empty item
+     * *****************************************************************************************/
+    public Item GetItem(ItemName itemName)
     {
-        int itemCount = 0;
-
-        for (int i = 0; i < inventory.Count; i++)
+        if (allSlots == null)
         {
-            if (inventory[i].itemID == id && itemCount < amount)
+            Debug.LogError("Inventory.cs: allSlots is null");
+            return null;
+        }
+        else if (allSlots.Count == 0)
+        {
+            Debug.Log("Inventory.cs: there is no slot in this inventory");
+        }
+        else 
+        {
+            foreach (GameObject slot in allSlots)
             {
-                inventory[i] = new Item();
+                Slot tmp = slot.GetComponent<Slot>();
 
-                itemCount++;
+                if (!tmp.IsEmpty)
+                {
+                    if (tmp.CurrentItem.itemName == itemName)
+                    {
+                        Item item = tmp.GetItem();
+
+                        if (tmp.IsEmpty)
+                        {
+                            emptySlots++;
+                        }
+
+                        return item;
+                    }
+                    
+                }
             }
+        }
 
-            if (itemCount >= amount)
-                break;
+        Debug.LogError("Inventory.cs: Underflow - GetItem() is called when there is nothing to return.");
+        return null;
+    }
+
+    /******************************************************************************************
+     * Debug
+     * ***************************************************************************************/
+    public void DebugShowInventory()
+    {
+        if (IsEmpty)
+        {
+         //   Debug.Log("This Inventory is Empty");
+        }
+        else
+        {
+            // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
+
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if(!tmp.IsEmpty)
+                {
+                    // Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                }
+            }
         }
     }
 
-    public void changeIntValue(int intValue)
+    public void ClearSlot(ItemName itemName)
     {
-        intValue = 10;
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+        }
+        else
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                {
+                    tmp.ClearSlot();
+                }
+            }
+        }
+    }
+
+    public int CountItems(ItemName itemName)
+    {
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+            return 0;
+        }
+        else
+        {
+           // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
+
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                {
+                    //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                    return tmp.Items.Count;
+                }
+                
+            }
+            return 0;
+        }
+    }
+
+    /**************************************************************************
+     * use this until I figure out GUI handling with arrow keys
+     * ***************************************************************************/
+    private void HandleMouseInput()
+    {
+        if (Input.GetMouseButtonUp(0)) // 0 = left click // moveitem
+        {
+            if (!eventSystem.IsPointerOverGameObject(-1) && from != null) // -1 = mouse pointer
+            {
+                from.GetComponent<Image>().color = Color.white;
+                from.ClearSlot();
+                Destroy(GameObject.Find("Hover"));
+                to = null;
+                from = null;
+                hoverObject = null;
+            }
+        }
+
+        //if (Input.GetMouseButtonUp(1)) // 1 = right click // use item
+        //{
+        //    //Debug.Log("asdfasdfasdfasdf");
+        //    if (!eventSystem.IsPointerOverGameObject(-1) && from != null) // -1 = mouse pointer
+        //    {
+        //        Debug.Log("asdfasdfasdfasdf");
+        //        from.GetComponent<Slot>().GetItem();
+        //    }
+        //}
+
+        if (hoverObject != null)
+        {
+            /*** make the item hover along to the cursor ***/
+            Vector2 position;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out position);
+            position.Set(position.x, position.y - hoverYOffset);
+            hoverObject.transform.position = canvas.transform.TransformPoint(position);
+        }
+
+
+    }
+
+    /****************************************************************************
+     * Moves item when left clicked
+     * **************************************************************************/
+    public void MoveItem(GameObject clicked)
+    {
+        if (from == null)
+        {
+            if (!clicked.GetComponent<Slot>().IsEmpty)
+            {
+                from = clicked.GetComponent<Slot>();
+                from.GetComponent<Image>().color = Color.grey;
+
+                hoverObject = Instantiate(iconPrefab) as GameObject;
+                hoverObject.GetComponent<Image>().sprite = clicked.GetComponent<Image>().sprite;
+                hoverObject.name = "Hover";
+
+                RectTransform hoverTransform = hoverObject.GetComponent<RectTransform>();
+                RectTransform clickedTransform = clicked.GetComponent<RectTransform>();
+
+                hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clickedTransform.sizeDelta.x);
+                hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clickedTransform.sizeDelta.y);
+
+                hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
+                hoverObject.transform.localScale = from.gameObject.transform.localScale;
+
+            }
+        }
+        else if (to == null)
+        {
+            to = clicked.GetComponent<Slot>();
+            Destroy(GameObject.Find("Hover"));
+        }
+
+        if (to != null && from != null)
+        {
+            Stack<Item> tmpTo = new Stack<Item>(to.Items);
+
+            to.AddItems(from.Items);
+
+            if (tmpTo.Count == 0)
+            {
+                from.ClearSlot();
+            }
+            else
+            {
+                from.AddItems(tmpTo);
+            }
+
+            from.GetComponent<Image>().color = Color.white;
+
+            to = null;
+            from = null;
+            hoverObject = null;
+        }
     }
 }
-
