@@ -1,17 +1,13 @@
 // ===========================================================================================
 // <file="MineralsStatus.cs" product="Homeward">
 // <date>2014-11-11</date>
-// <summary>Class to keep track of Minerals in correspondence with Minerals.cs class</summary>
 // ===========================================================================================
-
-#region Header Files
 
 using UnityEngine;
 using System.Collections;
 
-#endregion
-
-public class MineralsStatus : MonoBehaviour {
+public class MineralsStatus : MonoBehaviour 
+{
 
     // Max number of minerals allowed in backpack
 	public int maxMineralsLoadAllowed;
@@ -31,7 +27,6 @@ public class MineralsStatus : MonoBehaviour {
 	void Update () 
     {
         maxMineralsHaveReacherCondition();
-        numberOfMineralsInInventory.text = "<b>// Debugging Console - Mining & Refining //</b> \n\n Minerals In Inventory: " + mineralsInInventory.ToString();
 	}
 
     void maxMineralsHaveReacherCondition()

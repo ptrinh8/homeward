@@ -42,11 +42,6 @@ using System.Collections;
 public class DayNightController : MonoBehaviour
 {
     /// <summary>
-    /// The number of days passed from the beginning
-    /// </summary>
-    public int dayCount;
-
-    /// <summary>
     /// The number of real-world seconds in one game day.
     /// </summary>
     public float dayCycleLength;
@@ -161,8 +156,6 @@ public class DayNightController : MonoBehaviour
     void Initialize()
     {
         //remainingTransition = skyTransitionTime; //Would indicate that the game should start with an active transition, if UpdateSkybox were used.
-		dayCycleLength = 600f;
-        dayCount = 0;
         quarterDay = dayCycleLength * 0.25f;
         dawnTime = 0.0f;
         dayTime = dawnTime + quarterDay;
@@ -223,7 +216,6 @@ public class DayNightController : MonoBehaviour
         else if (currentCycleTime > dawnTime && currentCycleTime < dayTime && currentPhase == DayPhase.Night)
         {
             SetDawn();
-            dayCount++;
         }
  
         // Perform standard updates:

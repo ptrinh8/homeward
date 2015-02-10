@@ -46,7 +46,7 @@ public class Menu : MonoBehaviour
         }
         else
         {
-            LevelLoader.Instance.LoadLevel("Planet",3.0F);
+            LevelLoader.Instance.LoadLevel("Planet",18.0F);
         }
     }
 }
