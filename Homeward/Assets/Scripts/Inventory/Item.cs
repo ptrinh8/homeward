@@ -19,7 +19,8 @@ public enum ItemName
     Water,
     Food1,
     Food2,
-    Food3
+    Food3,
+    Material
 }
 
 [System.Serializable]
@@ -47,6 +48,8 @@ public class Item : MonoBehaviour
             case ItemName.Mineral:
                 break;
             case ItemName.MiningTool:
+                break;
+            case ItemName.Material:
                 break;
             case ItemName.RepairingTool:
                 PlayerController.holdingRepairTool = true;

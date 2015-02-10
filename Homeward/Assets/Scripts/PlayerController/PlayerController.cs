@@ -1,24 +1,16 @@
 ﻿// =======================================================================
 // <file="PlayerController.cs" product="Homeward">
 // <date>2014-11-12</date>
-// <summary>Contains a base, abstract class for PlayerController</summary>
 // =======================================================================
-
-#region Header Files
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-#endregion
-
 public class PlayerController : MonoBehaviour 
 {
-
-    // Instance of another classes
-    private MineralsStatus playerStatus;
-    private Minerals minerals;
+    private Mining minerals;
 	private DayNightController dayNightController;
 
 	public float speed;
@@ -58,7 +50,6 @@ public class PlayerController : MonoBehaviour
     public bool isKeyEnabled = true;
     private KeyCode consumeFoodKey = KeyCode.K;
 
-    /*** variables for GUI ***/
     public Canvas canvas;
     public RectTransform healthTransform;
     public RectTransform staminaTransform;
@@ -84,16 +75,6 @@ public class PlayerController : MonoBehaviour
 
 	[HideInInspector]
 	public float x, y;
-
-    // Do not delete, for test/debug purpose only
-    public int testVariable = 10;
-
-    // Do not delete, for test/debug purpose only
-    public int TestPurposeProperty
-    {
-        get { return testVariable; }
-        set { testVariable = value; }
-    }
 
     public bool PlayerIsMiningNow
     {
@@ -123,11 +104,8 @@ public class PlayerController : MonoBehaviour
 
 	void Start () 
 	{
-        // Initialize monobehavior of initialized classes
-        playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
-        minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
+        minerals = FindObjectOfType(typeof(Mining)) as Mining;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-        //itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase; //delete
 
 		speed = 2.5f;
 		animateSpeed = .1f;
@@ -146,7 +124,6 @@ public class PlayerController : MonoBehaviour
 
 		canSleep = false;
 
-        // Enables camera zooming-in
         Camera.main.orthographic = true;
 
 		dayLength = dayNightController.dayCycleLength / 2;
@@ -169,26 +146,35 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f); // follows the player
+        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f); 
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
+        playerInventory.AddComponent<CanvasGroup>();
 	}
 
 	void Update () 
 	{
-        // Function deals with everything related to zooming-in when on base
-        // zoomInWhenOnBase();
 		zoomInWhenIndoor();
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
         {
             if (isKeyEnabled)
             {
-                //itemDatabase.items[2].value -= 1;
-                // PATRICK STAR: Add your code here.
             }
         }
+
+		/*** if inside in a module turn the flag on ***/
+		if (CentralControl.isInside)
+		{
+//			if (hold repair tool)
+			{
+				if (Input.GetKeyDown(KeyCode.F))
+				{
+					isRepairing = true;
+				}
+			}
+		}
 
 		if (health > 0)
 		{
@@ -202,7 +188,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.I) == true && keyCode_I_Works)
             {
                 showPlayerInventory = !showPlayerInventory;
-                playerInventory.SetActive(showPlayerInventory);
+                playerInventory.transform.position = new Vector3(9999.0f, Screen.height - 7.0f, 0.0f);
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
                 if(showPlayerInventory) playerInventory.GetComponent<Inventory>().DebugShowInventory();
             }
@@ -215,6 +201,8 @@ public class PlayerController : MonoBehaviour
                 playerInventory.SetActive(true);
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                 playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
+                playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
+
         
                 if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
                 {
@@ -234,11 +222,13 @@ public class PlayerController : MonoBehaviour
                     Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                 }
             }
-            else
+            if (!showPlayerInventory)
             {
-                playerInventory.SetActive(false);
+                playerInventory.SetActive(true);
+                playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
             }
+
             /*******************************************************************
              * Inventory END
              * *****************************************************************/
@@ -303,7 +293,7 @@ public class PlayerController : MonoBehaviour
 				staminaTimer = 0;
 			}
 
-	        // Mining control
+	/*        // Mining control
 	        if ((isMining) && (miningTimer < miningSpeed))
 	        {
 	            if (playerStatus.maxMineralsHaveReached == false)
@@ -315,7 +305,7 @@ public class PlayerController : MonoBehaviour
 	            miningTimer = 0;
 	            isMining = false;
 	        }
-
+            */
 			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
 			y = Input.GetAxisRaw("Vertical");
 			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2

@@ -229,11 +229,11 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+         //   Debug.Log("This Inventory is Empty");
         }
         else
         {
-            Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
+            // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
 
             foreach (GameObject slot in allSlots)
             {
@@ -241,9 +241,55 @@ public class Inventory : MonoBehaviour {
 
                 if(!tmp.IsEmpty)
                 {
-                    Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                    // Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
+        }
+    }
+
+    public void ClearSlot(ItemName itemName)
+    {
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+        }
+        else
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                {
+                    tmp.ClearSlot();
+                }
+            }
+        }
+    }
+
+    public int CountItems(ItemName itemName)
+    {
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+            return 0;
+        }
+        else
+        {
+           // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
+
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                {
+                    //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                    return tmp.Items.Count;
+                }
+                
+            }
+            return 0;
         }
     }
 

@@ -1,70 +1,79 @@
-﻿using UnityEngine;
+﻿// ========================================================================
+// <file="Food.cs" product="Homeward">
+// <date>2014-11-11</date>
+// ========================================================================
+
+
+using UnityEngine;
 using System.Collections;
+using System;
 
-public class Food : MonoBehaviour {
+public class Food : MonoBehaviour
+{
+    private PlayerController playerController = new PlayerController();
+    private Mining minerals = new Mining();
+    private Inventory inventory = new Inventory();
 
-	// Instances of other classes
-	private PlayerController playerController;
-	//private ItemDatabase itemDatabase;
-	private MineralsStatus mineralStatus;
-	private Minerals minerals;
-	//private Inventory inventory;
-	
-	private int mineralsDeposited = 0;
-	private int totalMineralsDeposited = 0;
-	private int refinedMineralsCreated = 0;
-	
-	private float loadingStartTime = 0;
-	private float loadingUpdateTime = 0;
-	private float loadingPercent = 0;
-	
-	private bool stopMineralsIntake = false;
-	private bool updateNumberOfRefinedMinerals = false;
-	private bool addRefinedMineralOnce = false;
-	
-	private GameObject debugLoadingText;
-	private GameObject debugMineralsAddedText;
-	private GameObject debugMineralsRefinedText;
-	
-	public Sprite activeTexture;
-	public Sprite deactiveTexture;
+    private int foodCreated;
+
+    private Vector2 worldSpacePos;
+    private float loadingStartTime;
+    private float loadingUpdateTime;
+    private float loadingPercent;
+    private bool timerReached = false;
+
+    private bool stopMaterialsIntake = false;
+    private bool updateNumberOfFoodItems = false;
+    private bool addFoodOnce = false;
+
+    private GameObject debugLoadingText;
+    private GameObject debugMineralsAddedText;
+    private GameObject debugMineralsRefinedText;
+
+    public Sprite activeTexture;
+    public Sprite deactiveTexture;
     public Sprite noPowerSupplyTexture;
-	private GameObject refineryModule;
+    private GameObject refineryModule;
 
     private bool showPlayerAndModuleInventory;
     public GameObject moduleInventory;
+    private GameObject mainPlayer;
 
-	
-	void Start () 
-	{
-		// Initialize monobehavior of other initialized classes
-		playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
-		//itemDatabase = FindObjectOfType(typeof(ItemDatabase)) as ItemDatabase;
-		mineralStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
-		minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
-		//inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
-		
-		loadingStartTime = 0;
+    private KeyCode keyToAddItemsFromMainPlayerInventory = KeyCode.K;
+    private KeyCode keyToAddItemsDirectlyToModuleinventory = KeyCode.L;
 
-        /*** module inventory ***/
+    private void MineralsValidations()
+    {
+        if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) == 0)
+        {
+            stopMaterialsIntake = true;
+        }
+        else if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
+        {
+            stopMaterialsIntake = false;
+        }
+    }
+
+    void Start()
+    {
+        playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+        minerals = FindObjectOfType(typeof(Mining)) as Mining;
+        inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
+
         moduleInventory = Instantiate(moduleInventory) as GameObject;
         moduleInventory.transform.SetParent(GameObject.Find("Canvas").transform);
         moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
-        
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
-	}
-	
-	void Update () 
-	{
-		changeLoadingToPercent();
-		// Taylor
-		refineryModule = gameObject;
-		var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
 
-        /***********************************************************************
-         * Takahide added
-         * *********************************************************************/
+        mainPlayer = GameObject.Find("MainPlayer");
+        refineryModule = gameObject;
+        worldSpacePos = Camera.main.WorldToViewportPoint(gameObject.transform.position);
+    }
+
+    void Update()
+    {
+        var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
         if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {
             refineryModuleSpriteRenderer.sprite = noPowerSupplyTexture;
@@ -74,69 +83,50 @@ public class Food : MonoBehaviour {
             refineryModuleSpriteRenderer.sprite = deactiveTexture;
         }
 
-        /***********************************************************************
-         * Tak end
-         * **********************************************************************/
+        changeLoadingToPercent();
+        MineralsValidations();
 
-		if (mineralStatus.mineralsInInventory == 0)
-		{
-			stopMineralsIntake = true; 
-		}
-		
-		else if (mineralStatus.mineralsInInventory > 0)
-		{
-			stopMineralsIntake = false;     
-			
-			if (mineralsDeposited == 2)
-			{
-				stopMineralsIntake = true; 
-			}
-		}
-		
-		// mineral despoted = 2?
-		if (mineralsDeposited == 2)
-		{
-			startTimer();
-			updateNumberOfRefinedMinerals = false;
-			refineryModuleSpriteRenderer.sprite = activeTexture;
-			// timer = 500?
-			if (loadingUpdateTime == 500.0f)
-			{
-				stopTimer();
-				refineryModuleSpriteRenderer.sprite = deactiveTexture;
-				if (!updateNumberOfRefinedMinerals)
-				{
-					refinedMineralsCreated++;
-					mineralsDeposited = 0;
-					updateNumberOfRefinedMinerals = true;
-					
-					if (!addRefinedMineralOnce)
-					{
-						//inventory.AddItem(2);
-						addRefinedMineralOnce = true;
-					}
-					//itemDatabase.items[1].value += 1;
-				}                
-			}            
-		}	
-	}
-
-	void OnTriggerStay2D(Collider2D other)
-	{
-		if (other.gameObject.tag == "Player")
+        if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material) == 2)
         {
-            /*******************************************
-            * Inventory
-            * *****************************************/
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered) // if the module is powered, show both player and module inventory
+            stopMaterialsIntake = true;
+            startTimer();
+            updateNumberOfFoodItems = false;
+            refineryModuleSpriteRenderer.sprite = activeTexture;
+
+            if (loadingUpdateTime == 500.0f)
+            {
+                stopTimer();
+                refineryModuleSpriteRenderer.sprite = deactiveTexture;
+
+                if (!updateNumberOfFoodItems)
+                {
+                    addFoodOnce = false;
+                    updateNumberOfFoodItems = true;
+
+                    if (!addFoodOnce)
+                    {
+                        addFoodOnce = true;
+                        Item item = GameObject.Find("Food1").GetComponent<Item>();
+                        mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+                        moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Material);
+                        timerReached = false;
+                    }
+                }
+            }
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
             {
                 showPlayerAndModuleInventory = true;
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
                 PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
                 moduleInventory.SetActive(true);
                 moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-
-                //if (showPlayerAndModuleInventory) moduleInventory.GetComponent<Inventory>().DebugShowInventory();
             }
             else
             {
@@ -148,73 +138,49 @@ public class Food : MonoBehaviour {
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
             }
 
-            if (showPlayerAndModuleInventory) // if inventories are visible
+            if (showPlayerAndModuleInventory)
             {
-                if (Input.GetKeyDown(KeyCode.L)) // L is temporary. Delete this once you find how to add item.
+                if (Input.GetKeyDown(keyToAddItemsDirectlyToModuleinventory))
                 {
 
                     Item item = GameObject.Find("Water").GetComponent<Item>();
                     moduleInventory.GetComponent<Inventory>().AddItem(item);
                 }
 
-                if (Input.GetKeyDown(KeyCode.K)) // K is temporary. Delete this once you find how to add item.
+                if (Input.GetKeyDown(keyToAddItemsFromMainPlayerInventory))
                 {
-                    Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
-                    moduleInventory.GetComponent<Inventory>().AddItem(item);
-                }
-            }
-                
-            /*******************************************
-            * Inventory END
-            * *****************************************/
-
-            if ((Input.GetKeyDown(KeyCode.F)) == true) // Press F to activate refining module
-            {
-                if (stopMineralsIntake == false)
-                {
-                    mineralStatus.mineralsInInventory--;
-                    //itemDatabase.items[1].value -= 1; // removes the value of material, if itemID = 1
-                    if (mineralStatus.mineralsInInventory > -1)
+                    if ((mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0) && (stopMaterialsIntake == false))
                     {
-                        mineralsDeposited++;
-                        totalMineralsDeposited++;
-                    }
-                    else
-                    {
-                        // Do nothing
+                        Item item = other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+                        moduleInventory.GetComponent<Inventory>().AddItem(item);
                     }
                 }
-                else
-                {
-
-                }
             }
-		}
-	}
+        }
+    }
 
     void OnTriggerExit2D(Collider2D other)
     {
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
     }
 
-	void startTimer()
-	{
-		loadingUpdateTime = loadingStartTime++;
-	}
-	
-	void stopTimer()
-	{
-		loadingUpdateTime = 0.0f;
-		loadingStartTime = 0.0f;
-	}
-	
-	void changeLoadingToPercent()
-	{
-		loadingPercent = loadingUpdateTime/5;
-	}
+    void startTimer()
+    {
+        if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
+        if (loadingUpdateTime == 500) { timerReached = true; }
+    }
+
+    void stopTimer()
+    {
+        if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
+    }
+
+    void changeLoadingToPercent()
+    {
+        loadingPercent = loadingUpdateTime / 5;
+    }
 }

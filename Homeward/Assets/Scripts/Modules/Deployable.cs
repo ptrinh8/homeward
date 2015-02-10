@@ -14,8 +14,8 @@ public class Deployable : MonoBehaviour {
 	public float maxLength;		// Max stretch length 
 	public GameObject haitatModuleUnfinished;	// Detached blueprint(prefabs)
 	private int matchedPoint;	// record which detector is "matched"
-
 	private Color color;
+
 	// Use this for initialization
 	void Start () {
 		transform.parent = GameObject.Find("MainPlayer").transform;
@@ -90,6 +90,7 @@ public class Deployable : MonoBehaviour {
 		spriteRenderer.color = color;
 		gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		gameObject.SetActive(false);
-		for (int i = 0; i < detector.Length; i++) detector[i].matched = false;
+		for (int i = 0; i < detector.Length; i++) 
+			detector[i].matched = false;
 	}
 }
