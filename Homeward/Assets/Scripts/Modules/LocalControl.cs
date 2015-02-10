@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,27 +8,83 @@ public class LocalControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
 	public Sprite outdoorSprite;
-	public Sprite indoorSpriteNoPower;
-	public Sprite outdoorSpriteNoPower;
+	public Sprite noPowerSprite;
+	public Sprite turnedOffSprite;
 	public int powerConsumption;
+	private SpriteRenderer spriteRenderer;
+	public float minimumPowerLevel;
+	private bool isPowered, isEnter;
+	[HideInInspector]
+	public float powerLevel;
+	[HideInInspector]
+	public List <GameObject> connections;
 	[HideInInspector]
 	public GameObject center;
 	[HideInInspector]
 	public bool centerLock = false;
-	private SpriteRenderer spriteRenderer;
-	private bool isPowered;
+	[HideInInspector]
+	public int moduleID;
+	[HideInInspector]
+	public bool checkFlag = false;
+	[HideInInspector]
+	public bool isOn;
+	private KeyCode turnKey = KeyCode.T;
 
+	private int durability;
+	private DayNightController dayNightController;
+	private float durabilityTimer;
+	private float durabilityLossTime;
+	public float durabilityLossSpeed;
+	private bool isBroken, flag;
+	private Text moduleStatusText;
+	private int pos; 
+	private KeyCode repairKey = KeyCode.F;
+
+	public bool IsEnter 
+	{
+		get {
+			return isEnter;
+		}
+		set {
+			this.isEnter = value;
+		}
+	}
+	public bool IsPowered 
+	{
+		get {
+			return isPowered;
+		}
+	}
 	// Use this for initialization
 	void Start () {
+		connections = new List<GameObject>();
+		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+		spriteRenderer.sprite = indoorSprite;
+		spriteRenderer.sortingOrder = -3;
 		CentralControl.isInside = true;
+		isOn = true;
+		moduleStatusText = gameObject.GetComponentInChildren<Text>();
+		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
+		durability = 100;
+		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
+		durabilityLossSpeed = 10;
+		isEnter = true;
+		flag = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (checkFlag) {
+			center.SendMessage("CheckPowerSupply");
+			checkFlag = false;
+		}
+		DurabilityLoss();
 	}
 
-	void DoorWayTriggered () {
-		center.SendMessage("DoorWayTriggered");
+	void DoorWayTriggered (bool isDoorway) {
+		if (isDoorway)
+			center.SendMessage("DoorWayTriggered", SendMessageOptions.RequireReceiver);
+		isEnter = !isEnter;
 	}
 
 	void ChangeLocation (bool isEnter) {
@@ -35,17 +93,18 @@ public class LocalControl : MonoBehaviour {
 
 	void ShowInside () {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();	
-		if (isPowered)
+		if (!isOn || isBroken) {
+			spriteRenderer.sprite = turnedOffSprite;
+		} else if (isPowered)
 			spriteRenderer.sprite = indoorSprite;
-		else spriteRenderer.sprite = indoorSpriteNoPower;
+		else spriteRenderer.sprite = noPowerSprite;
+
 		spriteRenderer.sortingOrder = -3;
 	}
 
 	void ShowOutside () {
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-		if (isPowered)
-			spriteRenderer.sprite = outdoorSprite;
-		else spriteRenderer.sprite = outdoorSpriteNoPower;
+		spriteRenderer.sprite = outdoorSprite;
 		spriteRenderer.sortingOrder = -1;
 	}
 
@@ -54,21 +113,111 @@ public class LocalControl : MonoBehaviour {
 			this.center = center;
 			center.SendMessage("AddLocal", gameObject);
 			centerLock = true;
-			CheckPowerSupply();
 		}
 	}
 
 	void CheckPowerSupply () {
-		if (center.GetComponent<CentralControl>().powerInGeneral - powerConsumption >= 0) {
-			center.GetComponent<CentralControl>().powerInGeneral -= powerConsumption;
-			isPowered = true;
-
+		if (isBroken) {
+			// do nothing
 		} else {
-			isPowered = false;
-			foreach (Transform child in transform) {
-				if (child.gameObject.tag != "Connect Point")
-					child.gameObject.SetActive(false);
+			if (powerConsumption > 0)
+				moduleStatusText.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
+			else if (powerConsumption == 0)
+				moduleStatusText.text = " ";
+			else
+				moduleStatusText.text = "+" + -powerConsumption;
+			if (!isOn) 
+				moduleStatusText.text = "Off";
+			else if (powerLevel >= minimumPowerLevel) {
+				isPowered = true;
+                //foreach (Transform child in transform) 
+                //if (child.gameObject.tag == "Machine") {
+                //    child.gameObject.SetActive(true);
+                //}
+			} else {
+				isPowered = false;
+                //foreach (Transform child in transform) {
+                //    if (child.gameObject.tag == "Machine")
+                //        child.gameObject.SetActive(false);
+                //}
 			}
 		}
+		if (powerConsumption != 0 && !isBroken)
+			moduleStatusText.text += ", ";
+		pos = moduleStatusText.text.Length;
+	}
+
+	void SwitchTriggered (bool flag) {
+		isOn = flag;
+		center.SendMessage("CheckPowerSupply");
+		if (!isOn) {
+			foreach (Transform child in transform) 
+				if (child.gameObject.tag == "Machine") {
+					child.gameObject.SetActive(false);
+				}
+			if (center.GetComponent<CentralControl>().isEnterOutpost)
+				spriteRenderer.sprite = turnedOffSprite;
+		} else if (isPowered){
+            foreach (Transform child in transform)
+                if (child.gameObject.tag == "Machine")
+                {
+                    child.gameObject.SetActive(true);
+                }
+			spriteRenderer.sprite = indoorSprite;
+		} else spriteRenderer.sprite = noPowerSprite;
+		spriteRenderer.sortingOrder = -3;
+	}
+
+	void OnTriggerStay2D(Collider2D other){
+		if (other.gameObject.tag == "Player"){
+			//Debug.Log("Press T to turn on/off module");
+			if (Input.GetKeyDown(turnKey)) {
+				SwitchTriggered(!isOn);
+			}
+		}
+	}
+
+	void AddConnection(GameObject other) {
+		if (connections == null)
+			connections = new List<GameObject>();
+		connections.Add(other);
+	}
+
+	void DurabilityLoss() {
+		if (durability > 0)
+		{
+			durabilityTimer += Time.deltaTime * durabilityLossSpeed;
+			if (durabilityTimer > durabilityLossTime)
+			{
+				durability -= 1;
+				durabilityTimer = 0;
+			}
+		} else {
+			isBroken = true;
+			if (flag) {
+				SwitchTriggered(false);
+				flag = false;
+			}
+		}
+
+		if (isEnter && Input.GetKeyDown(repairKey)) {
+			if (!isBroken) {
+				if (durability + 5 <= 100)
+					durability += 5;
+				else durability = 100;
+			} else {
+				durability += 5;
+				isBroken = false;
+				SwitchTriggered(true);
+				flag = true;
+			}
+		}
+
+		if (durability > 0) {
+			if (pos < moduleStatusText.text.Length)
+				moduleStatusText.text = moduleStatusText.text.Remove(pos);
+			moduleStatusText.text += durability.ToString();
+		}else
+			moduleStatusText.text = "Broken";
 	}
 }
