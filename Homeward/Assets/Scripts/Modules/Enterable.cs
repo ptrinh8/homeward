@@ -8,15 +8,12 @@ public class Enterable : MonoBehaviour {
 	private GameObject mainPlayer;
 	private PlayerController playerController;
 	private float x, y;	// Record the direction when player enters the trigger
-	[HideInInspector]
-	public bool isDoorway;
 
 	// Use this for initialization
 	void Start () {
 		mainPlayer = GameObject.Find("MainPlayer");
 		playerController = mainPlayer.GetComponent<PlayerController>();
 		x = y = 0;
-		isDoorway = true;
 		// Change the xEnter to meet the rotation
 		int rotation = (int) gameObject.transform.root.rotation.eulerAngles.z;
 		if (rotation == 90 || rotation == 270)
@@ -41,15 +38,9 @@ public class Enterable : MonoBehaviour {
 			if (xEnter) {
 				// should not show indoor if player enters and exits the trigger in same direction
 				if (playerController.x == x)
-					if (gameObject.transform.root.gameObject.tag == "HabitatModule")
-						gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-					else 
-						gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+					gameObject.SendMessageUpwards("DoorWayTriggered");
 			} else if (playerController.y == y)
-				if (gameObject.transform.root.gameObject.tag == "HabitatModule")
-					gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-				else 
-					gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+				gameObject.SendMessageUpwards("DoorWayTriggered");
 		}
 	}	
 }

@@ -5,13 +5,13 @@
 
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour 
 {
-    private Mining minerals;
+    private MineralsStatus playerStatus;
+    private Minerals minerals;
 	private DayNightController dayNightController;
+    private Robot_main robot_main;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
 	public float miningSpeed;	        // mining speed per sec
 	public float miningTimer;	        // record mining time
 	public bool miningNow, isMining;    // miningNow is the signal for mineral class
-    public static bool isRepairing;
 	public GameObject textFinder;
 
     private float zoomDuration = 1.0f;
@@ -35,46 +34,68 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
-	public float health;
-	public float stamina;
+	public int health;
+	public int stamina;
 	private float healthTimer;
 	private float staminaTimer;
 	private float dayLength;
 	private float nightLength;
 	private float timeUntilSleepPenalty;
-	public float staminaLostPerSecond;
-	public float healthLostPerSecond;
+
+    public float playerPosX, playerPosY;
+    public Vector2 playerPosition;
+    private KeyCode robotMenuKey = KeyCode.Slash;
+    public bool robotMenuActive = false;
+    private KeyCode RobotWPKey = KeyCode.Period;
+    public bool addRobotWP = false;
+
+    public float PlayerPositionX
+    {
+        get { return playerPosX; }
+        set { playerPosX = value; }
+    }
+
+    public float PlayerPositionY
+    {
+        get { return playerPosY; }
+        set { playerPosY = value; }
+    }
+
+    public Vector2 PlayerPosition
+    {
+        get { return playerPosition; }
+        set { playerPosition = value; }
+    }
+
+    public bool RobotMenu
+    {
+        get { return robotMenuActive; }
+        set { robotMenuActive = value; }
+    }
+
+    public bool RobotWayPoint
+    {
+        get { return addRobotWP; }
+        set { addRobotWP = value; }
+    }
 
 	public bool canSleep;
     [HideInInspector]
     public bool isKeyEnabled = true;
     private KeyCode consumeFoodKey = KeyCode.K;
 
-    public Canvas canvas;
-    public RectTransform healthTransform;
-    public RectTransform staminaTransform;
-    private float healthbarPositionY, staminabarPositionY;
-    private float healthbarPositionMinX, staminabarPositionMinX;
-    private float healthbarPositionMaxX, staminabarPositionMaxX;
-    private float currentHealth, currentStamina;
-
-    public float CurrentHealth
-    {
-        get { return currentHealth; }
-        set { 
-            currentHealth = value;
-            manageHealth();
-            manageStamina();
-        }
-    }
-    public float maxHealth, maxStamina;
-    public Text healthText, staminaText;
-    public Image healthImage, staminaImage;
-    public float coolDown;
-    private bool onCoolDown;
-
 	[HideInInspector]
 	public float x, y;
+
+    // Do not delete, for test/debug purpose only
+    public int testVariable = 10;
+
+    // Do not delete, for test/debug purpose only
+    public int TestPurposeProperty
+    {
+        get { return testVariable; }
+        set { testVariable = value; }
+    }
 
     public bool PlayerIsMiningNow
     {
@@ -82,32 +103,33 @@ public class PlayerController : MonoBehaviour
         get { return miningNow; }
     }
 
-    public static bool holdingRepairTool;
-    
-    public GameObject playerInventory;
-    
-    private static bool showPlayerInventory;
-
-    public static bool ShowPlayerInventory
+    private void ToggleRobotMenu()
     {
-        get { return showPlayerInventory; }
-        set { showPlayerInventory = value; }
-    }
+        if (robot_main.playerInteractWithRobot)
+        {
+            if (Input.GetKeyDown(robotMenuKey) == true)
+            {
+                robotMenuActive = !robotMenuActive;
+            }
 
-    private static bool keyCode_I_Works;
-
-    public static bool KeyCode_I_Works
-    {
-        get { return keyCode_I_Works; }
-        set { keyCode_I_Works = value; }
+            if (robotMenuActive)
+            {
+                if (Input.GetKeyDown(RobotWPKey) == true)
+                {
+                    addRobotWP = !addRobotWP;
+                }
+            }
+        }
     }
 
 	void Start () 
 	{
-        minerals = FindObjectOfType(typeof(Mining)) as Mining;
+        playerStatus = FindObjectOfType(typeof(MineralsStatus)) as MineralsStatus;
+        minerals = FindObjectOfType(typeof(Minerals)) as Minerals;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
+        robot_main = FindObjectOfType(typeof(Robot_main)) as Robot_main;
 
-		speed = 2.5f;
+		speed = 1.5f;
 		animateSpeed = .1f;
 		animateTime = 0f;
 		frameAscending = true;
@@ -116,45 +138,28 @@ public class PlayerController : MonoBehaviour
 		miningTimer = 0;
 		miningNow = false;
 		isMining = false;
-        isRepairing = false;
-        holdingRepairTool = false;
 
 		health = 100;
-		stamina = 100f;
+		stamina = 100;
 
 		canSleep = false;
 
         Camera.main.orthographic = true;
 
-		dayLength = dayNightController.dayCycleLength / 2;
-		nightLength = dayNightController.dayCycleLength / 2;
+		dayLength = dayNightController.dayCycleLength;
+		nightLength = dayNightController.dayCycleLength / 4;
 		timeUntilSleepPenalty = (dayLength / 10) * 8;
-		staminaLostPerSecond = stamina / (dayLength + nightLength);
-		healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
-
-        /*** Initializing GUI variables ***/
-        healthbarPositionY = healthTransform.position.y;
-        healthbarPositionMaxX = healthTransform.position.x;
-        healthbarPositionMinX = healthTransform.position.x - healthTransform.rect.width;
-        staminabarPositionY = staminaTransform.position.y;
-        staminabarPositionMaxX = staminaTransform.position.x;
-        staminabarPositionMinX = staminaTransform.position.x - staminaTransform.rect.width;
-        currentHealth = maxHealth;
-        currentStamina = maxStamina;
-        onCoolDown = false;
-
-        /*** PlayerInventory ***/
-        playerInventory = Instantiate(playerInventory) as GameObject;
-        playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f); 
-        showPlayerInventory = false;
-        keyCode_I_Works = true;
-        playerInventory.SetActive(showPlayerInventory);
-        playerInventory.AddComponent<CanvasGroup>();
 	}
 
 	void Update () 
 	{
+        ToggleRobotMenu();
+
+        playerPosition = this.gameObject.transform.position;
+        var mainPlayerPos = this.gameObject.transform.position;
+        playerPosY = mainPlayerPos.y;
+        playerPosX = mainPlayerPos.x;
+
 		zoomInWhenIndoor();
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
@@ -164,136 +169,27 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-		/*** if inside in a module turn the flag on ***/
-		if (CentralControl.isInside)
-		{
-//			if (hold repair tool)
-			{
-				if (Input.GetKeyDown(KeyCode.F))
-				{
-					isRepairing = true;
-				}
-			}
-		}
-
-		if (health > 0)
 		{
 			staminaTimer += Time.deltaTime;
-
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                //TODO
-            }
-
-            if (Input.GetKeyDown(KeyCode.I) == true && keyCode_I_Works)
-            {
-                showPlayerInventory = !showPlayerInventory;
-                playerInventory.transform.position = new Vector3(9999.0f, Screen.height - 7.0f, 0.0f);
-                playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
-                if(showPlayerInventory) playerInventory.GetComponent<Inventory>().DebugShowInventory();
-            }
-
-            /****************************************************************
-             * Inventory: This is how you add items to playerInventory
-             * **************************************************************/
-            if (showPlayerInventory) // player is able to control inventory only when inventory is visible
-            {
-                playerInventory.SetActive(true);
-                playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
-                playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
-                playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
-
-        
-                if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
-                {
-                    Item item = GameObject.Find("Mineral").GetComponent<Item>();
-                    playerInventory.GetComponent<Inventory>().AddItem(item);
-                }
-
-                if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
-                {
-                    Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
-                    playerInventory.GetComponent<Inventory>().AddItem(item);
-                }
-
-                // get item from player inventory and put it in the inventory he is at
-                if (Input.GetKeyDown(KeyCode.J)) // J is temporary. Delete this once you find how to add item.
-                {
-                    Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-                }
-            }
-            if (!showPlayerInventory)
-            {
-                playerInventory.SetActive(true);
-                playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
-                playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
-            }
-
-            /*******************************************************************
-             * Inventory END
-             * *****************************************************************/
-
-            if (CentralControl.isInside)
-            {
-                if (holdingRepairTool)
-                {
-                    if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        isRepairing = true;
-                    }
-                }
-
-
-            }
-
-			if (stamina <= 50)
+			if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
 			{
-				healthTimer += Time.deltaTime;
-				if (healthTimer > 1f)
-				{
-					if(currentHealth > 0)
-					{
-						StartCoroutine(CoolDownDamage());
-						currentHealth -= healthLostPerSecond;
-						manageHealth();
-					}
-					health -= healthLostPerSecond;
-					healthTimer = 0;
-				}
-			}
-
-			if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
-			{
-				if (CentralControl.isInside == false)
+				if (SpriteController.isEnter == false)
 				{
 					healthTimer += Time.deltaTime;
 					if (healthTimer > nightLength / 5)
-                    {
-                        if(currentHealth > 0)
-                        {
-                            StartCoroutine(CoolDownDamage());
-                            currentHealth -= healthLostPerSecond;
-                            manageHealth();
-                        }
+					{
 						health -= 26;
 						healthTimer = 0;
 					}
 				}
 			}
 
-			if (staminaTimer > 1f)
-            {
-                if (currentStamina > 0){
-                    StartCoroutine(CoolDownDamage());
-                    currentStamina -= staminaLostPerSecond;
-                    manageStamina();
-                }
-
-                stamina -= staminaLostPerSecond;
+			if (staminaTimer > timeUntilSleepPenalty / 10)
+			{
+				stamina -= 5;
 				staminaTimer = 0;
 			}
 
-	/*        // Mining control
 	        if ((isMining) && (miningTimer < miningSpeed))
 	        {
 	            if (playerStatus.maxMineralsHaveReached == false)
@@ -305,7 +201,7 @@ public class PlayerController : MonoBehaviour
 	            miningTimer = 0;
 	            isMining = false;
 	        }
-            */
+
 			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
 			y = Input.GetAxisRaw("Vertical");
 			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
@@ -537,53 +433,4 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-
-    private float mapValues(float currentX, float inMin, float inMax, float minX, float maxX)
-    {
-        return (currentX - inMin) * (maxX - minX) / (inMax - inMin) + minX;
-    }
-
-    private void manageHealth()
-    {
-        healthText.text = "Health:  " + currentHealth;
-        float currentXHealth = mapValues(currentHealth, 0, maxHealth, healthbarPositionMinX, healthbarPositionMaxX);
-        
-        healthTransform.position = new Vector3(currentXHealth, healthbarPositionY);
-
-        if (currentHealth > maxHealth / 2)
-        {
-            healthImage.color = new Color32((byte)mapValues(currentHealth, maxHealth / 2, maxHealth, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
-        }
-    }
-
-    private void manageStamina()
-    {
-        staminaText.text = "Stamina:    " + currentStamina;
-
-        //Debug.Log("staminabarPositionY: "+staminabarPositionY+", maxstamina: " + maxStamina + ", staminaMinX: " + staminabarPositionMinX + ", staminaMaxX: " + staminabarPositionMaxX);
-
-
-        float currentXStamina = mapValues(currentStamina, 0, maxStamina, staminabarPositionMinX, staminabarPositionMaxX);
-        staminaTransform.position = new Vector3(currentXStamina, staminabarPositionY);
-
-        if (currentStamina > maxStamina / 2)
-        {
-            staminaImage.color = new Color32((byte)mapValues(currentStamina, maxStamina / 2, maxStamina, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            staminaImage.color = new Color32(255, (byte)mapValues(currentStamina, 0, maxStamina / 2, 0, 255), 0, 255);
-        }
-    }
-
-    IEnumerator CoolDownDamage()
-    {
-        onCoolDown = true;
-        yield return new WaitForSeconds(coolDown);
-        onCoolDown = false;
-    }
 }

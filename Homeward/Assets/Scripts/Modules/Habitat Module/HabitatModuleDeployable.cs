@@ -100,7 +100,6 @@ public class HabitatModuleDeployable : MonoBehaviour {
 		spriteRenderer.color = color;
 		gameObject.transform.localPosition = new Vector3(0, 0, 0);
 		gameObject.SetActive(false);
-		for (int i = 0; i < detector.Length; i++) 
-			detector[i].matched = false;
+		for (int i = 0; i < detector.Length; i++) detector[i].matched = false;
 	}
 }
