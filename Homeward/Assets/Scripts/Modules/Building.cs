@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 // Building class is for getting module building key, a "on-player-blueprint" will generate after player press the keys
 public class Building : MonoBehaviour {
@@ -36,6 +38,8 @@ public class Building : MonoBehaviour {
     private KeyCode radarModuleKey = KeyCode.Alpha8;
 	private KeyCode storageModuleKey = KeyCode.Alpha9;
 	private KeyCode robotModuleKey = KeyCode.Alpha0;
+
+	private Dictionary<string, bool> moduleDictionary;
 
 	public GameObject habitatModule;
 	public GameObject refineryModule;
@@ -75,6 +79,19 @@ public class Building : MonoBehaviour {
 		storageModuleDeployable = storageModuleDeploying.GetComponent<Deployable>();
 		robotModuleDeployable = robotModuleDeploying.GetComponent<Deployable>();
 
+		moduleDictionary = new Dictionary<string, bool>(); 
+		moduleDictionary.Add("HabitatModule", true);
+		moduleDictionary.Add("ConnectorModule", true);
+		moduleDictionary.Add("RefineryModule", true);
+		moduleDictionary.Add("FoodModule", true);
+		moduleDictionary.Add("PowerModule", true);
+		moduleDictionary.Add("HealthStaminaModule", true);
+		moduleDictionary.Add("ModuleControlModule", true);
+		moduleDictionary.Add("RadarModule", true);
+		moduleDictionary.Add("StorageModule", true);
+		moduleDictionary.Add("RobotModule", true);
+
+
 		Instantiate(habitatModule, new Vector3(7, 3, 0),  Quaternion.identity);
 		Invoke("InitialState", Time.deltaTime);
 	}
@@ -83,9 +100,59 @@ public class Building : MonoBehaviour {
 		refineryModule = Instantiate(refineryModule, new Vector3(9.85f, 3, 0),  Quaternion.identity) as GameObject;
 		Invoke ("InitialVar", Time.deltaTime);
 	}
+
 	void InitialVar() {
 		LocalControl localControlScript = refineryModule.GetComponent<LocalControl>();
 		localControlScript.IsEnter = false;
+	}
+
+
+	void NowBuilding(string module) {
+		foreach (var key in moduleDictionary.Keys.ToList())
+			moduleDictionary[key] = true;
+		moduleDictionary[module] = false;
+
+		if (connectorModuleDeployable.isDeploying && moduleDictionary["ConnectorModule"]) {
+			connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
+			connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
+		}
+		if (refineryModuleDeployable.isDeploying && moduleDictionary["RefineryModule"]) {
+			refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
+			refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
+		}
+		if (foodModuleDeployable.isDeploying && moduleDictionary["FoodModule"]) {
+			foodModuleDeployable.isDeploying = !foodModuleDeployable;
+			foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
+		}
+		if (powerModuleDeployable.isDeploying && moduleDictionary["PowerModule"]) {
+			powerModuleDeployable.isDeploying = !powerModuleDeployable;
+			powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
+		}
+		if (healthStaminaModuleDeployable.isDeploying && moduleDictionary["HealthStaminaModule"]) {
+			healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
+			healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
+		}
+		if (moduleControlModuleDeployable.isDeploying && moduleDictionary["ModuleControlModule"])
+		{
+			moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
+			moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
+		}
+		if (radarModuleDeployable.isDeploying && moduleDictionary["RadarModule"]) {
+			radarModuleDeployable.isDeploying = !radarModuleDeployable;
+			radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
+		}
+		if (storageModuleDeployable.isDeploying && moduleDictionary["StorageModule"]) {
+			storageModuleDeployable.isDeploying = !storageModuleDeployable;
+			storageModuleDeploying.SetActive(storageModuleDeployable.isDeploying);
+		}
+		if (robotModuleDeployable.isDeploying && moduleDictionary["RobotModule"]) {
+			robotModuleDeployable.isDeploying = !robotModuleDeployable;
+			robotModuleDeploying.SetActive(robotModuleDeployable.isDeploying);
+		}
+		if (habitatModuleDeployable.isDeploying && moduleDictionary["HabitatModule"]){
+			habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
+			habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
+		}
 		
 	}
 	
@@ -93,398 +160,58 @@ public class Building : MonoBehaviour {
 	void Update () {
 		if (Input.GetKeyDown(habitatModuleKey)) {
 			// Handle condition which other modules are deploying
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
-            if (healthStaminaModuleDeployable.isDeploying) {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-			if (storageModuleDeployable.isDeploying) {
-				storageModuleDeployable.isDeploying = !storageModuleDeployable;
-				storageModuleDeploying.SetActive(storageModuleDeployable);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("HabitatModule");
 			// isDeploying means whether this module is deploying
 			habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
 			habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			
 		}
 
 		if (Input.GetKeyDown(connectorModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-			if (storageModuleDeployable.isDeploying) {
-				storageModuleDeployable.isDeploying = !storageModuleDeployable;
-				storageModuleDeploying.SetActive(storageModuleDeployable);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("ConnectorModule");
 			connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
 			connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
 		}
 
 		if (Input.GetKeyDown(refineryModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-			if (storageModuleDeployable.isDeploying) {
-				storageModuleDeployable.isDeploying = !storageModuleDeployable;
-				storageModuleDeploying.SetActive(storageModuleDeployable);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("RefineryModule");
 			refineryModuleDeployable.isDeploying = !refineryModuleDeployable.isDeploying;
 			refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
 		}
 
 		if (Input.GetKeyDown(foodModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-			if (storageModuleDeployable.isDeploying) {
-				storageModuleDeployable.isDeploying = !storageModuleDeployable;
-				storageModuleDeploying.SetActive(storageModuleDeployable);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("FoodModule");
 			foodModuleDeployable.isDeploying = !foodModuleDeployable.isDeploying;
 			foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
 		}
 
 		if (Input.GetKeyDown(powerModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-			if (storageModuleDeployable.isDeploying) {
-				storageModuleDeployable.isDeploying = !storageModuleDeployable;
-				storageModuleDeploying.SetActive(storageModuleDeployable);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("PowerModule");
 			powerModuleDeployable.isDeploying = !powerModuleDeployable.isDeploying;
 			powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
 		}
 		
         if (Input.GetKeyDown(healthStaminaModuleKey))
         {
-            if (habitatModuleDeployable.isDeploying)
-            {
-                habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-                habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-            }
-            if (connectorModuleDeployable.isDeploying)
-            {
-                connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-                connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-            }
-            if (refineryModuleDeployable.isDeploying)
-            {
-                refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-                refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-            }
-            if (foodModuleDeployable.isDeploying)
-            {
-                foodModuleDeployable.isDeploying = !foodModuleDeployable;
-                foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-            }
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-            healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable.isDeploying;
+			NowBuilding("HealthStaminaModule");
+			healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable.isDeploying;
             healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
         }
 
         if (Input.GetKeyDown(moduleControlModuleKey))
         {
-            if (habitatModuleDeployable.isDeploying)
-            {
-                habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-                habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-            }
-            if (connectorModuleDeployable.isDeploying)
-            {
-                connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-                connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-            }
-            if (refineryModuleDeployable.isDeploying)
-            {
-                refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-                refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-            }
-            if (foodModuleDeployable.isDeploying)
-            {
-                foodModuleDeployable.isDeploying = !foodModuleDeployable;
-                foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-            }
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-            moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable.isDeploying;
-            moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-        }
-
-        if (Input.GetKeyDown(radarModuleKey))
-        {
-            if (habitatModuleDeployable.isDeploying)
-            {
-                habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-                habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-            }
-            if (connectorModuleDeployable.isDeploying)
-            {
-                connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-                connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-            }
-            if (refineryModuleDeployable.isDeploying)
-            {
-                refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-                refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-            }
-            if (foodModuleDeployable.isDeploying)
-            {
-                foodModuleDeployable.isDeploying = !foodModuleDeployable;
-                foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-            }
-            if (healthStaminaModuleDeployable.isDeploying)
-            {
-                healthStaminaModuleDeployable.isDeploying = !healthStaminaModuleDeployable;
-                healthStaminaModuleDeploying.SetActive(healthStaminaModuleDeployable.isDeploying);
-            }
-            if (moduleControlModuleDeployable.isDeploying)
-            {
-                moduleControlModuleDeployable.isDeploying = !moduleControlModuleDeployable;
-                moduleControlModuleDeploying.SetActive(moduleControlModuleDeployable.isDeploying);
-            }
-            if (radarModuleDeployable.isDeploying)
-            {
-                radarModuleDeployable.isDeploying = !radarModuleDeployable;
-                radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
-            }
-            radarModuleDeployable.isDeploying = !radarModuleDeployable.isDeploying;
+			NowBuilding("ModuleControlModule");
+			radarModuleDeployable.isDeploying = !radarModuleDeployable.isDeploying;
             radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
         }
+
 		if (Input.GetKeyDown(storageModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
-			if (robotModuleDeployable.isDeploying) {
-				robotModuleDeployable.isDeploying = !robotModuleDeployable;
-				robotModuleDeploying.SetActive(robotModuleDeployable);
-			}
+			NowBuilding("StorageModule");
 			storageModuleDeployable.isDeploying = !storageModuleDeployable.isDeploying;
 			storageModuleDeploying.SetActive(storageModuleDeployable.isDeploying);
 		}
 
 		if (Input.GetKeyDown(robotModuleKey)) {
-			if (habitatModuleDeployable.isDeploying){
-				habitatModuleDeployable.isDeploying = !habitatModuleDeployable.isDeploying;
-				habitatModuleDeploying.SetActive(habitatModuleDeployable.isDeploying);
-			}
-			if (connectorModuleDeployable.isDeploying) {
-				connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
-				connectorModuleDeploying.SetActive(connectorModuleDeployable.isDeploying);
-			}
-			if (refineryModuleDeployable.isDeploying) {
-				refineryModuleDeployable.isDeploying = !refineryModuleDeployable;
-				refineryModuleDeploying.SetActive(refineryModuleDeployable.isDeploying);
-			}
-			if (foodModuleDeployable.isDeploying) {
-				foodModuleDeployable.isDeploying = !foodModuleDeployable;
-				foodModuleDeploying.SetActive(foodModuleDeployable.isDeploying);
-			}
-			if (powerModuleDeployable.isDeploying) {
-				powerModuleDeployable.isDeploying = !powerModuleDeployable;
-				powerModuleDeploying.SetActive(powerModuleDeployable.isDeploying);
-			}
+			NowBuilding("RobotModule");
 			robotModuleDeployable.isDeploying = !robotModuleDeployable;
 			robotModuleDeploying.SetActive(robotModuleDeployable);
 		}

@@ -40,6 +40,8 @@ public class LocalControl : MonoBehaviour {
 	private int pos; 
 	private KeyCode repairKey = KeyCode.F;
 
+	private GameObject player;
+
 	public bool IsEnter 
 	{
 		get {
@@ -70,6 +72,8 @@ public class LocalControl : MonoBehaviour {
 		durabilityLossSpeed = 10;
 		isEnter = true;
 		flag = true;
+
+		player = GameObject.FindWithTag("Player");
 	}
 	
 	// Update is called once per frame
@@ -201,15 +205,19 @@ public class LocalControl : MonoBehaviour {
 		}
 
 		if (isEnter && Input.GetKeyDown(repairKey)) {
-			if (!isBroken) {
-				if (durability + 5 <= 100)
-					durability += 5;
-				else durability = 100;
-			} else {
-				durability += 5;
-				isBroken = false;
-				SwitchTriggered(true);
-				flag = true;
+			if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100) {
+				if (!isBroken) {
+					if (durability + 10 <= 100) {
+						durability += 10;
+					}
+					else durability = 100;
+				} else {
+					durability += 10;
+					isBroken = false;
+					SwitchTriggered(true);
+					flag = true;
+				}
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
 			}
 		}
 
