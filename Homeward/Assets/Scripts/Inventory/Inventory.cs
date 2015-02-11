@@ -251,7 +251,7 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
         }
         else
         {
@@ -271,7 +271,7 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
             return 0;
         }
         else
@@ -282,12 +282,14 @@ public class Inventory : MonoBehaviour {
             {
                 Slot tmp = slot.GetComponent<Slot>();
 
-                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                if (tmp != null)
                 {
-                    //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
-                    return tmp.Items.Count;
+                    if (!tmp.IsEmpty && itemName == tmp.GetCurrentItem().itemName)
+                    {
+                        //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                        return tmp.Items.Count;
+                    }
                 }
-                
             }
             return 0;
         }

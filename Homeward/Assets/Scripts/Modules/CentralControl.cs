@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Linq;
 public class CentralControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
