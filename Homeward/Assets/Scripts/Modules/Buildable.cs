@@ -43,9 +43,14 @@ public class Buildable : MonoBehaviour
         if (Input.GetKeyDown(buildKey))
         {
 			// Inventory code here
-			buildingProgress++;
-			color.a += 0.4f / materialsRequired;
-			spriteRenderer.color = color;
+			if(other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
+			{
+				buildingProgress++;
+				color.a += 0.4f / materialsRequired;
+				spriteRenderer.color = color;
+				other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+			}
+
         }
     }
 }

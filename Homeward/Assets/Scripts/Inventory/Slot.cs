@@ -19,9 +19,11 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     public Sprite slotEmpty;
     public Sprite slotHighLighted;
 
+    private bool isEmpty;
+
     public bool IsEmpty
     {
-        get { return items.Count == 0; }
+        get { return isEmpty; }
     }
 
     public Item CurrentItem
@@ -37,6 +39,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
 	void Start () 
     {
         items = new Stack<Item>();
+        isEmpty = true;
 
         RectTransform slotRect = GetComponent<RectTransform>();
         RectTransform textRect = stackText.GetComponent<RectTransform>();
@@ -53,6 +56,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     public void AddItem(Item item)
     {
         items.Push(item);
+        isEmpty = false;
 
         if (items.Count > 1)
         {
@@ -62,9 +66,21 @@ public class Slot : MonoBehaviour, IPointerClickHandler
         ChangeSprite(item.spriteNeutral, item.spriteHighLighted);
     }
 
+    public Item GetCurrentItem()
+    {
+        if (items == null)
+        {
+            Item item = new Item();
+            return item;
+        }
+
+        return items.Peek();
+    }
+
     public void AddItems(Stack<Item> items)
     {
         this.items = new Stack<Item>(items);
+        isEmpty = false;
 
         stackText.text = items.Count > 1 ? items.Count.ToString() : string.Empty;
 
@@ -87,12 +103,14 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     {
         if (!IsEmpty)
         {
+            isEmpty = false;
             Item item = items.Pop(); //items.Pop().Use(); you can use this instead if you want to use the Use() function in Item.cs
 
             stackText.text = items.Count > 1 ? items.Count.ToString() : string.Empty;
 
-            if (IsEmpty)
+            if (items.Count == 0/*IsEmpty*/)
             {
+                isEmpty = true;
                 ChangeSprite(slotEmpty, slotHighLighted);
             }
 
@@ -106,6 +124,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     public void ClearSlot()
     {
         items.Clear();
+        isEmpty = true;
 
         ChangeSprite(slotEmpty, slotHighLighted);
 
