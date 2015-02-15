@@ -120,7 +120,7 @@ public class Inventory : MonoBehaviour {
             }
 
             foreach (GameObject slot in allSlots)
-            {
+			{
                 Slot tmp = slot.GetComponent<Slot>();
 
                 if (!tmp.IsEmpty)
@@ -130,16 +130,17 @@ public class Inventory : MonoBehaviour {
                         tmp.AddItem(item);
                         return true;
                     }
-                    else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
-                    {
-                        return false;
-                    }
+                    //else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
+                    //{
+                    //    return false;
+                    //}
                 }
             }
 
             if (emptySlots > 0)
             {
                 PlaceEmpty(item);
+				return true;
             }
         }
 
@@ -251,7 +252,7 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
         }
         else
         {
@@ -271,7 +272,7 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
             return 0;
         }
         else
@@ -282,12 +283,14 @@ public class Inventory : MonoBehaviour {
             {
                 Slot tmp = slot.GetComponent<Slot>();
 
-                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                if (tmp != null)
                 {
-                    //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
-                    return tmp.Items.Count;
+                    if (!tmp.IsEmpty && itemName == tmp.GetCurrentItem().itemName)
+                    {
+                        //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                        return tmp.Items.Count;
+                    }
                 }
-                
             }
             return 0;
         }
