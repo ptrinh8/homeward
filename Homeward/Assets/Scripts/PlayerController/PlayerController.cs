@@ -12,7 +12,6 @@ public class PlayerController : MonoBehaviour
 {
     private Mining minerals;
 	private DayNightController dayNightController;
-	private AudioController audioController;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -108,8 +107,8 @@ public class PlayerController : MonoBehaviour
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 
-		speed = 1f;
-		animateSpeed = .15f;
+		speed = 2.5f;
+		animateSpeed = .1f;
 		animateTime = 0f;
 		frameAscending = true;
 		frameDescending = false;
@@ -152,8 +151,6 @@ public class PlayerController : MonoBehaviour
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
-
-		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
 	void Update () 
@@ -351,13 +348,11 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 0) //bottom of iterator zone, should ascend
 				{
-					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 2) // top of iterator zone, should descend
 				{
-					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -379,13 +374,11 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 3)
 				{
-					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 5)
 				{
-					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -407,13 +400,11 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 6)
 				{
-					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 8)
 				{
-					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -435,13 +426,11 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 9)
 				{
-					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 11)
 				{
-					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
