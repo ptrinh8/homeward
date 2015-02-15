@@ -120,7 +120,7 @@ public class Inventory : MonoBehaviour {
             }
 
             foreach (GameObject slot in allSlots)
-            {
+			{
                 Slot tmp = slot.GetComponent<Slot>();
 
                 if (!tmp.IsEmpty)
@@ -130,16 +130,17 @@ public class Inventory : MonoBehaviour {
                         tmp.AddItem(item);
                         return true;
                     }
-                    else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
-                    {
-                        return false;
-                    }
+                    //else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
+                    //{
+                    //    return false;
+                    //}
                 }
             }
 
             if (emptySlots > 0)
             {
                 PlaceEmpty(item);
+				return true;
             }
         }
 
