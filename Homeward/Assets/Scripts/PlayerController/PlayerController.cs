@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviour
     private float healthbarPositionMaxX, staminabarPositionMaxX;
     private float currentHealth, currentStamina;
 
+	private AudioController audioController;
+
     public float CurrentHealth
     {
         get { return currentHealth; }
@@ -151,6 +153,8 @@ public class PlayerController : MonoBehaviour
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
+
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
 	void Update () 
@@ -348,11 +352,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 0) //bottom of iterator zone, should ascend
 				{
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 2) // top of iterator zone, should descend
 				{
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -374,11 +380,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 3)
 				{
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 5)
 				{
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -400,11 +408,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 6)
 				{
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 8)
 				{
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -426,11 +436,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 9)
 				{
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
 				else if (animateIterator == 11)
 				{
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
