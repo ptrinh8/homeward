@@ -25,11 +25,14 @@ public class Mining : MonoBehaviour
 	public bool playerInMiningPosition = false;
     private bool isPlayerMining = false;
     private KeyCode miningKey = KeyCode.F;
+	private AudioController audioController;
 
     private void PlayerMiningState()
     {
         if ((Input.GetKeyDown(miningKey)) && (playerController.miningTimer == 0) && playerInMiningPosition == true)
         {
+			Debug.Log ("playing");
+			audioController.PlayMiningSound();
             isPlayerMining = !isPlayerMining;
         }
     }
@@ -50,6 +53,7 @@ public class Mining : MonoBehaviour
 		playerController = mainPlayer.GetComponent<PlayerController>();
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
         randomMineralsQuantity = Random.Range(minimumMineralsThatCanBeExtracted, maximumMineralsThatCanBeExtracted);
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
     void Update () 
