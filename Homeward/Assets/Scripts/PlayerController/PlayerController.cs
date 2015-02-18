@@ -178,6 +178,12 @@ public class PlayerController : MonoBehaviour
 					isRepairing = true;
 				}
 			}
+
+			audioController.DroneControl(0);
+		}
+		else if (CentralControl.isInside == false)
+		{
+			audioController.DroneControl(1);
 		}
 
 		if (health > 0)

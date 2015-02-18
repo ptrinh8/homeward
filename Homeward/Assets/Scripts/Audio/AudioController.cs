@@ -8,6 +8,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance leftFootSand;
 	private FMOD.Studio.EventInstance rightFootSand;
 	private FMOD.Studio.EventInstance mining;
+	private FMOD.Studio.EventInstance drone;
 	private FMOD.Studio.ParameterInstance stemTrigger;
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
@@ -19,23 +20,79 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance rightFootSandInsideOutside;
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
+	private FMOD.Studio.ParameterInstance droneVolume;
+	private FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
 	public float stemTriggerValue;
+	public float droneVolumeValue;
 	private PlayerController player;
 	// Use this for initialization
 	void Start () {
 		music = FMOD_StudioSystem.instance.GetEvent("event:/MusicTrigger");
+		drone = FMOD_StudioSystem.instance.GetEvent("event:/Drone");
 		//music.start();
 		music.getParameter("StemSelector", out stemTrigger);
+		drone.getParameter("Volume", out droneVolume);
+		drone.getPlaybackState(out dronePlaybackState);
 		stemTriggerValue = 0f;
+		droneVolumeValue = 0f;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 	}
 	// Update is called once per frame
 	void Update () {
 		//stemTrigger.setValue(stemTriggerValue);
+
+		drone.getPlaybackState(out dronePlaybackState);
+
+		if (CentralControl.isInside == true)
+		{
+		}
+		else
+		{
+		}
 	}
 	void OnDisable()
 	{
 		music.release();
+	}
+
+	public void DroneControl(int controlNumber)
+	{
+		if (controlNumber == 0)
+		{
+			if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.STOPPED)
+			{
+				drone.start();
+			}
+
+			if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING)
+			{
+				if (droneVolumeValue < 10f)
+				{
+					droneVolumeValue += .5f;
+					droneVolume.setValue(droneVolumeValue);
+				}
+				else
+				{
+					droneVolume.setValue(10f);
+				}
+			}
+		}
+		else if (controlNumber == 1)
+		{
+			if (droneVolumeValue > 0f)
+			{
+				droneVolumeValue -= .5f;
+				droneVolume.setValue(droneVolumeValue);
+			}
+			
+			if (droneVolumeValue <= 0f)
+			{
+				if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING)
+				{
+					drone.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+				}
+			}
+		}
 	}
 
 
