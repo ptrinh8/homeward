@@ -9,6 +9,9 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance rightFootSand;
 	private FMOD.Studio.EventInstance mining;
 	private FMOD.Studio.EventInstance drone;
+	private FMOD.Studio.EventInstance refineryMachine;
+
+
 	private FMOD.Studio.ParameterInstance stemTrigger;
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
@@ -21,20 +24,33 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
 	private FMOD.Studio.ParameterInstance droneVolume;
+	private FMOD.Studio.ParameterInstance startingStopping;
+
 	private FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
+	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
 	public float stemTriggerValue;
 	public float droneVolumeValue;
+	private float refineryStartingStopping;
 	private PlayerController player;
+
+	private bool refineryStarted;
+
+	public bool refineryMachineWorking;
 	// Use this for initialization
 	void Start () {
 		music = FMOD_StudioSystem.instance.GetEvent("event:/MusicTrigger");
 		drone = FMOD_StudioSystem.instance.GetEvent("event:/Drone");
+		refineryMachine = FMOD_StudioSystem.instance.GetEvent("event:/RefineryMachine");
 		//music.start();
 		music.getParameter("StemSelector", out stemTrigger);
 		drone.getParameter("Volume", out droneVolume);
 		drone.getPlaybackState(out dronePlaybackState);
+		refineryMachine.getPlaybackState(out refineryPlaybackState);
+		refineryMachine.getParameter("StartingStopping", out startingStopping);
 		stemTriggerValue = 0f;
 		droneVolumeValue = 0f;
+		refineryStartingStopping = 0f;
+		refineryStarted = false;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 	}
 	// Update is called once per frame
@@ -42,13 +58,8 @@ public class AudioController : MonoBehaviour {
 		//stemTrigger.setValue(stemTriggerValue);
 
 		drone.getPlaybackState(out dronePlaybackState);
+		refineryMachine.getPlaybackState(out refineryPlaybackState);
 
-		if (CentralControl.isInside == true)
-		{
-		}
-		else
-		{
-		}
 	}
 	void OnDisable()
 	{
@@ -167,6 +178,33 @@ public class AudioController : MonoBehaviour {
 			miningInsideOutside.setValue(1.75f);
 			mining.start();
 			mining.release ();
+		}
+	}
+	
+	public void RefineryMachineControl(int controlNumber)
+	{
+		if (controlNumber == 0)
+		{
+			if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.STOPPED && refineryStarted == false)
+			{
+				refineryMachine.start();
+				refineryStarted = true;
+			}
+		}
+		else if (controlNumber == 1)
+		{
+			if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING && refineryStarted == true)
+			{
+				refineryStartingStopping = 2.5f;
+				startingStopping.setValue(refineryStartingStopping);
+				refineryStarted = false;
+			}
+		}
+
+		if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING && refineryStarted == true)
+		{
+			refineryStartingStopping = 1.5f;
+			startingStopping.setValue(refineryStartingStopping);
 		}
 	}
 }
