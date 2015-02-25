@@ -22,13 +22,16 @@ public class CentralControl : MonoBehaviour {
 	public float durabilityLossSpeed;
 	private bool isBroken;
 	private Text moduleStatusText;
-	private int pos; 
+	private int pos;
+
+    public GameObject refineryModule;
+    public GameObject airlockModule;
 
     /*** UI module flags by Takahide ***/
     public static bool healthStaminaModuleExists;
     public static bool moduleControlModuleExists;
     public static bool radarModuleExists;
-	private KeyCode repairKey = KeyCode.F;
+	private KeyCode repairKey = KeyCode.R;
 
 	// Use this for initialization
 	void Start () {
@@ -48,7 +51,46 @@ public class CentralControl : MonoBehaviour {
         healthStaminaModuleExists = false;
         moduleControlModuleExists = false;
         radarModuleExists = false;
+
+        Invoke("InitializeRefineryModule", Time.deltaTime);
 	}
+    void InitializeRefineryModule()
+    {
+        if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 2.85f, transform.position.y, 0), transform.rotation) as GameObject;
+        else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 2.85f, 0), transform.rotation) as GameObject;
+        else if (transform.rotation.eulerAngles.z == 180)
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 2.85f, transform.position.y, 0), transform.rotation) as GameObject;
+        else if (transform.rotation.eulerAngles.z == 270)
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 2.85f, 0), transform.rotation) as GameObject;
+        
+        Invoke("InitializeRefineryModuleVariable", Time.deltaTime);
+        Invoke("InitializeAirlockModule", Time.deltaTime);
+    }
+
+    void InitializeAirlockModule()
+    {
+        if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 4.7f, transform.position.y, 0), transform.rotation) as GameObject;
+        else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y + 4.7f, 0), transform.rotation) as GameObject;
+        else if (transform.rotation.eulerAngles.z == 180)
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x - 4.7f, transform.position.y, 0), transform.rotation) as GameObject;
+        else if (transform.rotation.eulerAngles.z == 270)
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y - 4.7f, 0), transform.rotation) as GameObject;
+        Invoke("InitializeAirlockModuleVariable", Time.deltaTime);
+    }
+
+    void InitializeRefineryModuleVariable()
+    {
+        refineryModule.GetComponent<LocalControl>().IsEnter = false;
+    }
+
+    void InitializeAirlockModuleVariable()
+    {
+        airlockModule.GetComponent<LocalControl>().IsEnter = false;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -60,6 +102,7 @@ public class CentralControl : MonoBehaviour {
 			ShowOutside();
 
 		DurabilityLoss();
+        Debug.Log(transform.rotation.eulerAngles.z);
 	}
 
 	void ShowInside () {
@@ -136,7 +179,7 @@ public class CentralControl : MonoBehaviour {
 					if (!isBroken)
 						powerInGeneral += 2;
 				} else if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
-					Debug.Log(connection);
+//					Debug.Log(connection);
 
                     /*** Takahide Added From Here***/
                     if (connection.tag == "HealthStaminaModule")

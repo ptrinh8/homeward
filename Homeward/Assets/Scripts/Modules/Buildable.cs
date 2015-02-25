@@ -29,12 +29,13 @@ public class Buildable : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-		if (buildingProgress >= materialsRequired) {
+		if (buildingProgress >= materialsRequired) 
+        {
 			Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
 			Destroy(gameObject);
-		}
+        }
 	}
-    
+
     void OnTriggerStay2D(Collider2D other)
     {
         if (Input.GetKeyDown(cancelKey))
