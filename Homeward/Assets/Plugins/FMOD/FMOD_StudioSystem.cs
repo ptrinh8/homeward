@@ -334,7 +334,7 @@ public class FMOD_StudioSystem : MonoBehaviour
 	{
 		if (isInitialized)
 		{
-			ERRCHECK(system.update());
+//			ERRCHECK(system.update());
 		}
 	}
 	

@@ -46,6 +46,7 @@ public class HabitatModuleDeployable : MonoBehaviour {
 			Instantiate(habitatModuleUnfinished, gameObject.transform.position, gameObject.transform.rotation);	// Instantiate the detached blueprint
 			isDeploying = false;
 			Reset();	// Reset the blueprint
+            Building.isDeploying = false;
 		}
 
 		// Rotation
@@ -102,5 +103,6 @@ public class HabitatModuleDeployable : MonoBehaviour {
 		gameObject.SetActive(false);
 		for (int i = 0; i < detector.Length; i++) 
 			detector[i].matched = false;
+        Building.isDeploying = false;
 	}
 }
