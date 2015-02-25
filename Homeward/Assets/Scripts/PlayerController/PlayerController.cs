@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 
-		speed = 2.5f;
+		speed = 1.0f;
 		animateSpeed = .1f;
 		animateTime = 0f;
 		frameAscending = true;
