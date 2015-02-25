@@ -35,7 +35,7 @@ public class Refining : MonoBehaviour
     public Sprite noPowerSupplyTexture;
     private GameObject refineryModule;
 
-    private bool showPlayerAndModuleInventory;
+    public bool showPlayerAndModuleInventory; // takahide made it public to use this outside
     public GameObject moduleInventory;
     private GameObject mainPlayer;
 
@@ -69,6 +69,9 @@ public class Refining : MonoBehaviour
         mainPlayer = GameObject.Find("MainPlayer");
         refineryModule = gameObject;
         worldSpacePos = Camera.main.WorldToViewportPoint(gameObject.transform.position);
+
+
+
 	}
 	
 	void Update () 
@@ -107,7 +110,8 @@ public class Refining : MonoBehaviour
                     {
                         addRefinedMineralOnce = true;
                         Item item = GameObject.Find("Material").GetComponent<Item>();
-                        mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+                        moduleInventory.GetComponent<Inventory>().AddItem(item);
+                        //mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
                         moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
                         timerReached = false;
                     }
@@ -115,6 +119,11 @@ public class Refining : MonoBehaviour
             }            
         }	
 	}
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        UIInventory.SetModuleInventory(moduleInventory); // takahide added
+    }
 
     void OnTriggerStay2D(Collider2D other)
     {
@@ -166,6 +175,7 @@ public class Refining : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
+        UIInventory.SetModuleInventory(null);
     }
 
     void startTimer()

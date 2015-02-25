@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
     
     public GameObject playerInventory;
     
-    private static bool showPlayerInventory;
+    public static bool showPlayerInventory;
 
     public static bool ShowPlayerInventory
     {
@@ -153,6 +153,7 @@ public class PlayerController : MonoBehaviour
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
+        playerInventory.AddComponent<UIInventory>();
 
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
@@ -226,13 +227,12 @@ public class PlayerController : MonoBehaviour
                     Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                 }
             }
-            if (!showPlayerInventory)
+            else
             {
                 playerInventory.SetActive(true);
                 playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
             }
-
             /*******************************************************************
              * Inventory END
              * *****************************************************************/
@@ -310,9 +310,35 @@ public class PlayerController : MonoBehaviour
 	            isMining = false;
 	        }
             */
-			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-			y = Input.GetAxisRaw("Vertical");
-			Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+            x = y = 0.0f;
+            Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+
+            if (!showPlayerInventory)
+            {
+                x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+                y = Input.GetAxisRaw("Vertical");
+            }
+            else
+            {
+                if (Input.GetKey(KeyCode.A))
+                {
+                    x = -1.0f;
+                }
+                else if (Input.GetKey(KeyCode.D))
+                {
+                    x = 1.0f;
+                }
+                if (Input.GetKey(KeyCode.W))
+                {
+                    y = 1.0f;
+                }
+                else if (Input.GetKey(KeyCode.S))
+                {
+                    y = -1.0f;
+                }
+            }
+			
+            direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 			rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
 			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
@@ -570,6 +596,9 @@ public class PlayerController : MonoBehaviour
         {
             healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
         }
+
+        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250.0f); // 250 = width of the health bar
+        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 25.0f); // 25 = height of the health bar
     }
 
     private void manageStamina()
