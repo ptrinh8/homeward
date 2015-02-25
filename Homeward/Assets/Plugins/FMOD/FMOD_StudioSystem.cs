@@ -55,7 +55,7 @@ namespace FMOD
 			
 			static public void LogError(string msg)
 			{
-                UnityEngine.Debug.LogError(msg);
+                // UnityEngine.Debug.LogError(msg);
 			}
 			
 			static public bool ForceLoadLowLevelBinary()

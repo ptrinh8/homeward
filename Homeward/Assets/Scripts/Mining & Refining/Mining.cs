@@ -31,7 +31,6 @@ public class Mining : MonoBehaviour
     {
         if ((Input.GetKeyDown(miningKey)) && (playerController.miningTimer == 0) && playerInMiningPosition == true)
         {
-			Debug.Log ("playing");
 			audioController.PlayMiningSound();
             isPlayerMining = !isPlayerMining;
         }
