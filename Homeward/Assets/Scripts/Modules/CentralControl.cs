@@ -102,7 +102,7 @@ public class CentralControl : MonoBehaviour {
 			ShowOutside();
 
 		DurabilityLoss();
-        Debug.Log(transform.rotation.eulerAngles.z);
+        //Debug.Log(transform.rotation.eulerAngles.z);
 	}
 
 	void ShowInside () {

@@ -101,7 +101,7 @@ public class Building : MonoBehaviour {
 		moduleDictionary.Add("RobotModule", true);
         moduleDictionary.Add("AirlockModule", true);
 
-		Instantiate(habitatModule, new Vector3(7, 3, 0),  Quaternion.identity);
+		Instantiate(habitatModule, new Vector3(365, 293, 0),  Quaternion.identity);
 
         isDeploying = false;
 	}

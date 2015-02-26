@@ -127,7 +127,7 @@ public class Refining : MonoBehaviour
     void Update()
     {
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		Debug.Log(distanceBetweenPlayerAndRefinery);
+		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
 		distance.setValue(refineryDistance);
@@ -233,7 +233,7 @@ public class Refining : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        UIInventory.SetModuleInventory(null);
+        //UIInventory.SetModuleInventory(null);
     }
 
     void startTimer()
