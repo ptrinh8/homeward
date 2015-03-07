@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
 	private int animateZone;            //Specifies the direction of the astronaut's animation (up, down, left, right)
 	private bool frameAscending;        //boolean to tell AnimateFrames if spritesheet animation frame is increasing
 	private bool frameDescending;       //boolean to tell AnimateFrames if spritesheet animation frame is decreasing
+	private int leftRightFootstep = 0;
 
 	public float miningSpeed;	        // mining speed per sec
 	public float miningTimer;	        // record mining time
@@ -110,7 +111,7 @@ public class PlayerController : MonoBehaviour
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		
 		speed = 1.0f;
-		animateSpeed = .2f;
+		animateSpeed = .15f;
 		animateTime = 0f;
 		frameAscending = true;
 		frameDescending = false;
@@ -384,13 +385,26 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 0) //bottom of iterator zone, should ascend
 				{
-					audioController.PlayFootstep(0);
+					//audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
+				else if (animateIterator == 1)
+				{
+					if (leftRightFootstep == 0)
+					{
+						audioController.PlayFootstep(0);
+						leftRightFootstep = 1;
+					}
+					else
+					{
+						audioController.PlayFootstep(1);
+						leftRightFootstep = 0;
+					}
+				}
 				else if (animateIterator == 2) // top of iterator zone, should descend
 				{
-					audioController.PlayFootstep(1);
+					//audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -412,13 +426,26 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 3)
 				{
-					audioController.PlayFootstep(0);
+					//audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
+				else if (animateIterator == 4)
+				{
+					if (leftRightFootstep == 0)
+					{
+						audioController.PlayFootstep(0);
+						leftRightFootstep = 1;
+					}
+					else
+					{
+						audioController.PlayFootstep(1);
+						leftRightFootstep = 0;
+					}
+				}
 				else if (animateIterator == 5)
 				{
-					audioController.PlayFootstep(1);
+					//audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -440,13 +467,26 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 6)
 				{
-					audioController.PlayFootstep(0);
+					//audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
+				else if (animateIterator == 7)
+				{
+					if (leftRightFootstep == 0)
+					{
+						audioController.PlayFootstep(0);
+						leftRightFootstep = 1;
+					}
+					else
+					{
+						audioController.PlayFootstep(1);
+						leftRightFootstep = 0;
+					}
+				}
 				else if (animateIterator == 8)
 				{
-					audioController.PlayFootstep(1);
+					//audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -468,13 +508,26 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 9)
 				{
-					audioController.PlayFootstep(0);
+					//audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
+				else if (animateIterator == 10)
+				{
+					if (leftRightFootstep == 0)
+					{
+						audioController.PlayFootstep(0);
+						leftRightFootstep = 1;
+					}
+					else
+					{
+						audioController.PlayFootstep(1);
+						leftRightFootstep = 0;
+					}
+				}
 				else if (animateIterator == 11)
 				{
-					audioController.PlayFootstep(1);
+					//audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
