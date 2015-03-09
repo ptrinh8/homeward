@@ -2,7 +2,10 @@
 using System.Collections;
 
 public class AudioController : MonoBehaviour {
-	private FMOD.Studio.EventInstance music;
+	private FMOD.Studio.EventInstance music1;
+	private FMOD.Studio.EventInstance music2;
+	private FMOD.Studio.EventInstance music3;
+	private FMOD.Studio.EventInstance music4;
 	private FMOD.Studio.EventInstance leftFootMetal;
 	private FMOD.Studio.EventInstance rightFootMetal;
 	private FMOD.Studio.EventInstance leftFootSand;
@@ -12,7 +15,10 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance refineryMachine;
 
 
-	private FMOD.Studio.ParameterInstance stemTrigger;
+	private FMOD.Studio.ParameterInstance stemTrigger1;
+	private FMOD.Studio.ParameterInstance stemTrigger2;
+	private FMOD.Studio.ParameterInstance stemTrigger3;
+	private FMOD.Studio.ParameterInstance stemTrigger4;
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
 	private FMOD.Studio.ParameterInstance leftFootSandSelector;
@@ -28,7 +34,10 @@ public class AudioController : MonoBehaviour {
 
 	private FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
 	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
-	public float stemTriggerValue;
+	public float stemTriggerValue1;
+	public float stemTriggerValue2;
+	public float stemTriggerValue3;
+	public float stemTriggerValue4;
 	public float droneVolumeValue;
 	private float refineryStartingStopping;
 	private PlayerController player;
@@ -36,18 +45,32 @@ public class AudioController : MonoBehaviour {
 	private bool refineryStarted;
 
 	public bool refineryMachineWorking;
+
+	private int songSelectNumber;
+	private float songTriggerValue;
+	private FMOD.Studio.EventInstance currentSong;
 	// Use this for initialization
 	void Start () {
-		music = FMOD_StudioSystem.instance.GetEvent("event:/MusicTrigger");
+		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
+		music2 = FMOD_StudioSystem.instance.GetEvent("event:/Music2");
+		music3 = FMOD_StudioSystem.instance.GetEvent("event:/Music3");
+		music4 = FMOD_StudioSystem.instance.GetEvent("event:/Music4");
 		drone = FMOD_StudioSystem.instance.GetEvent("event:/Drone");
 		refineryMachine = FMOD_StudioSystem.instance.GetEvent("event:/RefineryMachine");
 		//music.start();
-		music.getParameter("StemSelector", out stemTrigger);
+		music1.getParameter("MusicTrigger", out stemTrigger1);
+		music2.getParameter("MusicTrigger", out stemTrigger2);
+		music3.getParameter("MusicTrigger", out stemTrigger3);
+		music4.getParameter("MusicTrigger", out stemTrigger4);
 		drone.getParameter("Volume", out droneVolume);
 		drone.getPlaybackState(out dronePlaybackState);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		refineryMachine.getParameter("StartingStopping", out startingStopping);
-		stemTriggerValue = 0f;
+		stemTriggerValue1 = 0f;
+		stemTriggerValue2 = 0f;
+		stemTriggerValue3 = 0f;
+		stemTriggerValue4 = 0f;
+		songTriggerValue = 0f;
 		droneVolumeValue = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
@@ -63,7 +86,50 @@ public class AudioController : MonoBehaviour {
 	}
 	void OnDisable()
 	{
-		music.release();
+		music1.release();
+	}
+
+	public void MusicControl(int controlNumber, int songNumber)
+	{
+		switch(songNumber)
+		{
+		case 1:
+			currentSong = music1;
+			break;
+		case 2:
+			currentSong = music2;
+			break;
+		case 3:
+			currentSong = music3;
+			break;
+		case 4:
+			currentSong = music4;
+			break;
+		}
+		// 1 = play, 2 = stop
+		if (controlNumber == 1)
+		{
+			currentSong.start();
+			if (songTriggerValue < .51f)
+			{
+				songTriggerValue += .01f;
+				switch(songNumber)
+				{
+				case 1:
+					stemTrigger1.setValue(songTriggerValue);
+					break;
+				case 2:
+					stemTrigger2.setValue(songTriggerValue);
+					break;
+				case 3:
+					stemTrigger3.setValue(songTriggerValue);
+					break;
+				case 4:
+					stemTrigger4.setValue(songTriggerValue);
+					break;
+				}
+			}
+		}
 	}
 
 	public void DroneControl(int controlNumber)

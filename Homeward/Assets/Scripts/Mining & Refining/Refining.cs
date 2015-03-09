@@ -157,6 +157,24 @@ public class Refining : MonoBehaviour
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
+
+		if (_mineralCount > 0)
+		{
+			if (refineryStarted == false)
+			{
+				refineryMachine.start();
+				refineryStartingStopping = 1.5f;
+				refineryStarted = true;
+			}
+		}
+		else
+		{
+			if (refineryStarted == true)
+			{
+				refineryStartingStopping = 2.5f;
+				refineryStarted = false;
+			}
+		}
 		
         if (!addRefinedMineralOnce)
         {
@@ -238,23 +256,12 @@ public class Refining : MonoBehaviour
 
     void startTimer()
     {
-		if (refineryStarted == false)
-		{
-			refineryMachine.start();
-			refineryStartingStopping = 1.5f;
-			refineryStarted = true;
-		}
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
         if (loadingUpdateTime == time) { timerReached = true; }
     }
 
     void stopTimer()
 	{
-		if (refineryStarted == true)
-		{
-			refineryStartingStopping = 2.5f;
-			refineryStarted = false;
-		}
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
     }
 
