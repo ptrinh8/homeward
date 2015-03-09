@@ -77,7 +77,6 @@ public class LocalControl : MonoBehaviour {
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
-		durabilityLossSpeed = 10;
 		isEnter = true;
 		flag = true;
 
@@ -86,6 +85,7 @@ public class LocalControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        Debug.Log("cool");
 		if (checkFlag) {
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;
