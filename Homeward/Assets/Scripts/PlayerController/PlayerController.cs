@@ -59,7 +59,15 @@ public class PlayerController : MonoBehaviour
     private float healthbarPositionMaxX, staminabarPositionMaxX;
     private float currentHealth, currentStamina;
 
+	//AUDIO STUFF
 	private AudioController audioController;
+	private int songSelected;
+	private float songLength;
+	public float songTimer;
+	private float songSilenceLength;
+	public float songSilenceTimer;
+	public bool isSongPlaying;
+	public bool isSongQueued;
 
     public float CurrentHealth
     {
@@ -156,6 +164,12 @@ public class PlayerController : MonoBehaviour
         playerInventory.AddComponent<CanvasGroup>();
         playerInventory.AddComponent<UIInventory>();
 
+		songLength = 120f;
+		songSilenceLength = 180f;
+		songTimer = 0f;
+		songSilenceTimer = 0f;
+		isSongQueued = false;
+		isSongPlaying = false;
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
@@ -169,6 +183,38 @@ public class PlayerController : MonoBehaviour
             {
             }
         }
+
+		if (isSongQueued == true)
+		{
+			songSilenceTimer += Time.deltaTime;
+			if (songSilenceTimer > songSilenceLength)
+			{
+				//Debug.Log("silence over");
+				if (isSongPlaying == false)
+				{
+					audioController.MusicControl(1, songSelected);
+					isSongPlaying = true;
+				}
+			}
+		}
+		else if (isSongQueued == false)
+		{
+			Debug.Log ("starting coroutine");
+			StartCoroutine(MusicTrigger());
+		}
+
+		if (isSongPlaying == true)
+		{
+			songTimer += Time.deltaTime;
+			if (songTimer > songLength)
+			{
+				audioController.MusicControl(2, songSelected);
+				songTimer = 0;
+				songSilenceTimer = 0;
+				isSongPlaying = false;
+				isSongQueued = false;
+			}
+		}
 
 		/*** if inside in a module turn the flag on ***/
 		if (CentralControl.isInside)
@@ -686,4 +732,20 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(coolDown);
         onCoolDown = false;
     }
+
+	IEnumerator MusicTrigger()
+	{
+		Debug.Log ("checking trigger");
+		if (Random.Range (0, 4) > 2)
+		{
+			Debug.Log ("song queued");
+			if (isSongPlaying == false)
+			{
+				Debug.Log ("selecting song");
+				songSelected = Random.Range(1, 5);
+				isSongQueued = true;
+			}
+		}
+		yield return new WaitForSeconds(30f);
+	}
 }

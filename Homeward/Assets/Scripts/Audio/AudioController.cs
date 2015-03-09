@@ -15,10 +15,10 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance refineryMachine;
 
 
-	private FMOD.Studio.ParameterInstance stemTrigger1;
-	private FMOD.Studio.ParameterInstance stemTrigger2;
-	private FMOD.Studio.ParameterInstance stemTrigger3;
-	private FMOD.Studio.ParameterInstance stemTrigger4;
+	public FMOD.Studio.ParameterInstance stemTrigger1;
+	public FMOD.Studio.ParameterInstance stemTrigger2;
+	public FMOD.Studio.ParameterInstance stemTrigger3;
+	public FMOD.Studio.ParameterInstance stemTrigger4;
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
 	private FMOD.Studio.ParameterInstance leftFootSandSelector;
@@ -32,7 +32,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance droneVolume;
 	private FMOD.Studio.ParameterInstance startingStopping;
 
-	private FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
+	public FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
 	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
 	public float stemTriggerValue1;
 	public float stemTriggerValue2;
@@ -46,8 +46,13 @@ public class AudioController : MonoBehaviour {
 
 	public bool refineryMachineWorking;
 
-	private int songSelectNumber;
-	private float songTriggerValue;
+	public int songSelectNumber;
+	public float songTriggerValue;
+	public bool songPlaying;
+	public FMOD.Studio.PLAYBACK_STATE song1PlaybackState;
+	public FMOD.Studio.PLAYBACK_STATE song2PlaybackState;
+	public FMOD.Studio.PLAYBACK_STATE song3PlaybackState;
+	public FMOD.Studio.PLAYBACK_STATE song4PlaybackState;
 	private FMOD.Studio.EventInstance currentSong;
 	// Use this for initialization
 	void Start () {
@@ -75,6 +80,7 @@ public class AudioController : MonoBehaviour {
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
+		songPlaying = false;
 	}
 	// Update is called once per frame
 	void Update () {
@@ -82,38 +88,43 @@ public class AudioController : MonoBehaviour {
 
 		drone.getPlaybackState(out dronePlaybackState);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
+		music1.getPlaybackState(out song1PlaybackState);
+		music2.getPlaybackState(out song2PlaybackState);
+		music3.getPlaybackState(out song3PlaybackState);
+		music4.getPlaybackState(out song4PlaybackState);
 
-	}
-	void OnDisable()
-	{
-		music1.release();
-	}
-
-	public void MusicControl(int controlNumber, int songNumber)
-	{
-		switch(songNumber)
+		if (songPlaying == true)
 		{
-		case 1:
-			currentSong = music1;
-			break;
-		case 2:
-			currentSong = music2;
-			break;
-		case 3:
-			currentSong = music3;
-			break;
-		case 4:
-			currentSong = music4;
-			break;
-		}
-		// 1 = play, 2 = stop
-		if (controlNumber == 1)
-		{
-			currentSong.start();
-			if (songTriggerValue < .51f)
+			if (songTriggerValue < 1.51f)
 			{
-				songTriggerValue += .01f;
-				switch(songNumber)
+				songTriggerValue += .001f;
+				switch(songSelectNumber)
+				{
+				case 1:
+					stemTrigger1.setValue(songTriggerValue);
+					//Debug.Log ("setting value 1");
+					break;
+				case 2:
+					stemTrigger2.setValue(songTriggerValue);
+					//Debug.Log ("setting value 2");
+					break;
+				case 3:
+					stemTrigger3.setValue(songTriggerValue);
+					//Debug.Log ("setting value 3");
+					break;
+				case 4:
+					stemTrigger4.setValue(songTriggerValue);
+					//Debug.Log ("setting value 4");
+					break;
+				}
+			}
+		}
+		else if (songPlaying == false)
+		{
+			if (songTriggerValue >= 0f)
+			{
+				songTriggerValue -= .001f;
+				switch(songSelectNumber)
 				{
 				case 1:
 					stemTrigger1.setValue(songTriggerValue);
@@ -128,6 +139,68 @@ public class AudioController : MonoBehaviour {
 					stemTrigger4.setValue(songTriggerValue);
 					break;
 				}
+			}
+			else if (songTriggerValue < 0f)
+			{
+				switch(songSelectNumber)
+				{
+				case 1:
+					music1.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+					break;
+				case 2:
+					music2.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+					break;
+				case 3:
+					music3.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+					break;
+				case 4:
+					music4.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+					break;
+				}
+			}
+		}
+
+	}
+	void OnDisable()
+	{
+		music1.release();
+		music2.release();
+		music3.release();
+		music4.release();
+	}
+
+	public void MusicControl(int controlNumber, int songNumber)
+	{
+		songSelectNumber = songNumber;
+		// 1 = play, 2 = stop
+		if (controlNumber == 1)
+		{
+			Debug.Log("song playing");
+			if (songPlaying == false)
+			{
+				switch(songSelectNumber)
+				{
+				case 1:
+					music1.start();
+					break;
+				case 2:
+					music2.start();
+					break;
+				case 3:
+					music3.start();
+					break;
+				case 4:
+					music4.start();
+					break;
+				}
+				songPlaying = true;
+			}
+		}
+		else if (controlNumber == 2)
+		{
+			if (songPlaying == true)
+			{
+				songPlaying = false;
 			}
 		}
 	}
