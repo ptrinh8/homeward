@@ -100,6 +100,8 @@ public class AirControl : MonoBehaviour {
 
         if (flag == 0) { 
             // do nothing
+			soundTransition = 3.5f;
+			airlockTransition.setValue(soundTransition);
         }
         else if (flag == 1)
         {
@@ -115,8 +117,7 @@ public class AirControl : MonoBehaviour {
             }
             else
             {
-				soundTransition = 3.5f;
-				airlockTransition.setValue(soundTransition);
+
                 airPressureBar.size = 1;
                 flag = 0;
                 air = true;
@@ -135,8 +136,6 @@ public class AirControl : MonoBehaviour {
             }
             else
             {
-				soundTransition = 3.5f;
-				airlockTransition.setValue(soundTransition);
                 airPressureBar.size = 0;
                 flag = 0;
                 air = false;
