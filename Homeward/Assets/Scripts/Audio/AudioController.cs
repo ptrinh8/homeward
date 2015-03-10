@@ -259,7 +259,7 @@ public class AudioController : MonoBehaviour {
 
 	public void PlayFootstep(int footstep)
 	{
-		Debug.Log ("playing footstep");
+		// Debug.Log ("playing footstep");
 		if (footstep == 0)
 		{
 			if (CentralControl.isInside == true)

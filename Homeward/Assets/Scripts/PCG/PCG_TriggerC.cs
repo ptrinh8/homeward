@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PCG_TriggerA : MonoBehaviour 
+public class PCG_TriggerC : MonoBehaviour 
 {
 
     [HideInInspector]
-    public bool playerInsideCircleTriggerA = false;
+    public bool playerInsideCircleTriggerA2 = false;
     [HideInInspector]
-    public bool playerExitedCircleTriggerA = false;
+    public bool playerExitedCircleTriggerA2 = false;
 
     private bool doOnce = false;
 
     void Start()
     {
 
-        playerInsideCircleTriggerA = false;
+        playerInsideCircleTriggerA2 = false;
     }
 
     void Update()
@@ -26,8 +26,8 @@ public class PCG_TriggerA : MonoBehaviour
     {
         if (other.gameObject.name == "MainPlayer")
         {
-            playerInsideCircleTriggerA = true;
-            playerExitedCircleTriggerA = false;
+            playerInsideCircleTriggerA2 = true;
+            playerExitedCircleTriggerA2 = false;
         }
     }
 
@@ -35,8 +35,8 @@ public class PCG_TriggerA : MonoBehaviour
     {
         if (collider.gameObject.name == "MainPlayer")
         {
-            playerInsideCircleTriggerA = false;
-            playerExitedCircleTriggerA = true;
+            playerInsideCircleTriggerA2 = false;
+            playerExitedCircleTriggerA2 = true;
         }
     }
 }
