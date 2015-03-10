@@ -45,7 +45,6 @@ public class CentralControl : MonoBehaviour {
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
-		durabilityLossSpeed = 1;
 
         /*** UI module flags ***/
         healthStaminaModuleExists = false;

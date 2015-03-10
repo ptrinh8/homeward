@@ -27,6 +27,9 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance leftFootSandInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootSandInsideOutside;
+	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
+	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
+	private FMOD.Studio.ParameterInstance refineryAirlockPressure;
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
 	private FMOD.Studio.ParameterInstance droneVolume;
@@ -54,6 +57,10 @@ public class AudioController : MonoBehaviour {
 	public FMOD.Studio.PLAYBACK_STATE song3PlaybackState;
 	public FMOD.Studio.PLAYBACK_STATE song4PlaybackState;
 	private FMOD.Studio.EventInstance currentSong;
+
+	private AirControl airControl;
+	public float controllerSoundPressure;
+	public float controllerPressure;
 	// Use this for initialization
 	void Start () {
 		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
@@ -81,17 +88,21 @@ public class AudioController : MonoBehaviour {
 		refineryStarted = false;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		songPlaying = false;
+		controllerSoundPressure = 0f;
 	}
 	// Update is called once per frame
 	void Update () {
 		//stemTrigger.setValue(stemTriggerValue);
 
+		controllerPressure = controllerSoundPressure;
 		drone.getPlaybackState(out dronePlaybackState);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		music1.getPlaybackState(out song1PlaybackState);
 		music2.getPlaybackState(out song2PlaybackState);
 		music3.getPlaybackState(out song3PlaybackState);
 		music4.getPlaybackState(out song4PlaybackState);
+
+		//controllerSoundPressure = GameObject.Find ("Airlock Module(Clone)").GetComponent<AirControl>().soundPressure;
 
 		if (songPlaying == true)
 		{
@@ -248,7 +259,7 @@ public class AudioController : MonoBehaviour {
 
 	public void PlayFootstep(int footstep)
 	{
-		Debug.Log ("playing footstep");
+		// Debug.Log ("playing footstep");
 		if (footstep == 0)
 		{
 			if (CentralControl.isInside == true)
@@ -256,8 +267,10 @@ public class AudioController : MonoBehaviour {
 				leftFootMetal = FMOD_StudioSystem.instance.GetEvent("event:/LeftFootMetal");
 				leftFootMetal.getParameter("Selector", out leftFootMetalSelector);
 				leftFootMetal.getParameter("InsideOutside", out leftFootMetalInsideOutside);
+				leftFootMetal.getParameter("AirlockPressure", out leftFootMetalAirlockPressure);
 				leftFootMetalSelector.setValue(Random.Range (1f, 11f));
 				leftFootMetalInsideOutside.setValue(.5f);
+				leftFootMetalAirlockPressure.setValue(controllerSoundPressure);
 				leftFootMetal.start();
 				leftFootMetal.release ();
 			}
@@ -279,8 +292,10 @@ public class AudioController : MonoBehaviour {
 				rightFootMetal = FMOD_StudioSystem.instance.GetEvent("event:/RightFootMetal");
 				rightFootMetal.getParameter("Selector", out rightFootMetalSelector);
 				rightFootMetal.getParameter("InsideOutside", out rightFootMetalInsideOutside);
+				rightFootMetal.getParameter("AirlockPressure", out rightFootMetalAirlockPressure);
 				rightFootMetalSelector.setValue(Random.Range(1f, 11f));
 				rightFootMetalInsideOutside.setValue(.5f);
+				rightFootMetalAirlockPressure.setValue(controllerSoundPressure);
 				rightFootMetal.start();
 				rightFootMetal.release ();
 			}
