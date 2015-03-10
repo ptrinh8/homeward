@@ -42,17 +42,19 @@ public class Refining : MonoBehaviour
     private KeyCode keyToAddItemsFromMainPlayerInventory = KeyCode.K;
     private KeyCode keyToAddItemsDirectlyToModuleinventory = KeyCode.L;
 
-	private AudioController audioController;
+	public AudioController audioController;
 	public float distanceBetweenPlayerAndRefinery;
 	private FMOD.Studio.EventInstance refineryMachine;
 	private FMOD.Studio.ParameterInstance startingStopping;
 	private FMOD.Studio.ParameterInstance distance;
+	private FMOD.Studio.ParameterInstance airlockPressure;
 	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
 	private float refineryStartingStopping;
 	private float refineryDistance;
 	private bool refineryStarted;
     private bool startRefiningProcess = false;
     private float time = 0.0F;
+	public float refinerySoundPressure;
 
     private void MineralsValidations()
     {
@@ -117,6 +119,8 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		refineryMachine.getParameter("StartingStopping", out startingStopping);
 		refineryMachine.getParameter("Distance", out distance);
+		refineryMachine.getParameter("AirlockPressure", out airlockPressure);
+		refinerySoundPressure = 0f;
 		refineryDistance = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
@@ -131,6 +135,7 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
 		distance.setValue(refineryDistance);
+		airlockPressure.setValue(GameObject.Find ("AudioObject").GetComponent<AudioController>().controllerPressure);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
         if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {
