@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 {
     private Mining minerals;
 	private DayNightController dayNightController;
+    private Spaceship spaceship;
+    private EndGame endgame;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -22,7 +24,6 @@ public class PlayerController : MonoBehaviour
 	private int animateZone;            //Specifies the direction of the astronaut's animation (up, down, left, right)
 	private bool frameAscending;        //boolean to tell AnimateFrames if spritesheet animation frame is increasing
 	private bool frameDescending;       //boolean to tell AnimateFrames if spritesheet animation frame is decreasing
-	private int leftRightFootstep = 0;
 
 	public float miningSpeed;	        // mining speed per sec
 	public float miningTimer;	        // record mining time
@@ -59,15 +60,7 @@ public class PlayerController : MonoBehaviour
     private float healthbarPositionMaxX, staminabarPositionMaxX;
     private float currentHealth, currentStamina;
 
-	//AUDIO STUFF
 	private AudioController audioController;
-	private int songSelected;
-	private float songLength;
-	public float songTimer;
-	private float songSilenceLength;
-	public float songSilenceTimer;
-	public bool isSongPlaying;
-	public bool isSongQueued;
 
     public float CurrentHealth
     {
@@ -97,7 +90,7 @@ public class PlayerController : MonoBehaviour
     
     public GameObject playerInventory;
     
-    public static bool showPlayerInventory;
+    private static bool showPlayerInventory;
 
     public static bool ShowPlayerInventory
     {
@@ -113,13 +106,28 @@ public class PlayerController : MonoBehaviour
         set { keyCode_I_Works = value; }
     }
 
+    private void EndDemo()
+    {
+        if (spaceship.playerInsideSpaceship == true)
+        {
+            spaceship.DemoEnds = true;
+        }
+        if (spaceship.endDemo == true)
+        {
+            rigidbody2D.velocity = new Vector2(0F, 0);
+            endgame.EndScene();
+        }
+    }
+
 	void Start () 
 	{
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
+        spaceship = FindObjectOfType(typeof(Spaceship)) as Spaceship;
+        endgame = FindObjectOfType(typeof(EndGame)) as EndGame;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-		
+
 		speed = 1.0f;
-		animateSpeed = .15f;
+		animateSpeed = .1f;
 		animateTime = 0f;
 		frameAscending = true;
 		frameDescending = false;
@@ -162,20 +170,14 @@ public class PlayerController : MonoBehaviour
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
-        playerInventory.AddComponent<UIInventory>();
 
-		songLength = 120f;
-		songSilenceLength = 180f;
-		songTimer = 0f;
-		songSilenceTimer = 0f;
-		isSongQueued = false;
-		isSongPlaying = false;
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
 	void Update () 
 	{
 		zoomInWhenIndoor();
+        EndDemo();
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
         {
@@ -183,38 +185,6 @@ public class PlayerController : MonoBehaviour
             {
             }
         }
-
-		if (isSongQueued == true)
-		{
-			songSilenceTimer += Time.deltaTime;
-			if (songSilenceTimer > songSilenceLength)
-			{
-				//Debug.Log("silence over");
-				if (isSongPlaying == false)
-				{
-					audioController.MusicControl(1, songSelected);
-					isSongPlaying = true;
-				}
-			}
-		}
-		else if (isSongQueued == false)
-		{
-			Debug.Log ("starting coroutine");
-			StartCoroutine(MusicTrigger());
-		}
-
-		if (isSongPlaying == true)
-		{
-			songTimer += Time.deltaTime;
-			if (songTimer > songLength)
-			{
-				audioController.MusicControl(2, songSelected);
-				songTimer = 0;
-				songSilenceTimer = 0;
-				isSongPlaying = false;
-				isSongQueued = false;
-			}
-		}
 
 		/*** if inside in a module turn the flag on ***/
 		if (CentralControl.isInside)
@@ -226,12 +196,6 @@ public class PlayerController : MonoBehaviour
 					isRepairing = true;
 				}
 			}
-
-			audioController.DroneControl(0);
-		}
-		else if (CentralControl.isInside == false)
-		{
-			audioController.DroneControl(1);
 		}
 
 		if (health > 0)
@@ -280,12 +244,13 @@ public class PlayerController : MonoBehaviour
                     Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                 }
             }
-            else
+            if (!showPlayerInventory)
             {
                 playerInventory.SetActive(true);
                 playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
             }
+
             /*******************************************************************
              * Inventory END
              * *****************************************************************/
@@ -363,58 +328,35 @@ public class PlayerController : MonoBehaviour
 	            isMining = false;
 	        }
             */
-            x = y = 0.0f;
-            Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-
-            if (!showPlayerInventory)
+            if (!spaceship.endDemo)
             {
                 x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
                 y = Input.GetAxisRaw("Vertical");
-            }
-            else
-            {
-                if (Input.GetKey(KeyCode.A))
-                {
-                    x = -1.0f;
-                }
-                else if (Input.GetKey(KeyCode.D))
-                {
-                    x = 1.0f;
-                }
-                if (Input.GetKey(KeyCode.W))
-                {
-                    y = 1.0f;
-                }
-                else if (Input.GetKey(KeyCode.S))
-                {
-                    y = -1.0f;
-                }
-            }
-			
-            direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-			rigidbody2D.velocity = direction * speed;   // speed is changable by us
+                Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+                rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
-			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-			if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
-			{
-				AnimateFrames(1);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
-			}
-			else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
-			{
-				AnimateFrames(0);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
-			}
-			else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
-			{
-				AnimateFrames(3);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
-			else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
-			{
-				AnimateFrames(2);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
+                //using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
+                if (rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
+                {
+                    AnimateFrames(1);
+                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+                }
+                else if (rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
+                {
+                    AnimateFrames(0);
+                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+                }
+                else if (rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
+                {
+                    AnimateFrames(3);
+                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+                }
+                else if (rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
+                {
+                    AnimateFrames(2);
+                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+                }
+            }
 		}
 	}
     
@@ -431,26 +373,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 0) //bottom of iterator zone, should ascend
 				{
-					//audioController.PlayFootstep(0);
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
-				else if (animateIterator == 1)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
 				else if (animateIterator == 2) // top of iterator zone, should descend
 				{
-					//audioController.PlayFootstep(1);
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -472,26 +401,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 3)
 				{
-					//audioController.PlayFootstep(0);
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
-				else if (animateIterator == 4)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
 				else if (animateIterator == 5)
 				{
-					//audioController.PlayFootstep(1);
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -513,26 +429,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 6)
 				{
-					//audioController.PlayFootstep(0);
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
-				else if (animateIterator == 7)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
 				else if (animateIterator == 8)
 				{
-					//audioController.PlayFootstep(1);
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -554,26 +457,13 @@ public class PlayerController : MonoBehaviour
 			{
 				if (animateIterator == 9)
 				{
-					//audioController.PlayFootstep(0);
+					audioController.PlayFootstep(0);
 					frameAscending = true;
 					frameDescending = false;
 				}
-				else if (animateIterator == 10)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
 				else if (animateIterator == 11)
 				{
-					//audioController.PlayFootstep(1);
+					audioController.PlayFootstep(1);
 					frameAscending = false;
 					frameDescending = true;
 				}
@@ -701,9 +591,6 @@ public class PlayerController : MonoBehaviour
         {
             healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
         }
-
-        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250.0f); // 250 = width of the health bar
-        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 25.0f); // 25 = height of the health bar
     }
 
     private void manageStamina()
@@ -732,20 +619,4 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(coolDown);
         onCoolDown = false;
     }
-
-	IEnumerator MusicTrigger()
-	{
-		Debug.Log ("checking trigger");
-		if (Random.Range (0, 4) > 2)
-		{
-			Debug.Log ("song queued");
-			if (isSongPlaying == false)
-			{
-				Debug.Log ("selecting song");
-				songSelected = Random.Range(1, 5);
-				isSongQueued = true;
-			}
-		}
-		yield return new WaitForSeconds(30f);
-	}
 }

@@ -12,7 +12,7 @@ public class Deployable : MonoBehaviour {
 	[HideInInspector]
 	public bool isDeploying;	// Whether this module is deploying
 	public float maxLength;		// Max stretch length 
-	public GameObject moduleUnfinished;	// Detached blueprint(prefabs)
+	public GameObject haitatModuleUnfinished;	// Detached blueprint(prefabs)
 	private int matchedPoint;	// record which detector is "matched"
 	private Color color;
 
@@ -41,10 +41,9 @@ public class Deployable : MonoBehaviour {
 		}
 		// Condition to detach the blueprint
 		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
-			Instantiate(moduleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
+			Instantiate(haitatModuleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
 			isDeploying = false;
 			Reset();
-            Building.isDeploying = false;
 		}
 
 		// Rotation
@@ -93,6 +92,5 @@ public class Deployable : MonoBehaviour {
 		gameObject.SetActive(false);
 		for (int i = 0; i < detector.Length; i++) 
 			detector[i].matched = false;
-        Building.isDeploying = false;
 	}
 }

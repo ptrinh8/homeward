@@ -2,23 +2,13 @@
 using System.Collections;
 
 public class AudioController : MonoBehaviour {
-	private FMOD.Studio.EventInstance music1;
-	private FMOD.Studio.EventInstance music2;
-	private FMOD.Studio.EventInstance music3;
-	private FMOD.Studio.EventInstance music4;
+	private FMOD.Studio.EventInstance music;
 	private FMOD.Studio.EventInstance leftFootMetal;
 	private FMOD.Studio.EventInstance rightFootMetal;
 	private FMOD.Studio.EventInstance leftFootSand;
 	private FMOD.Studio.EventInstance rightFootSand;
 	private FMOD.Studio.EventInstance mining;
-	private FMOD.Studio.EventInstance drone;
-	private FMOD.Studio.EventInstance refineryMachine;
-
-
-	public FMOD.Studio.ParameterInstance stemTrigger1;
-	public FMOD.Studio.ParameterInstance stemTrigger2;
-	public FMOD.Studio.ParameterInstance stemTrigger3;
-	public FMOD.Studio.ParameterInstance stemTrigger4;
+	private FMOD.Studio.ParameterInstance stemTrigger;
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
 	private FMOD.Studio.ParameterInstance leftFootSandSelector;
@@ -29,226 +19,28 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance rightFootSandInsideOutside;
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
-	private FMOD.Studio.ParameterInstance droneVolume;
-	private FMOD.Studio.ParameterInstance startingStopping;
-
-	public FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
-	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
-	public float stemTriggerValue1;
-	public float stemTriggerValue2;
-	public float stemTriggerValue3;
-	public float stemTriggerValue4;
-	public float droneVolumeValue;
-	private float refineryStartingStopping;
+	public float stemTriggerValue;
 	private PlayerController player;
-
-	private bool refineryStarted;
-
-	public bool refineryMachineWorking;
-
-	public int songSelectNumber;
-	public float songTriggerValue;
-	public bool songPlaying;
-	public FMOD.Studio.PLAYBACK_STATE song1PlaybackState;
-	public FMOD.Studio.PLAYBACK_STATE song2PlaybackState;
-	public FMOD.Studio.PLAYBACK_STATE song3PlaybackState;
-	public FMOD.Studio.PLAYBACK_STATE song4PlaybackState;
-	private FMOD.Studio.EventInstance currentSong;
 	// Use this for initialization
 	void Start () {
-		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
-		music2 = FMOD_StudioSystem.instance.GetEvent("event:/Music2");
-		music3 = FMOD_StudioSystem.instance.GetEvent("event:/Music3");
-		music4 = FMOD_StudioSystem.instance.GetEvent("event:/Music4");
-		drone = FMOD_StudioSystem.instance.GetEvent("event:/Drone");
-		refineryMachine = FMOD_StudioSystem.instance.GetEvent("event:/RefineryMachine");
+		music = FMOD_StudioSystem.instance.GetEvent("event:/MusicTrigger");
 		//music.start();
-		music1.getParameter("MusicTrigger", out stemTrigger1);
-		music2.getParameter("MusicTrigger", out stemTrigger2);
-		music3.getParameter("MusicTrigger", out stemTrigger3);
-		music4.getParameter("MusicTrigger", out stemTrigger4);
-		drone.getParameter("Volume", out droneVolume);
-		drone.getPlaybackState(out dronePlaybackState);
-		refineryMachine.getPlaybackState(out refineryPlaybackState);
-		refineryMachine.getParameter("StartingStopping", out startingStopping);
-		stemTriggerValue1 = 0f;
-		stemTriggerValue2 = 0f;
-		stemTriggerValue3 = 0f;
-		stemTriggerValue4 = 0f;
-		songTriggerValue = 0f;
-		droneVolumeValue = 0f;
-		refineryStartingStopping = 0f;
-		refineryStarted = false;
+		music.getParameter("StemSelector", out stemTrigger);
+		stemTriggerValue = 0f;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
-		songPlaying = false;
 	}
 	// Update is called once per frame
 	void Update () {
 		//stemTrigger.setValue(stemTriggerValue);
-
-		drone.getPlaybackState(out dronePlaybackState);
-		refineryMachine.getPlaybackState(out refineryPlaybackState);
-		music1.getPlaybackState(out song1PlaybackState);
-		music2.getPlaybackState(out song2PlaybackState);
-		music3.getPlaybackState(out song3PlaybackState);
-		music4.getPlaybackState(out song4PlaybackState);
-
-		if (songPlaying == true)
-		{
-			if (songTriggerValue < 1.51f)
-			{
-				songTriggerValue += .001f;
-				switch(songSelectNumber)
-				{
-				case 1:
-					stemTrigger1.setValue(songTriggerValue);
-					//Debug.Log ("setting value 1");
-					break;
-				case 2:
-					stemTrigger2.setValue(songTriggerValue);
-					//Debug.Log ("setting value 2");
-					break;
-				case 3:
-					stemTrigger3.setValue(songTriggerValue);
-					//Debug.Log ("setting value 3");
-					break;
-				case 4:
-					stemTrigger4.setValue(songTriggerValue);
-					//Debug.Log ("setting value 4");
-					break;
-				}
-			}
-		}
-		else if (songPlaying == false)
-		{
-			if (songTriggerValue >= 0f)
-			{
-				songTriggerValue -= .001f;
-				switch(songSelectNumber)
-				{
-				case 1:
-					stemTrigger1.setValue(songTriggerValue);
-					break;
-				case 2:
-					stemTrigger2.setValue(songTriggerValue);
-					break;
-				case 3:
-					stemTrigger3.setValue(songTriggerValue);
-					break;
-				case 4:
-					stemTrigger4.setValue(songTriggerValue);
-					break;
-				}
-			}
-			else if (songTriggerValue < 0f)
-			{
-				switch(songSelectNumber)
-				{
-				case 1:
-					music1.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-					break;
-				case 2:
-					music2.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-					break;
-				case 3:
-					music3.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-					break;
-				case 4:
-					music4.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-					break;
-				}
-			}
-		}
-
 	}
 	void OnDisable()
 	{
-		music1.release();
-		music2.release();
-		music3.release();
-		music4.release();
-	}
-
-	public void MusicControl(int controlNumber, int songNumber)
-	{
-		songSelectNumber = songNumber;
-		// 1 = play, 2 = stop
-		if (controlNumber == 1)
-		{
-			Debug.Log("song playing");
-			if (songPlaying == false)
-			{
-				switch(songSelectNumber)
-				{
-				case 1:
-					music1.start();
-					break;
-				case 2:
-					music2.start();
-					break;
-				case 3:
-					music3.start();
-					break;
-				case 4:
-					music4.start();
-					break;
-				}
-				songPlaying = true;
-			}
-		}
-		else if (controlNumber == 2)
-		{
-			if (songPlaying == true)
-			{
-				songPlaying = false;
-			}
-		}
-	}
-
-	public void DroneControl(int controlNumber)
-	{
-		if (controlNumber == 0)
-		{
-			if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.STOPPED)
-			{
-				drone.start();
-			}
-
-			if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING)
-			{
-				if (droneVolumeValue < 10f)
-				{
-					droneVolumeValue += .5f;
-					droneVolume.setValue(droneVolumeValue);
-				}
-				else
-				{
-					droneVolume.setValue(10f);
-				}
-			}
-		}
-		else if (controlNumber == 1)
-		{
-			if (droneVolumeValue > 0f)
-			{
-				droneVolumeValue -= .5f;
-				droneVolume.setValue(droneVolumeValue);
-			}
-			
-			if (droneVolumeValue <= 0f)
-			{
-				if (dronePlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING)
-				{
-					drone.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-				}
-			}
-		}
+		music.release();
 	}
 
 
 	public void PlayFootstep(int footstep)
 	{
-		Debug.Log ("playing footstep");
 		if (footstep == 0)
 		{
 			if (CentralControl.isInside == true)
@@ -318,33 +110,6 @@ public class AudioController : MonoBehaviour {
 			miningInsideOutside.setValue(1.75f);
 			mining.start();
 			mining.release ();
-		}
-	}
-	
-	public void RefineryMachineControl(int controlNumber)
-	{
-		if (controlNumber == 0)
-		{
-			if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.STOPPED && refineryStarted == false)
-			{
-				refineryMachine.start();
-				refineryStarted = true;
-			}
-		}
-		else if (controlNumber == 1)
-		{
-			if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING && refineryStarted == true)
-			{
-				refineryStartingStopping = 2.5f;
-				startingStopping.setValue(refineryStartingStopping);
-				refineryStarted = false;
-			}
-		}
-
-		if (refineryPlaybackState == FMOD.Studio.PLAYBACK_STATE.PLAYING && refineryStarted == true)
-		{
-			refineryStartingStopping = 1.5f;
-			startingStopping.setValue(refineryStartingStopping);
 		}
 	}
 }

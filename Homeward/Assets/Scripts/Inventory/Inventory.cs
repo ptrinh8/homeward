@@ -8,9 +8,11 @@ public class Inventory : MonoBehaviour {
     
     private KeyCode invKey = KeyCode.I;
 
-    public RectTransform inventoryRect;
+    private RectTransform inventoryRect;
 
     private float inventoryWidth, inventoryHeight;
+
+    private bool showInventory;
 
     public int slots; // set in inspector
 
@@ -22,7 +24,9 @@ public class Inventory : MonoBehaviour {
 
     public GameObject slotPrefab;
 
-    public List<GameObject> allSlots;
+    private List<GameObject> allSlots;
+
+    private static Slot from, to;
 
     public GameObject iconPrefab; // icon to follow the cursor
 
@@ -46,8 +50,6 @@ public class Inventory : MonoBehaviour {
     {
         get { return emptySlots == 0; }
     }
-
-
 
 	void Start () 
     {
@@ -75,8 +77,6 @@ public class Inventory : MonoBehaviour {
 
         int columns = slots / rows;
 
-        
-
         for (int y = 0; y < rows; y++)
         {
             for (int x = 0; x < columns; x++)
@@ -86,10 +86,12 @@ public class Inventory : MonoBehaviour {
                 RectTransform slotRect = newSlot.GetComponent<RectTransform>();
 
                 newSlot.name = "Slot";
+
                 newSlot.transform.SetParent(this.transform.parent);
                 newSlot.transform.localScale = new Vector3(1, 1, 1);
 
                 slotRect.localPosition = inventoryRect.localPosition + new Vector3(slotPaddingLeft * (x + 1) + (slotSize * x), -slotPaddingTop * (y + 1) - (slotSize * y));
+
                 slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize);
                 slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize);
 
@@ -98,25 +100,11 @@ public class Inventory : MonoBehaviour {
         }
     }
 
-    
-
-    
-    
-    
-    
-    
-    /*****************************************************************************************************************/
 	void Update () 
     {
+        //HandleMouseInput();
 	}
-    /*******************************************************************************************************************/
 
-
-
-
-
-
-   
     public bool AddItem(Item item)
     {
         if (item.maxSize == 1)
@@ -242,11 +230,11 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+         //   Debug.Log("This Inventory is Empty");
         }
         else
         {
-            Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
+            // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
 
             foreach (GameObject slot in allSlots)
             {
@@ -254,7 +242,7 @@ public class Inventory : MonoBehaviour {
 
                 if(!tmp.IsEmpty)
                 {
-                     Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                    // Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
         }
@@ -308,8 +296,99 @@ public class Inventory : MonoBehaviour {
         }
     }
 
+    /**************************************************************************
+     * use this until I figure out GUI handling with arrow keys
+     * ***************************************************************************/
+    private void HandleMouseInput()
+    {
+        if (Input.GetMouseButtonUp(0)) // 0 = left click // moveitem
+        {
+            if (!eventSystem.IsPointerOverGameObject(-1) && from != null) // -1 = mouse pointer
+            {
+                from.GetComponent<Image>().color = Color.white;
+                from.ClearSlot();
+                Destroy(GameObject.Find("Hover"));
+                to = null;
+                from = null;
+                hoverObject = null;
+            }
+        }
+
+        //if (Input.GetMouseButtonUp(1)) // 1 = right click // use item
+        //{
+        //    //Debug.Log("asdfasdfasdfasdf");
+        //    if (!eventSystem.IsPointerOverGameObject(-1) && from != null) // -1 = mouse pointer
+        //    {
+        //        Debug.Log("asdfasdfasdfasdf");
+        //        from.GetComponent<Slot>().GetItem();
+        //    }
+        //}
+
+        if (hoverObject != null)
+        {
+            /*** make the item hover along to the cursor ***/
+            Vector2 position;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Input.mousePosition, canvas.worldCamera, out position);
+            position.Set(position.x, position.y - hoverYOffset);
+            hoverObject.transform.position = canvas.transform.TransformPoint(position);
+        }
 
 
+    }
 
+    /****************************************************************************
+     * Moves item when left clicked
+     * **************************************************************************/
+    public void MoveItem(GameObject clicked)
+    {
+        if (from == null)
+        {
+            if (!clicked.GetComponent<Slot>().IsEmpty)
+            {
+                from = clicked.GetComponent<Slot>();
+                from.GetComponent<Image>().color = Color.grey;
 
+                hoverObject = Instantiate(iconPrefab) as GameObject;
+                hoverObject.GetComponent<Image>().sprite = clicked.GetComponent<Image>().sprite;
+                hoverObject.name = "Hover";
+
+                RectTransform hoverTransform = hoverObject.GetComponent<RectTransform>();
+                RectTransform clickedTransform = clicked.GetComponent<RectTransform>();
+
+                hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, clickedTransform.sizeDelta.x);
+                hoverTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, clickedTransform.sizeDelta.y);
+
+                hoverObject.transform.SetParent(GameObject.Find("Canvas").transform, true);
+                hoverObject.transform.localScale = from.gameObject.transform.localScale;
+
+            }
+        }
+        else if (to == null)
+        {
+            to = clicked.GetComponent<Slot>();
+            Destroy(GameObject.Find("Hover"));
+        }
+
+        if (to != null && from != null)
+        {
+            Stack<Item> tmpTo = new Stack<Item>(to.Items);
+
+            to.AddItems(from.Items);
+
+            if (tmpTo.Count == 0)
+            {
+                from.ClearSlot();
+            }
+            else
+            {
+                from.AddItems(tmpTo);
+            }
+
+            from.GetComponent<Image>().color = Color.white;
+
+            to = null;
+            from = null;
+            hoverObject = null;
+        }
+    }
 }

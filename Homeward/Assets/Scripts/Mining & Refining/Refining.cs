@@ -35,22 +35,13 @@ public class Refining : MonoBehaviour
     public Sprite noPowerSupplyTexture;
     private GameObject refineryModule;
 
-    public bool showPlayerAndModuleInventory; // takahide made it public to use this outside
+    private bool showPlayerAndModuleInventory;
     public GameObject moduleInventory;
     private GameObject mainPlayer;
 
     private KeyCode keyToAddItemsFromMainPlayerInventory = KeyCode.K;
     private KeyCode keyToAddItemsDirectlyToModuleinventory = KeyCode.L;
 
-	private AudioController audioController;
-	public float distanceBetweenPlayerAndRefinery;
-	private FMOD.Studio.EventInstance refineryMachine;
-	private FMOD.Studio.ParameterInstance startingStopping;
-	private FMOD.Studio.ParameterInstance distance;
-	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
-	private float refineryStartingStopping;
-	private float refineryDistance;
-	private bool refineryStarted;
     private bool startRefiningProcess = false;
     private float time = 0.0F;
 
@@ -68,14 +59,14 @@ public class Refining : MonoBehaviour
 
     private void RefiningProcess(SpriteRenderer refineryModuleSpriteRenderer)
     {
-        startTimer();
+        StartTimer();
         updateNumberOfRefinedMinerals = false;
         refineryModuleSpriteRenderer.sprite = activeTexture;
 
         if (loadingUpdateTime == time)
         {
             Debug.Log("ClockStarted");
-            stopTimer();
+            StopTimer();
             refineryModuleSpriteRenderer.sprite = deactiveTexture;
 
             if (!updateNumberOfRefinedMinerals)
@@ -111,26 +102,13 @@ public class Refining : MonoBehaviour
         mainPlayer = GameObject.Find("MainPlayer");
         refineryModule = gameObject;
         worldSpacePos = Camera.main.WorldToViewportPoint(gameObject.transform.position);
-		
-		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
-		refineryMachine = FMOD_StudioSystem.instance.GetEvent("event:/RefineryMachine");
-		refineryMachine.getPlaybackState(out refineryPlaybackState);
-		refineryMachine.getParameter("StartingStopping", out startingStopping);
-		refineryMachine.getParameter("Distance", out distance);
-		refineryDistance = 0f;
-		refineryStartingStopping = 0f;
-		refineryStarted = false;
-        time = 50000.0F * Time.deltaTime;
+
+        time = 2500.0F * Time.deltaTime;
         
 	}
 
     void Update()
     {
-		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		//Debug.Log(distanceBetweenPlayerAndRefinery);
-		refineryMachine.getPlaybackState(out refineryPlaybackState);
-		startingStopping.setValue(refineryStartingStopping);
-		distance.setValue(refineryDistance);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
         if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {
@@ -141,7 +119,7 @@ public class Refining : MonoBehaviour
             refineryModuleSpriteRenderer.sprite = deactiveTexture;
         }
 
-        changeLoadingToPercent();
+        ChangeLoadingToPercent();
         MineralsValidations();
 
         if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
@@ -158,43 +136,10 @@ public class Refining : MonoBehaviour
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount > 0)
-		{
-			if (refineryStarted == false)
-			{
-				refineryMachine.start();
-				refineryStartingStopping = 1.5f;
-				refineryStarted = true;
-			}
-		}
-		else
-		{
-			if (refineryStarted == true)
-			{
-				refineryStartingStopping = 2.5f;
-				refineryStarted = false;
-			}
-		}
-		
-        if (!addRefinedMineralOnce)
+        if (startRefiningProcess == true)
         {
-            addRefinedMineralOnce = true;
-            Item item = GameObject.Find("Material").GetComponent<Item>();
-            moduleInventory.GetComponent<Inventory>().AddItem(item);
-            //mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-            moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
-            timerReached = false;
-        }                
 
-		if(startRefiningProcess == true)
-		{
-			
-		}
-	}
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        UIInventory.SetModuleInventory(moduleInventory); // takahide added
+        }
     }
 
     void OnTriggerStay2D(Collider2D other)
@@ -251,21 +196,20 @@ public class Refining : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        //UIInventory.SetModuleInventory(null);
     }
 
-    void startTimer()
+    void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
         if (loadingUpdateTime == time) { timerReached = true; }
     }
 
-    void stopTimer()
-	{
+    void StopTimer()
+    {
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
     }
 
-    void changeLoadingToPercent()
+    void ChangeLoadingToPercent()
     {
         loadingPercent = loadingUpdateTime/5;
     }

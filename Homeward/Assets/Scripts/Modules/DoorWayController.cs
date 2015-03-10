@@ -8,15 +8,6 @@ public class DoorWayController : MonoBehaviour {
 	private Transform childObject;
 	private CentralControl center;
 	private LocalControl local;
-    private GameObject connectedTo;
-
-    public GameObject ConnectedTo
-    {
-        get
-        {
-            return connectedTo;
-        }
-    }
 	// Use this for initialization
 	void Start () {
 	}
@@ -28,19 +19,9 @@ public class DoorWayController : MonoBehaviour {
 
 	void OnTriggerEnter2D (Collider2D other) {
 		if (other.gameObject.tag == "Connect Point") {
-            connectedTo = other.gameObject;
-            foreach (Transform child in transform) {
-                if (child.gameObject.name.Contains("Door Way"))
-                    child.gameObject.GetComponent<Enterable>().isDoorway = false;
-                if (child.gameObject.name.Contains("Wall"))
-                    child.gameObject.SetActive(false);
-                if (child.gameObject.name.Contains("Airlock"))
-                {
-                    child.gameObject.SetActive(true);
-                    child.gameObject.GetComponent<Airlock>().isDoorway = false;
-                }
-            }
-
+			childObject = transform.GetChild(0) as Transform;
+			childObject.gameObject.GetComponent<Enterable>().isDoorway = false;
+//			childObject.gameObject.SetActive(false);
 			// Situations whether "other" module is habitat module or other modules
 			if (gameObject.transform.root.gameObject.tag != "HabitatModule") {
 				center = other.gameObject.transform.root.gameObject.GetComponent<CentralControl>();

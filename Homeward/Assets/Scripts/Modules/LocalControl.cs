@@ -38,7 +38,7 @@ public class LocalControl : MonoBehaviour {
 	private bool isBroken, flag;
 	private Text moduleStatusText;
 	private int pos; 
-	private KeyCode repairKey = KeyCode.R;
+	private KeyCode repairKey = KeyCode.F;
 
 	private GameObject player;
 
@@ -57,14 +57,6 @@ public class LocalControl : MonoBehaviour {
 			return isPowered;
 		}
 	}
-
-    public bool IsBroken
-    {
-        get
-        {
-            return isBroken;
-        }
-    }
 	// Use this for initialization
 	void Start () {
 		connections = new List<GameObject>();
