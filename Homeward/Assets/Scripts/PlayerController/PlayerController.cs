@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-public class PlayerController : MonoBehaviour 
+public class PlayerController : MonoBehaviour
 {
     private Mining minerals;
 	private DayNightController dayNightController;
@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 	public float miningTimer;	        // record mining time
 	public bool miningNow, isMining;    // miningNow is the signal for mineral class
     public static bool isRepairing;
-	public GameObject textFinder;
+    public GameObject textFinder;
 
     private float zoomDuration = 1.0f;
     private float zoomElapsed = 0.0f;
@@ -36,17 +36,17 @@ public class PlayerController : MonoBehaviour
     private float zoomExitElapsed = 0.0f;
     private bool zoomTransition = false;
 
-	public float health;
-	public float stamina;
-	private float healthTimer;
-	private float staminaTimer;
-	private float dayLength;
-	private float nightLength;
-	private float timeUntilSleepPenalty;
-	public float staminaLostPerSecond;
-	public float healthLostPerSecond;
+    public float health;
+    public float stamina;
+    private float healthTimer;
+    private float staminaTimer;
+    private float dayLength;
+    private float nightLength;
+    private float timeUntilSleepPenalty;
+    public float staminaLostPerSecond;
+    public float healthLostPerSecond;
 
-	public bool canSleep;
+    public bool canSleep;
     [HideInInspector]
     public bool isKeyEnabled = true;
     private KeyCode consumeFoodKey = KeyCode.K;
@@ -72,7 +72,8 @@ public class PlayerController : MonoBehaviour
     public float CurrentHealth
     {
         get { return currentHealth; }
-        set { 
+        set
+        {
             currentHealth = value;
             manageHealth();
             manageStamina();
@@ -84,8 +85,8 @@ public class PlayerController : MonoBehaviour
     public float coolDown;
     private bool onCoolDown;
 
-	[HideInInspector]
-	public float x, y;
+    [HideInInspector]
+    public float x, y;
 
     public bool PlayerIsMiningNow
     {
@@ -94,9 +95,14 @@ public class PlayerController : MonoBehaviour
     }
 
     public static bool holdingRepairTool;
-    
+    public static bool holdingMiningTool;
+
     public GameObject playerInventory;
-    
+
+    public GameObject moduleSelection;
+
+    public static bool showModuleSelection;
+
     public static bool showPlayerInventory;
 
     public static bool ShowPlayerInventory
@@ -113,8 +119,13 @@ public class PlayerController : MonoBehaviour
         set { keyCode_I_Works = value; }
     }
 
-	void Start () 
-	{
+    /*** Tool Box UI ***/
+    public Image toolBoxUIImage;
+    public Sprite repairToolSprite;
+    public Sprite miningToolSprite;
+
+    void Start()
+    {
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		
@@ -130,18 +141,18 @@ public class PlayerController : MonoBehaviour
         isRepairing = false;
         holdingRepairTool = false;
 
-		health = 100;
-		stamina = 100f;
+        health = 100;
+        stamina = 100f;
 
-		canSleep = false;
+        canSleep = false;
 
         Camera.main.orthographic = true;
 
-		dayLength = dayNightController.dayCycleLength / 2;
-		nightLength = dayNightController.dayCycleLength / 2;
-		timeUntilSleepPenalty = (dayLength / 10) * 8;
-		staminaLostPerSecond = stamina / (dayLength + nightLength);
-		healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
+        dayLength = dayNightController.dayCycleLength / 2;
+        nightLength = dayNightController.dayCycleLength / 2;
+        timeUntilSleepPenalty = (dayLength / 10) * 8;
+        staminaLostPerSecond = stamina / (dayLength + nightLength);
+        healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
 
         /*** Initializing GUI variables ***/
         healthbarPositionY = healthTransform.position.y;
@@ -157,13 +168,13 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f); 
+        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
         playerInventory.AddComponent<UIInventory>();
-
+		
 		songLength = 120f;
 		songSilenceLength = 180f;
 		songTimer = 0f;
@@ -173,9 +184,19 @@ public class PlayerController : MonoBehaviour
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
-	void Update () 
-	{
-		zoomInWhenIndoor();
+    void Update()
+    {
+        zoomInWhenIndoor();
+
+        if (holdingRepairTool)
+        {
+            toolBoxUIImage.sprite = repairToolSprite;
+        }
+        else if (holdingMiningTool)
+        {
+            toolBoxUIImage.sprite = miningToolSprite;
+        }
+
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
         {
@@ -243,12 +264,15 @@ public class PlayerController : MonoBehaviour
                 //TODO
             }
 
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                showModuleSelection = !showModuleSelection;
+            }
+
             if (Input.GetKeyDown(KeyCode.I) == true && keyCode_I_Works)
             {
                 showPlayerInventory = !showPlayerInventory;
-                playerInventory.transform.position = new Vector3(9999.0f, Screen.height - 7.0f, 0.0f);
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
-                if(showPlayerInventory) playerInventory.GetComponent<Inventory>().DebugShowInventory();
             }
 
             /****************************************************************
@@ -258,13 +282,14 @@ public class PlayerController : MonoBehaviour
             {
                 playerInventory.SetActive(true);
                 playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
-                playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
                 playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
 
-        
+
                 if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
                 {
                     Item item = GameObject.Find("Mineral").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("Material").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                 }
 
@@ -272,12 +297,6 @@ public class PlayerController : MonoBehaviour
                 {
                     Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
-                }
-
-                // get item from player inventory and put it in the inventory he is at
-                if (Input.GetKeyDown(KeyCode.J)) // J is temporary. Delete this once you find how to add item.
-                {
-                    Item item = playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                 }
             }
             else
@@ -289,6 +308,16 @@ public class PlayerController : MonoBehaviour
             /*******************************************************************
              * Inventory END
              * *****************************************************************/
+
+            //if (showModuleSelection)
+            //{
+            //    moduleSelection.GetComponent<CanvasGroup>().alpha = 1;
+
+            //}
+            //else
+            //{
+            //    moduleSelection.GetComponent<CanvasGroup>().alpha = 0;
+            //}
 
             if (CentralControl.isInside)
             {
@@ -303,66 +332,67 @@ public class PlayerController : MonoBehaviour
 
             }
 
-			if (stamina <= 50)
-			{
-				healthTimer += Time.deltaTime;
-				if (healthTimer > 1f)
-				{
-					if(currentHealth > 0)
-					{
-						StartCoroutine(CoolDownDamage());
-						currentHealth -= healthLostPerSecond;
-						manageHealth();
-					}
-					health -= healthLostPerSecond;
-					healthTimer = 0;
-				}
-			}
-
-			if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
-			{
-				if (CentralControl.isInside == false)
-				{
-					healthTimer += Time.deltaTime;
-					if (healthTimer > nightLength / 5)
+            if (stamina <= 50)
+            {
+                healthTimer += Time.deltaTime;
+                if (healthTimer > 1f)
+                {
+                    if (currentHealth > 0)
                     {
-                        if(currentHealth > 0)
+                        StartCoroutine(CoolDownDamage());
+                        currentHealth -= healthLostPerSecond;
+                        manageHealth();
+                    }
+                    health -= healthLostPerSecond;
+                    healthTimer = 0;
+                }
+            }
+
+            if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
+            {
+                if (CentralControl.isInside == false)
+                {
+                    healthTimer += Time.deltaTime;
+                    if (healthTimer > nightLength / 5)
+                    {
+                        if (currentHealth > 0)
                         {
                             StartCoroutine(CoolDownDamage());
                             currentHealth -= healthLostPerSecond;
                             manageHealth();
                         }
-						health -= 26;
-						healthTimer = 0;
-					}
-				}
-			}
+                        health -= 26;
+                        healthTimer = 0;
+                    }
+                }
+            }
 
-			if (staminaTimer > 1f)
+            if (staminaTimer > 1f)
             {
-                if (currentStamina > 0){
+                if (currentStamina > 0)
+                {
                     StartCoroutine(CoolDownDamage());
                     currentStamina -= staminaLostPerSecond;
                     manageStamina();
                 }
 
                 stamina -= staminaLostPerSecond;
-				staminaTimer = 0;
-			}
+                staminaTimer = 0;
+            }
 
-	/*        // Mining control
-	        if ((isMining) && (miningTimer < miningSpeed))
-	        {
-	            if (playerStatus.maxMineralsHaveReached == false)
-	            miningTimer += Time.deltaTime;
-	        }
-	        else if (miningTimer > miningSpeed)
-	        {
-	            miningNow = true;
-	            miningTimer = 0;
-	            isMining = false;
-	        }
-            */
+            /*        // Mining control
+                    if ((isMining) && (miningTimer < miningSpeed))
+                    {
+                        if (playerStatus.maxMineralsHaveReached == false)
+                        miningTimer += Time.deltaTime;
+                    }
+                    else if (miningTimer > miningSpeed)
+                    {
+                        miningNow = true;
+                        miningTimer = 0;
+                        isMining = false;
+                    }
+                    */
             x = y = 0.0f;
             Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 
@@ -390,7 +420,7 @@ public class PlayerController : MonoBehaviour
                     y = -1.0f;
                 }
             }
-			
+
             direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 			rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
@@ -625,7 +655,7 @@ public class PlayerController : MonoBehaviour
             Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
             zoomTransition = false;
         }
-        else 
+        else
         {
             // Variables used in 'if' condition above
             zoomDuration = 1.0f;
@@ -643,43 +673,43 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-	void zoomInWhenIndoor()
-	{
-		GameObject mainPlayerGameObject = GameObject.Find("MainPlayer");
-		var mainPlayerPos = mainPlayerGameObject.transform.position;
-		int playerPosY = (int)mainPlayerPos.y;
-		int playerPosX = (int)mainPlayerPos.x;
-		
-		// If inside the falcon's boundaries, set zoomTransition = true
-		zoomTransition = CentralControl.isInside;
-		
-		if (zoomTransition)
-		{
-			// Variables used in 'else' condition below
-			zoomExitDuration = 1.0f;
-			zoomExitElapsed = 0.0f;
-			
-			zoomElapsed += Time.deltaTime / zoomDuration;
-			Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
-			zoomTransition = false;
-		}
-		else 
-		{
-			// Variables used in 'if' condition above
-			zoomDuration = 1.0f;
-			zoomElapsed = 0.0f;
-			
-			zoomExitElapsed += Time.deltaTime / zoomExitDuration;
-			if (Time.timeSinceLevelLoad < 1f)
-			{
-				Camera.main.orthographicSize = Mathf.Lerp(5, 5, zoomExitElapsed);
-			}
-			else
-			{
-				Camera.main.orthographicSize = Mathf.Lerp(2, 5, zoomExitElapsed);
-			}
-		}
-	}
+    void zoomInWhenIndoor()
+    {
+        GameObject mainPlayerGameObject = GameObject.Find("MainPlayer");
+        var mainPlayerPos = mainPlayerGameObject.transform.position;
+        int playerPosY = (int)mainPlayerPos.y;
+        int playerPosX = (int)mainPlayerPos.x;
+
+        // If inside the falcon's boundaries, set zoomTransition = true
+        zoomTransition = CentralControl.isInside;
+
+        if (zoomTransition)
+        {
+            // Variables used in 'else' condition below
+            zoomExitDuration = 1.0f;
+            zoomExitElapsed = 0.0f;
+
+            zoomElapsed += Time.deltaTime / zoomDuration;
+            Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
+            zoomTransition = false;
+        }
+        else
+        {
+            // Variables used in 'if' condition above
+            zoomDuration = 1.0f;
+            zoomElapsed = 0.0f;
+
+            zoomExitElapsed += Time.deltaTime / zoomExitDuration;
+            if (Time.timeSinceLevelLoad < 1f)
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(5, 5, zoomExitElapsed);
+            }
+            else
+            {
+                Camera.main.orthographicSize = Mathf.Lerp(2, 5, zoomExitElapsed);
+            }
+        }
+    }
 
     private float mapValues(float currentX, float inMin, float inMax, float minX, float maxX)
     {
@@ -690,7 +720,7 @@ public class PlayerController : MonoBehaviour
     {
         healthText.text = "Health:  " + currentHealth;
         float currentXHealth = mapValues(currentHealth, 0, maxHealth, healthbarPositionMinX, healthbarPositionMaxX);
-        
+
         healthTransform.position = new Vector3(currentXHealth, healthbarPositionY);
 
         if (currentHealth > maxHealth / 2)

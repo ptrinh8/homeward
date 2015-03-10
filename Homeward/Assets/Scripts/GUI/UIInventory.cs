@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class UIInventory : MonoBehaviour {
+public class UIInventory : MonoBehaviour
+{
 
     private int nthBox;
 
@@ -15,11 +16,11 @@ public class UIInventory : MonoBehaviour {
 
     private static Slot from, to;
 
-    private int slots;
+    private static int slots;
 
     private static GameObject playerInventory, moduleInventory;
 
-    private bool firstTimeFlag;
+    private static bool firstTimeFlag;
 
     private int playerInventoryRows;
 
@@ -29,19 +30,20 @@ public class UIInventory : MonoBehaviour {
 
     public GameObject iconPrefab; // icon to follow the cursor
 
-    private List<GameObject> allSlots;
+    private static List<GameObject> allSlots;
 
     public static void SetModuleInventory(GameObject moduleInv)
     {
         moduleInventory = moduleInv;
+        firstTimeFlag = true;
     }
 
 
 
 
 
-	// Use this for initialization
-	void Start () {
+    void Start()
+    {
         allSlots = new List<GameObject>();
         firstTimeFlag = true;
         nthBox = 0;
@@ -49,47 +51,54 @@ public class UIInventory : MonoBehaviour {
         playerInventoryRows = playerInventory.GetComponent<Inventory>().rows;
         playerInventorySlots = playerInventory.GetComponent<Inventory>().slots;
         selectionBoxSize = playerInventory.GetComponent<Inventory>().slotSize + 3.0f;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    void Update()
+    {
 
         if (PlayerController.showPlayerInventory)
         {
-            if (firstTimeFlag)
+            if (moduleInventory == null)
             {
-                if (moduleInventory != null)
+                if (firstTimeFlag)
                 {
+                    //playerInventory.GetComponent<Inventory>().DebugShowInventory();
+
+                    ResetUIInventory();
+                    slots = playerInventory.GetComponent<Inventory>().slots;
+                    allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
+                    drawSelectionBox(0, playerInventory);
+                }
+            }
+            else
+            {
+                if (firstTimeFlag)
+                {
+                    ResetUIInventory();
                     slots = playerInventory.GetComponent<Inventory>().slots + moduleInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     allSlots.AddRange(moduleInventory.GetComponent<Inventory>().allSlots);
-
-                    playerInventory.GetComponent<Inventory>().DebugShowInventory();
-                    Debug.Log("----");
-                    moduleInventory.GetComponent<Inventory>().DebugShowInventory();
+                    drawSelectionBox(0, playerInventory);
                 }
-                else
-                {
-                    slots = playerInventory.GetComponent<Inventory>().slots;
-                    allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
-                }
+            }
 
-                drawSelectionBox(0, playerInventory);
-                firstTimeFlag = false;
-}
-
+            firstTimeFlag = false;
             MoveSelectionBox();
             HandleKeyInput();
         }
         else
         {
-            eraseSelectionBox();
-            firstTimeFlag = true;
-            allSlots.Clear();
-            nthBox = 0;
+            ResetUIInventory();
         }
+    }
 
-	}
+    void ResetUIInventory()
+    {
+        eraseSelectionBox();
+        firstTimeFlag = true;
+        allSlots.Clear();
+        nthBox = 0;
+    }
 
     void drawSelectionBox(int nth, GameObject whichInventory)
     {
@@ -183,7 +192,7 @@ public class UIInventory : MonoBehaviour {
                     {
                         drawSelectionBox(nthBox - playerInventorySlots, moduleInventory);
                     }
-                }   
+                }
             }
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -259,7 +268,7 @@ public class UIInventory : MonoBehaviour {
 
     private void HandleKeyInput()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.G))
         {
             /*** search for slot ***/
             int i = 0;
@@ -275,6 +284,45 @@ public class UIInventory : MonoBehaviour {
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            int i = 0;
+
+            foreach (GameObject slot in allSlots)
+            {
+                Debug.Log("----------------------------");
+                if (i == nthBox)
+                {
+                    Debug.Log("----------------------------");
+                    if (GetSlot(slot) != null)
+                    {
+                        Debug.Log("----------------------------");
+                        Item item = GetSlot(slot).GetItem();
+
+                        //if (from != null)
+                        {
+                            if (item.itemName == ItemName.MiningTool)
+                            {
+                                PlayerController.holdingMiningTool = true;
+                                Debug.Log("holdingMiningTool");
+                            }
+                            else if (item.itemName == ItemName.RepairingTool)
+                            {
+                                PlayerController.holdingRepairTool = true;
+                                Debug.Log("holdingRepairTool");
+                            }
+                            else if (item.itemName == ItemName.Water)
+                            {
+
+                            }
+                        }
+                    }
+                }
+
+                i++;
+            }
+        }
+
         //if (hoverObject != null)
         //{
         //    /*** make the item hover along to the cursor ***/
@@ -283,6 +331,20 @@ public class UIInventory : MonoBehaviour {
         //    position.Set(position.x, position.y - hoverYOffset);
         //    hoverObject.transform.position = canvas.transform.TransformPoint(position);
         //}
+    }
+
+
+    private Slot GetSlot(GameObject clicked)
+    {
+        if (from == null)
+        {
+            if (!clicked.GetComponent<Slot>().IsEmpty)
+            {
+                return clicked.GetComponent<Slot>();
+            }
+        }
+
+        return null;
     }
 
     /****************************************************************************
