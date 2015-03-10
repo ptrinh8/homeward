@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlantController : MonoBehaviour {
+public class PlantController : MonoBehaviour 
+{
     private int maxPlantHealth; // plant's lifetime
     private int currentPlantHealth;
     private int plantLifeStages; // used to change the sprite of the plant (= number of png files)
@@ -10,7 +11,8 @@ public class PlantController : MonoBehaviour {
     public bool playerInWaterPosition = false;
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
         maxPlantHealth = 2;
         currentPlantHealth = maxPlantHealth;
         plantLifeStages = 8;

@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 {
     private Mining minerals;
 	private DayNightController dayNightController;
+    private Spaceship spaceship;
+    private EndGame endgame;
 
 	public float speed;
 	public Sprite[] sprites;
@@ -98,11 +100,8 @@ public class PlayerController : MonoBehaviour
     public static bool holdingMiningTool;
 
     public GameObject playerInventory;
-
     public GameObject moduleSelection;
-
     public static bool showModuleSelection;
-
     public static bool showPlayerInventory;
 
     public static bool ShowPlayerInventory
@@ -124,9 +123,24 @@ public class PlayerController : MonoBehaviour
     public Sprite repairToolSprite;
     public Sprite miningToolSprite;
 
+    private void EndDemo()
+    {
+        if (spaceship.playerInsideSpaceship == true)
+        {
+            spaceship.DemoEnds = true;
+        }
+        if (spaceship.endDemo == true)
+        {
+            rigidbody2D.velocity = new Vector2(0F, 0);
+            endgame.EndScene();
+        }
+    }
+
     void Start()
     {
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
+        spaceship = FindObjectOfType(typeof(Spaceship)) as Spaceship;
+        endgame = FindObjectOfType(typeof(EndGame)) as EndGame;
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		
 		speed = 1.0f;
@@ -187,6 +201,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         zoomInWhenIndoor();
+        EndDemo();
 
         if (holdingRepairTool)
         {
@@ -220,7 +235,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (isSongQueued == false)
 		{
-			Debug.Log ("starting coroutine");
+			// Debug.Log ("starting coroutine");
 			StartCoroutine(MusicTrigger());
 		}
 
@@ -765,13 +780,13 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator MusicTrigger()
 	{
-		Debug.Log ("checking trigger");
+		// Debug.Log ("checking trigger");
 		if (Random.Range (0, 4) > 2)
 		{
-			Debug.Log ("song queued");
+			// Debug.Log ("song queued");
 			if (isSongPlaying == false)
 			{
-				Debug.Log ("selecting song");
+				// Debug.Log ("selecting song");
 				songSelected = Random.Range(1, 5);
 				isSongQueued = true;
 			}
