@@ -86,19 +86,15 @@ public class PCG_Tiles : MonoBehaviour
                             tiles[i] = Instantiate(tile, new Vector3(_x[i], _y[i], 0), transform.rotation) as GameObject;
                             tiles[i].tag = "FinalTextures";
 
-                            if (rand.tempRndNosRock1[i] < 0.25F)
-                            {
-                                tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureC.GetComponentInChildren<SpriteRenderer>().sprite;
-                            }
-                            else if ((rand.tempRndNosRock1[i] < 0.50F) && (rand.tempRndNosRock1[i] > 0.25F))
+                            if ((rand.tempRndNosRock1[i] < 0.33F) && (rand.tempRndNosRock1[i] > 0.00F))
                             {
                                 tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureB.GetComponentInChildren<SpriteRenderer>().sprite;
                             }
-                            else if (rand.tempRndNosRock1[i] < 0.75F && (rand.tempRndNosRock1[i] > 0.50F))
+                            else if (rand.tempRndNosRock1[i] < 0.66F && (rand.tempRndNosRock1[i] > 0.33F))
                             {
                                 tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureA.GetComponentInChildren<SpriteRenderer>().sprite;
                             }
-                            else if (rand.tempRndNosRock1[i] > 0.75F)
+                            else if (rand.tempRndNosRock1[i] > 0.66F)
                             {
                                 tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureD.GetComponentInChildren<SpriteRenderer>().sprite;
                             }
