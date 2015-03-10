@@ -93,7 +93,6 @@ public class CentralControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log("cool");
 		if (isEnterOutpost) {
 			if (spriteRenderer.sprite != indoorSprite)
 				ShowInside();

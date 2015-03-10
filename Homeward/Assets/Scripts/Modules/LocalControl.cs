@@ -85,7 +85,6 @@ public class LocalControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log("cool");
 		if (checkFlag) {
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;

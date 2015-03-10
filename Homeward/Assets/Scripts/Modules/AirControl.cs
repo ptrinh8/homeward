@@ -11,6 +11,8 @@ public class AirControl : MonoBehaviour {
     public Scrollbar airPressureBar;
     public int manuallyOperateDifficulty;
 
+    private LocalControl moduleControl;
+
     public bool Air
     {
         get
@@ -64,6 +66,8 @@ public class AirControl : MonoBehaviour {
         air = true;
         timer = duration;
         flag = 0;
+
+        moduleControl = gameObject.transform.root.gameObject.GetComponent<LocalControl>();
 	}
 	
 	// Update is called once per frame
@@ -82,6 +86,7 @@ public class AirControl : MonoBehaviour {
             {
                 airPressureBar.size = 1;
                 flag = 0;
+                air = true;
             }
         }
         else if (flag == -1)
@@ -94,7 +99,19 @@ public class AirControl : MonoBehaviour {
             {
                 airPressureBar.size = 0;
                 flag = 0;
+                air = false;
             }
         }
 	}
+    void AirModuleActivite()
+    {
+        if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
+        {
+            if (air)
+                flag = -1;
+            else
+                flag = 1;
+        }
+    }
+
 }
