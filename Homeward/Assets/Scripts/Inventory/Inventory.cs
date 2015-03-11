@@ -16,7 +16,7 @@ public class Inventory : MonoBehaviour {
 
     public int rows;
 
-    [HideInInspector] public int columns;
+	[HideInInspector] public int columns;
 
     public float slotPaddingLeft, slotPaddingTop;
 
@@ -256,7 +256,7 @@ public class Inventory : MonoBehaviour {
 
                 if(!tmp.IsEmpty)
                 {
-                     Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+					Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
         }

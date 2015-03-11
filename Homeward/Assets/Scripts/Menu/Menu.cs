@@ -10,7 +10,7 @@ using System.Collections;
 
 #endregion
 
-public class Menu : MonoBehaviour 
+public class Menu : MonoBehaviour
 {
     public bool isQuit = false;
 
@@ -19,14 +19,15 @@ public class Menu : MonoBehaviour
 
     }
 
-	void Start () 
+    void Start()
     {
-	
-	}
-	
-	void Update () {
-	
-	}
+
+    }
+
+    void Update()
+    {
+
+    }
 
     void OnMouseEnter()
     {
@@ -46,7 +47,7 @@ public class Menu : MonoBehaviour
         }
         else
         {
-            LevelLoader.Instance.LoadLevel("Planet",3.0F);
+            LevelLoader.Instance.LoadLevel("Planet", 3.0F);
         }
     }
 }

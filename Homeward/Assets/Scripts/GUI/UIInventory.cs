@@ -110,8 +110,8 @@ public class UIInventory : MonoBehaviour
         newBox.transform.localScale = new Vector3(1, 1, 1);
 
         selectionBoxRect.localPosition = whichInventory.GetComponent<Inventory>().inventoryRect.localPosition
-            + new Vector3(nth % whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
-                (-1) * nth / whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
+            + new Vector3(nth % whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
+                (-1) * nth / whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, selectionBoxSize);
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, selectionBoxSize);
     }
@@ -119,6 +119,14 @@ public class UIInventory : MonoBehaviour
     void eraseSelectionBox()
     {
         Destroy(newBox);
+    }
+
+    public void SetSelectionBoxActive(bool show)
+    {
+        if (newBox != null)
+        {
+            newBox.SetActive(show);
+        }
     }
 
     private void MoveSelectionBox()
@@ -136,6 +144,14 @@ public class UIInventory : MonoBehaviour
                 }
                 else
                 {
+                    //if (nthBox % rows < playerInventory.GetComponent<Inventory>().rows)
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows), playerInventory);
+                    //}
+                    //else
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + moduleInventory.GetComponent<Inventory>().rows) / rows), moduleInventory);
+                    //}
                     if (nthBox / playerInventorySlots < 1)
                     {
                         drawSelectionBox(nthBox, playerInventory);
@@ -160,6 +176,14 @@ public class UIInventory : MonoBehaviour
                 }
                 else
                 {
+                    //if (nthBox % rows < playerInventoryRows)
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows), playerInventory);
+                    //}
+                    //else
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + moduleInventory.GetComponent<Inventory>().rows) / rows), moduleInventory);
+                    //}
                     if (nthBox / playerInventorySlots < 1)
                     {
                         drawSelectionBox(nthBox, playerInventory);
@@ -184,6 +208,16 @@ public class UIInventory : MonoBehaviour
                 }
                 else
                 {
+                    //if (nthBox % rows < playerInventoryRows)
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows) - playerInventoryRows, playerInventory);
+                    //    nthBox -= rows;
+                    //}
+                    //else
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows) - playerInventoryRows, moduleInventory);
+                    //    nthBox -= rows;
+                    //}
                     if (nthBox / playerInventorySlots < 1)
                     {
                         drawSelectionBox(nthBox, playerInventory);
@@ -208,6 +242,16 @@ public class UIInventory : MonoBehaviour
                 }
                 else
                 {
+                    //if (nthBox % rows < playerInventory.GetComponent<Inventory>().rows)
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows) + playerInventoryRows, playerInventory);
+                    //    nthBox += rows;
+                    //}
+                    //else
+                    //{
+                    //    drawSelectionBox(nthBox - 4 * ((nthBox + playerInventoryRows) / rows) + playerInventoryRows, moduleInventory);
+                    //    nthBox += rows;
+                    //}
                     if (nthBox / playerInventorySlots < 1)
                     {
                         drawSelectionBox(nthBox, playerInventory);
@@ -257,17 +301,43 @@ public class UIInventory : MonoBehaviour
                             if (item.itemName == ItemName.MiningTool)
                             {
                                 PlayerController.holdingMiningTool = true;
-                                Debug.Log("holdingMiningTool");
+                                PlayerController.holdingRepairTool = false;
+                                PlayerController.holdingBuildingTool = false;
                             }
                             else if (item.itemName == ItemName.RepairingTool)
                             {
+                                PlayerController.holdingMiningTool = false;
                                 PlayerController.holdingRepairTool = true;
-                                Debug.Log("holdingRepairTool");
+                                PlayerController.holdingBuildingTool = false;
                             }
-                            else if (item.itemName == ItemName.Water)
+                            else if (item.itemName == ItemName.BuildingTool)
                             {
-
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = true;
+                                PlayerController.holdingRepairTool = false;
                             }
+                            else 
+                            {
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = false;
+                                PlayerController.holdingRepairTool = false;
+                            }
+
+                            //Taylor
+                            if (item.itemName == ItemName.Food1)
+                            {
+                                PlayerController playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+                                if (playerController.CurrentStamina + 10 < 100)
+                                {
+                                    playerController.CurrentStamina += 10;
+                                }
+                                else 
+                                {
+                                    playerController.CurrentStamina = 101;
+                                }
+                            }
+                            //Taylor End
+
                         }
                     }
                 }
