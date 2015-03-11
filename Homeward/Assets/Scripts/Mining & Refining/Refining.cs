@@ -135,7 +135,7 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
 		distance.setValue(refineryDistance);
-		airlockPressure.setValue(GameObject.Find ("AudioObject").GetComponent<AudioController>().controllerPressure);
+		airlockPressure.setValue(audioController.controllerSoundPressure);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
         if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {

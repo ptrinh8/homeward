@@ -54,6 +54,6 @@ public class Spaceship : MonoBehaviour
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
         var distance = Vector2.Distance(transform.position, mainPlayerPos);
-        Debug.Log("Distance to spaceship: " + distance);
+        //Debug.Log("Distance to spaceship: " + distance);
     }
 }

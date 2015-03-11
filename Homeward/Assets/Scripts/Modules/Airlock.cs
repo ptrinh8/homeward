@@ -82,7 +82,7 @@ public class Airlock : MonoBehaviour {
                         }
                         else
                         {
-                            Debug.Log("1");
+                            //Debug.Log("1");
                             if (airControl.Timer < airControl.duration)
                             {
                                 AirInManually();

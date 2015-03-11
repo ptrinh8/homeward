@@ -67,9 +67,12 @@ public class AudioController : MonoBehaviour {
 	public FMOD.Studio.ParameterInstance airlockPressure;
 	public FMOD.Studio.ParameterInstance airlockTransition;
 	public FMOD.Studio.PLAYBACK_STATE airlockPlaybackState;
-	public int pressureRisingFalling;
+	public bool pressureRisingFalling;
 	public float audioPressureTimer;
+	public float airlockDuration;
+	public float audioTimer;
 	public bool airlockActivated;
+	public bool playerLeft;
 	// Use this for initialization
 	void Start () {
 		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
@@ -102,6 +105,8 @@ public class AudioController : MonoBehaviour {
 		airlockSound = FMOD_StudioSystem.instance.GetEvent("event:/Airlock");
 		airlockSound.getParameter("AirlockPressure", out airlockPressure);
 		airlockSound.getParameter("AirlockTransition", out airlockTransition);
+		playerLeft = false;
+		audioPressureTimer = 0f;
 	}
 	// Update is called once per frame
 	void Update () {
@@ -192,21 +197,36 @@ public class AudioController : MonoBehaviour {
 			}
 		}
 
-		if (pressureRisingFalling == 1)
+		if (pressureRisingFalling == true && playerLeft == false)
 		{
-			controllerSoundPressure = Mathf.Lerp(10f, 0f, audioPressureTimer);
+			audioTimer += Time.deltaTime;
+			audioPressureTimer = audioTimer / airlockDuration;
+			controllerSoundPressure = Mathf.Lerp(0f, 10f, audioPressureTimer);
 			airlockPressure.setValue(controllerSoundPressure);
 			airlockTransition.setValue(2.5f);
 		}
-		else if (pressureRisingFalling == -1)
+
+		else if (pressureRisingFalling == true && playerLeft == true)
 		{
-			controllerSoundPressure = Mathf.Lerp(10f, 0f, audioPressureTimer);
+			Debug.Log ("pressure rising");
+			audioTimer -= Time.deltaTime;
+			audioPressureTimer = audioTimer / airlockDuration;
+			controllerSoundPressure = Mathf.Lerp(0f, 10f, audioPressureTimer);
 			airlockPressure.setValue(controllerSoundPressure);
 			airlockTransition.setValue(2.5f);
+
 		}
-		else if (pressureRisingFalling == 0)
+		else if (pressureRisingFalling == false)
 		{
 			airlockTransition.setValue(3.5f);
+			if (controllerSoundPressure > 5)
+			{
+				playerLeft = true;
+			}
+			else if (controllerSoundPressure < 5)
+			{
+				playerLeft = false;
+			}
 		}
 
 	}
