@@ -153,7 +153,7 @@ public class Refining : MonoBehaviour
         if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
         {
             Debug.Log("This happened");
-            stopMineralsIntake = true;
+            //stopMineralsIntake = true;
         }
 
         int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);

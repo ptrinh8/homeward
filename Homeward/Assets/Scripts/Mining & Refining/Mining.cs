@@ -33,6 +33,8 @@ public class Mining : MonoBehaviour
     private float loadingStartTime;
     private float loadingPercent;
 
+	private bool miningSoundPlayed;
+
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -42,13 +44,14 @@ public class Mining : MonoBehaviour
     void StopTimer()
     {
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
+		miningSoundPlayed = false;
     }
 
     private void PlayerMiningState()
     {
         if ((Input.GetKeyDown(miningKey)) && (playerController.miningTimer == 0) && playerInMiningPosition == true)
         {
-            audioController.PlayMiningSound();
+            //audioController.PlayMiningSound();
             isPlayerMining = !isPlayerMining;
         }
     }
@@ -70,7 +73,7 @@ public class Mining : MonoBehaviour
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
         randomMineralsQuantity = Random.Range(minimumMineralsThatCanBeExtracted, maximumMineralsThatCanBeExtracted);
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
-        time = 5000.0F * Time.deltaTime;
+        time = 2500.0F * Time.deltaTime;
     }
 
     void Update()
@@ -82,6 +85,11 @@ public class Mining : MonoBehaviour
         if (playerInMiningPosition && isPlayerMining)
         {
             StartTimer();
+			if (miningSoundPlayed == false)
+			{
+				audioController.PlayMiningSound();
+				miningSoundPlayed = true;
+			}
             if (loadingUpdateTime == time)
             {
                 if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) < GameObject.Find("Mineral").GetComponent<Item>().maxSize)

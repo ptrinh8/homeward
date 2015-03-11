@@ -149,7 +149,7 @@ public class AudioController : MonoBehaviour {
 			}
 			else if (songTriggerValue >= 1.51f)
 			{
-				songTriggerValue += .001f;
+				songTriggerValue += .0005f;
 				switch(songSelectNumber)
 				{
 				case 1:
@@ -175,7 +175,7 @@ public class AudioController : MonoBehaviour {
 		{
 			if (songTriggerValue >= 0f)
 			{
-				songTriggerValue -= .001f;
+				songTriggerValue -= .0005f;
 				switch(songSelectNumber)
 				{
 				case 1:
