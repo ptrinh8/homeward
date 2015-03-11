@@ -170,8 +170,14 @@ public class AirControl : MonoBehaviour {
     {
         if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
         {
-			airlockActivated = true;
-			airlockSound.start();
+			if (airlockActivated == false)
+			{
+				airlockActivated = true;
+				if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+				{
+					airlockSound.start();
+				}
+			}
         }
     }
 

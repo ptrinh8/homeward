@@ -18,7 +18,7 @@ public class Refining : MonoBehaviour
 
     private Vector2 worldSpacePos;
     private float loadingStartTime;
-    private float loadingUpdateTime;
+    public float loadingUpdateTime;
     private float loadingPercent;
     private bool timerReached = false;
 
@@ -53,7 +53,7 @@ public class Refining : MonoBehaviour
 	private float refineryDistance;
 	private bool refineryStarted;
     private bool startRefiningProcess = false;
-    private float time = 0.0F;
+    public float time = 0.0F;
 	public float refinerySoundPressure;
 
     private void MineralsValidations()
@@ -124,7 +124,7 @@ public class Refining : MonoBehaviour
 		refineryDistance = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-        time = 50000.0F * Time.deltaTime;
+        time = 1000.0F;
         
 	}
 

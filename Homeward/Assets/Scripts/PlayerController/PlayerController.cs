@@ -126,6 +126,8 @@ public class PlayerController : MonoBehaviour
     public Sprite repairToolSprite;
     public Sprite miningToolSprite;
 
+	public bool firstKeyPressed;
+
     private void EndDemo()
     {
         if (spaceship.playerInsideSpaceship == true)
@@ -199,6 +201,8 @@ public class PlayerController : MonoBehaviour
 		isSongQueued = false;
 		isSongPlaying = false;
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
+
+		firstKeyPressed = false;
 	}
 
     void Update()
@@ -420,7 +424,7 @@ public class PlayerController : MonoBehaviour
                 y = Input.GetAxisRaw("Vertical");
             }
             else
-            {
+            {	        
                 if (Input.GetKey(KeyCode.A))
                 {
                     x = -1.0f;
@@ -441,6 +445,43 @@ public class PlayerController : MonoBehaviour
 
             direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 			rigidbody2D.velocity = direction * speed;   // speed is changable by us
+
+			if (x <= -.5f)
+			{
+				if (firstKeyPressed == false)
+				{
+					animateIterator = 6;
+					this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+					firstKeyPressed = true;
+				}
+			}
+			else if (x >= 0.5f)
+			{
+				if (firstKeyPressed == false)
+				{
+					animateIterator = 9;
+					this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+					firstKeyPressed = true;
+				}
+			}
+			else if (y >= 0.5f)
+			{
+				if (firstKeyPressed == false)
+				{
+					animateIterator = 3;
+					this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+					firstKeyPressed = true;
+				}
+			}
+			else if (y <= -0.5f)
+			{
+				if (firstKeyPressed == false)
+				{
+					animateIterator = 0;
+					this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+					firstKeyPressed = true;
+				}
+			}
 
 			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
 			if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
