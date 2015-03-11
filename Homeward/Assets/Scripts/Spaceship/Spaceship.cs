@@ -12,6 +12,8 @@ public class Spaceship : MonoBehaviour
 
     public static float distance;
 
+	private Vector2 position;
+
     public bool DemoEnds
     {
         set { endDemo = value; }
@@ -48,6 +50,10 @@ public class Spaceship : MonoBehaviour
 
     void Start()
     {
+		position.x = Random.Range(350f, 400f);
+		position.y = Random.Range(350f, 400f);
+
+		this.transform.position = position;
     }
 
     void Update()
