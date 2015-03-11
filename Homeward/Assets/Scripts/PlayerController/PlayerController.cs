@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private float timeUntilSleepPenalty;
     public float staminaLostPerSecond;
     public float healthLostPerSecond;
+	public float healthLostPerSecondNight;
 
     public bool canSleep;
     [HideInInspector]
@@ -109,6 +110,8 @@ public class PlayerController : MonoBehaviour
 
     public static bool showPlayerInventory;
 
+	private bool firstSongPlayed;
+
     public static bool ShowPlayerInventory
     {
         get { return showPlayerInventory; }
@@ -141,6 +144,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
@@ -172,6 +176,7 @@ public class PlayerController : MonoBehaviour
         timeUntilSleepPenalty = (dayLength / 10) * 8;
         staminaLostPerSecond = stamina / (dayLength + nightLength);
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
+		healthLostPerSecondNight = 5f;
 
         /*** Initializing GUI variables ***/
         healthbarPositionY = healthTransform.position.y;
@@ -195,12 +200,13 @@ public class PlayerController : MonoBehaviour
         playerInventory.AddComponent<UIInventory>();
 
         songLength = 120f;
-        songSilenceLength = 180f;
+        songSilenceLength = 120f;
         songTimer = 0f;
         songSilenceTimer = 0f;
         isSongQueued = false;
         isSongPlaying = false;
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
+		firstSongPlayed = false;
     }
 
     void Update()
@@ -269,15 +275,9 @@ public class PlayerController : MonoBehaviour
                     isRepairing = true;
                 }
             }
-
-            audioController.DroneControl(0);
-        }
-        else if (CentralControl.isInside == false)
-        {
-            audioController.DroneControl(1);
         }
 
-        if (health > 0)
+        if (currentHealth > 0)
         {
             staminaTimer += Time.deltaTime;
 
@@ -375,15 +375,14 @@ public class PlayerController : MonoBehaviour
                 if (CentralControl.isInside == false)
                 {
                     healthTimer += Time.deltaTime;
-                    if (healthTimer > nightLength / 5)
+                    if (healthTimer > 1f)
                     {
                         if (currentHealth > 0)
                         {
                             StartCoroutine(CoolDownDamage());
-                            currentHealth -= healthLostPerSecond;
+                            currentHealth -= healthLostPerSecondNight;
                             manageHealth();
                         }
-                        health -= 26;
                         healthTimer = 0;
                     }
                 }
@@ -792,9 +791,16 @@ public class PlayerController : MonoBehaviour
             {
                 // Debug.Log ("selecting song");
                 songSelected = Random.Range(1, 5);
+				songLength = Random.Range (100f, 200f);
+				songSilenceLength = Random.Range(100f, 200f);
                 isSongQueued = true;
+				firstSongPlayed = true;
             }
         }
-        yield return new WaitForSeconds(30f);
+		if (firstSongPlayed == false)
+		{
+        	yield return new WaitForSeconds(3f);
+		}
+		yield return new WaitForSeconds(30f);
     }
 }

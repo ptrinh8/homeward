@@ -124,7 +124,30 @@ public class AudioController : MonoBehaviour {
 
 		if (songPlaying == true)
 		{
-			if (songTriggerValue < 1.51f)
+			if (songTriggerValue <= 1.51f)
+			{
+				songTriggerValue += .001f;
+				switch(songSelectNumber)
+				{
+				case 1:
+					stemTrigger1.setValue(songTriggerValue);
+					//Debug.Log ("setting value 1");
+					break;
+				case 2:
+					stemTrigger2.setValue(songTriggerValue);
+					//Debug.Log ("setting value 2");
+					break;
+				case 3:
+					stemTrigger3.setValue(songTriggerValue);
+					//Debug.Log ("setting value 3");
+					break;
+				case 4:
+					stemTrigger4.setValue(songTriggerValue);
+					//Debug.Log ("setting value 4");
+					break;
+				}
+			}
+			else if (songTriggerValue >= 1.51f)
 			{
 				songTriggerValue += .001f;
 				switch(songSelectNumber)
@@ -195,6 +218,12 @@ public class AudioController : MonoBehaviour {
 			{
 				airlockSound.start();
 			}
+		}
+
+		if (audioPressureTimer < 0)
+		{
+			pressureRisingFalling = false;
+			audioPressureTimer = 0;
 		}
 
 		if (pressureRisingFalling == true && playerLeft == false)
