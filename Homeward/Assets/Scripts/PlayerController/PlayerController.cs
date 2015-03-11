@@ -57,6 +57,20 @@ public class PlayerController : MonoBehaviour
     public Canvas canvas;
     private float currentHealth, currentStamina;
 
+    // Taylor
+    public float CurrentStamina
+    {
+        get
+        {
+            return currentStamina;
+        }
+        set
+        {
+            currentStamina = value;
+        }
+    }
+    // Taylor End
+
     //AUDIO STUFF
     private AudioController audioController;
     private int songSelected;
@@ -316,6 +330,8 @@ public class PlayerController : MonoBehaviour
                     Item item = GameObject.Find("Mineral").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                     item = GameObject.Find("Material").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("Food1").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                     playerInventory.GetComponent<Inventory>().DebugShowInventory();
                 }

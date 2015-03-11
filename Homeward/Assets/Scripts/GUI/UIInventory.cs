@@ -323,6 +323,21 @@ public class UIInventory : MonoBehaviour
                                 PlayerController.holdingRepairTool = false;
                             }
 
+                            //Taylor
+                            if (item.itemName == ItemName.Food1)
+                            {
+                                PlayerController playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+                                if (playerController.CurrentStamina + 10 < 100)
+                                {
+                                    playerController.CurrentStamina += 10;
+                                }
+                                else 
+                                {
+                                    playerController.CurrentStamina = 101;
+                                }
+                            }
+                            //Taylor End
+
                         }
                     }
                 }
