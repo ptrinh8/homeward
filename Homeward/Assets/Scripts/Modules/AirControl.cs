@@ -96,28 +96,35 @@ public class AirControl : MonoBehaviour {
 	void Update () {
 
 		airlockSound.getPlaybackState(out airlockPlaybackState);
-		audioController.controllerSoundPressure = this.soundPressure;
+		//audioController.controllerSoundPressure = this.soundPressure;
+		audioController.airlockActivated = this.airlockActivated;
 
         if (flag == 0) { 
             // do nothing
+			/*
 			soundTransition = 3.5f;
 			airlockTransition.setValue(soundTransition);
+			*/
+			audioController.pressureRisingFalling = 0;
         }
         else if (flag == 1)
         {
             if (airPressureBar.size < 1)
             {
                 timer += Time.deltaTime;
+				airPressureBar.size = timer / duration;
 				pressureTimer = timer / duration;
-                airPressureBar.size = timer / duration;
+				/*
 				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
 				airlockPressure.setValue(soundPressure);
 				soundTransition = 2.5f;
 				airlockTransition.setValue(soundTransition);
+				*/
+				audioController.pressureRisingFalling = 1;
+				audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
-
                 airPressureBar.size = 1;
                 flag = 0;
                 air = true;
@@ -129,10 +136,14 @@ public class AirControl : MonoBehaviour {
                 timer -= Time.deltaTime;
                 airPressureBar.size = timer / duration;
 				pressureTimer = timer / duration;
+				/*
 				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
 				airlockPressure.setValue(soundPressure);
 				soundTransition = 2.5f;
 				airlockTransition.setValue(soundTransition);
+				*/
+				audioController.pressureRisingFalling = -1;
+				audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
@@ -173,10 +184,11 @@ public class AirControl : MonoBehaviour {
 			if (airlockActivated == false)
 			{
 				airlockActivated = true;
+				/*
 				if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
 				{
 					airlockSound.start();
-				}
+				}*/
 			}
         }
     }

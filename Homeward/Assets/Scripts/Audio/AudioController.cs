@@ -61,6 +61,15 @@ public class AudioController : MonoBehaviour {
 	private AirControl airControl;
 	public float controllerSoundPressure;
 	public float controllerPressure;
+
+	//airlock stuff
+	private FMOD.Studio.EventInstance airlockSound;
+	public FMOD.Studio.ParameterInstance airlockPressure;
+	public FMOD.Studio.ParameterInstance airlockTransition;
+	public FMOD.Studio.PLAYBACK_STATE airlockPlaybackState;
+	public int pressureRisingFalling;
+	public float audioPressureTimer;
+	public bool airlockActivated;
 	// Use this for initialization
 	void Start () {
 		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
@@ -89,18 +98,22 @@ public class AudioController : MonoBehaviour {
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		songPlaying = false;
 		controllerSoundPressure = 0f;
+
+		airlockSound = FMOD_StudioSystem.instance.GetEvent("event:/Airlock");
+		airlockSound.getParameter("AirlockPressure", out airlockPressure);
+		airlockSound.getParameter("AirlockTransition", out airlockTransition);
 	}
 	// Update is called once per frame
 	void Update () {
 		//stemTrigger.setValue(stemTriggerValue);
-
-		controllerPressure = controllerSoundPressure;
 		drone.getPlaybackState(out dronePlaybackState);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		music1.getPlaybackState(out song1PlaybackState);
 		music2.getPlaybackState(out song2PlaybackState);
 		music3.getPlaybackState(out song3PlaybackState);
 		music4.getPlaybackState(out song4PlaybackState);
+		airlockSound.getPlaybackState(out airlockPlaybackState);
+
 
 		//controllerSoundPressure = GameObject.Find ("Airlock Module(Clone)").GetComponent<AirControl>().soundPressure;
 
@@ -169,6 +182,31 @@ public class AudioController : MonoBehaviour {
 					break;
 				}
 			}
+		}
+
+		if (airlockActivated == true)
+		{
+			if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+			{
+				airlockSound.start();
+			}
+		}
+
+		if (pressureRisingFalling == 1)
+		{
+			controllerSoundPressure = Mathf.Lerp(10f, 0f, audioPressureTimer);
+			airlockPressure.setValue(controllerSoundPressure);
+			airlockTransition.setValue(2.5f);
+		}
+		else if (pressureRisingFalling == -1)
+		{
+			controllerSoundPressure = Mathf.Lerp(10f, 0f, audioPressureTimer);
+			airlockPressure.setValue(controllerSoundPressure);
+			airlockTransition.setValue(2.5f);
+		}
+		else if (pressureRisingFalling == 0)
+		{
+			airlockTransition.setValue(3.5f);
 		}
 
 	}
