@@ -82,7 +82,6 @@ public class Airlock : MonoBehaviour {
                         }
                         else
                         {
-                            //Debug.Log("1");
                             if (airControl.Timer < airControl.duration)
                             {
                                 AirInManually();
@@ -105,7 +104,6 @@ public class Airlock : MonoBehaviour {
                     {
                         if (airControl.Air && airControl.airPressureBar.size == 1)
                         {
-                            Debug.Log("2");
                             if (airControl.Timer < airControl.duration)
                             {
                                 AirInManually();
@@ -133,7 +131,6 @@ public class Airlock : MonoBehaviour {
                 {
                     if (airControl.Air)
                     {
-                        Debug.Log("3");
                         if (airControl.Timer > 0)
                         {
                             AirOutManually();

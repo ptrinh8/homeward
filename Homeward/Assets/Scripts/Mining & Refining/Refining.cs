@@ -137,7 +137,8 @@ public class Refining : MonoBehaviour
 		distance.setValue(refineryDistance);
 		airlockPressure.setValue(audioController.controllerSoundPressure);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
-        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
+        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered || gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken ||
+            !gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
         {
             refineryModuleSpriteRenderer.sprite = noPowerSupplyTexture;
         }
@@ -199,13 +200,19 @@ public class Refining : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         UIInventory.SetModuleInventory(moduleInventory); // takahide added
+        //Taylor
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = false;
+        }
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
+            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+            gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
             {
                 showPlayerAndModuleInventory = true;
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
@@ -256,6 +263,12 @@ public class Refining : MonoBehaviour
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
         //UIInventory.SetModuleInventory(null);
+
+        // Taylor
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = true;
+        }
     }
 
     void startTimer()

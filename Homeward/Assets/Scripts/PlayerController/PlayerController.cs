@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
     public static bool holdingRepairTool;
     public static bool holdingMiningTool;
+    public static bool holdingBuildingTool;
 
     public GameObject playerInventory;
 
@@ -112,6 +113,8 @@ public class PlayerController : MonoBehaviour
     public static bool showPlayerInventory;
 
 	private bool firstSongPlayed;
+    // Taylor
+    public static bool toolUsingEnable = true;
 
     public static bool ShowPlayerInventory
     {
@@ -131,6 +134,7 @@ public class PlayerController : MonoBehaviour
     public Image toolBoxUIImage;
     public Sprite repairToolSprite;
     public Sprite miningToolSprite;
+    public Sprite buildingToolSprite;
 
     private void EndDemo()
     {
@@ -164,6 +168,8 @@ public class PlayerController : MonoBehaviour
         isMining = false;
         isRepairing = false;
         holdingRepairTool = false;
+        holdingMiningTool = false;
+        holdingBuildingTool = false;
 
         health = 100;
         stamina = 100f;
@@ -217,6 +223,10 @@ public class PlayerController : MonoBehaviour
         else if (holdingMiningTool)
         {
             toolBoxUIImage.sprite = miningToolSprite;
+        }
+        else if (holdingBuildingTool)
+        {
+            toolBoxUIImage.sprite = buildingToolSprite;
         }
 
 
@@ -307,11 +317,16 @@ public class PlayerController : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                     item = GameObject.Find("Material").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
+                    playerInventory.GetComponent<Inventory>().DebugShowInventory();
                 }
 
                 if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
                 {
                     Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("BuildingTool").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("MiningTool").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                 }
             }

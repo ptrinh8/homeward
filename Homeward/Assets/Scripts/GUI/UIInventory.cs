@@ -290,13 +290,10 @@ public class UIInventory : MonoBehaviour
 
             foreach (GameObject slot in allSlots)
             {
-                Debug.Log("----------------------------");
                 if (i == nthBox)
                 {
-                    Debug.Log("----------------------------");
                     if (GetSlot(slot) != null)
                     {
-                        Debug.Log("----------------------------");
                         Item item = GetSlot(slot).GetItem();
 
                         //if (from != null)
@@ -304,17 +301,28 @@ public class UIInventory : MonoBehaviour
                             if (item.itemName == ItemName.MiningTool)
                             {
                                 PlayerController.holdingMiningTool = true;
-                                Debug.Log("holdingMiningTool");
+                                PlayerController.holdingRepairTool = false;
+                                PlayerController.holdingBuildingTool = false;
                             }
                             else if (item.itemName == ItemName.RepairingTool)
                             {
+                                PlayerController.holdingMiningTool = false;
                                 PlayerController.holdingRepairTool = true;
-                                Debug.Log("holdingRepairTool");
+                                PlayerController.holdingBuildingTool = false;
                             }
-                            else if (item.itemName == ItemName.Water)
+                            else if (item.itemName == ItemName.BuildingTool)
                             {
-
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = true;
+                                PlayerController.holdingRepairTool = false;
                             }
+                            else 
+                            {
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = false;
+                                PlayerController.holdingRepairTool = false;
+                            }
+
                         }
                     }
                 }

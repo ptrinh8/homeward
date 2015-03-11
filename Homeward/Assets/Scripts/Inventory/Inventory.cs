@@ -254,7 +254,6 @@ public class Inventory : MonoBehaviour {
 
                 if(!tmp.IsEmpty)
                 {
-                     Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
         }
