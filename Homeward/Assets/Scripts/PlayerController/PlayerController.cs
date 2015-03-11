@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
 	//sleeping stuff
 	private float sleepTimePassed;
 	private LocalControl[] allLocalControl;
+	private CentralControl[] allCentralControl;
 	public int durabilityLossAmount;
 
     public float currentXStamina;
@@ -755,15 +756,20 @@ public class PlayerController : MonoBehaviour
 		currentHealth = 100;
 		currentStamina = 100;
 		sleepTimePassed = (dayNightController.dayCycleLength / dayNightController.hoursPerDay) * 4;
-		dayNightController.currentCycleTime = sleepTimePassed;
+		dayNightController.currentCycleTime += sleepTimePassed;
 		allLocalControl = FindObjectsOfType<LocalControl>();
+		allCentralControl = FindObjectsOfType<CentralControl>();
 		
 
 
-		for (int i = 0; i <= allLocalControl.Length; i++)
+		for (int i = 0; i < allLocalControl.Length; i++)
 		{
 			allLocalControl[i].durability -= (int) sleepTimePassed / (int) allLocalControl[i].durabilityLossTime;
-			durabilityLossAmount = (int) sleepTimePassed / (int) allLocalControl[i].durabilityLossTime;
+		}
+
+		for (int i = 0; i < allCentralControl.Length; i++)
+		{
+			allCentralControl[i].durability -= ((int) sleepTimePassed / (int) allCentralControl[i].durabilityLossTime) / 2;
 		}
 	}
 

@@ -15,10 +15,10 @@ public class CentralControl : MonoBehaviour {
 	private int moduleID;
 	private static bool[] visited;
 	private List <GameObject> locals; // List of all the modules within the outpost
-	private int durability;
+	public int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
-	private float durabilityLossTime;
+	public float durabilityLossTime;
 	public float durabilityLossSpeed;
 	private bool isBroken;
 	private Text moduleStatusText;
