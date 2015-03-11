@@ -72,6 +72,10 @@ public class PlayerController : MonoBehaviour
     public bool isSongPlaying;
     public bool isSongQueued;
 
+	//sleeping stuff
+	private float sleepTimePassed;
+	private LocalControl[] allLocalControl;
+
     public float currentXStamina;
 
     public float CurrentHealth
@@ -466,6 +470,15 @@ public class PlayerController : MonoBehaviour
                 AnimateFrames(2);
                 this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
             }
+
+
+			if (canSleep == true)
+			{
+				if (Input.GetKeyDown(KeyCode.F))
+				{
+					Sleep ();
+				}
+			}
         }
     }
 
@@ -773,6 +786,20 @@ public class PlayerController : MonoBehaviour
         //staminaTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250.0f); // 250 = width of the health bar
         //staminaTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 25.0f); // 25 = height of the health bar
     }
+
+	private void Sleep()
+	{
+		currentHealth = 100;
+		currentStamina = 100;
+		sleepTimePassed = (dayNightController.dayCycleLength / dayNightController.hoursPerDay) * 4;
+		dayNightController.currentCycleTime = sleepTimePassed;
+		allLocalControl = FindObjectsOfType<LocalControl>();
+		/*
+		for (int i = 0; i <= allLocalControl.Length; i++)
+		{
+			allLocalControl[i].durability = sleepTimePassed / allLocalControl[i].durabilityLossTime;
+		}*/
+	}
 
     IEnumerator CoolDownDamage()
     {

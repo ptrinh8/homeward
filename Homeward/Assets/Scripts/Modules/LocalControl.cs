@@ -30,10 +30,10 @@ public class LocalControl : MonoBehaviour {
 	public bool isOn;
 	private KeyCode turnKey = KeyCode.T;
 
-	private int durability;
+	public int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
-	private float durabilityLossTime;
+	public float durabilityLossTime;
 	public float durabilityLossSpeed;
 	private bool isBroken, flag;
 	private Text moduleStatusText;

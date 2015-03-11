@@ -157,13 +157,12 @@ public class Refining : MonoBehaviour
 
         int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
 
-        if (_mineralCount == 2 || _mineralCount == 3 || _mineralCount == 4 || _mineralCount == 5 || _mineralCount == 6 ||
-            _mineralCount == 7 || _mineralCount == 8 || _mineralCount == 9 || _mineralCount == 10)
+        if (_mineralCount >= 2)
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount > 0)
+		if (_mineralCount > 2)
 		{
 			if (refineryStarted == false)
 			{
