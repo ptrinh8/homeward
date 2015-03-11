@@ -10,6 +10,8 @@ public class Spaceship : MonoBehaviour
     [HideInInspector]
     public bool playerExitedSpaceship = false;
 
+    public static float distance;
+
     public bool DemoEnds
     {
         set { endDemo = value; }
@@ -53,7 +55,6 @@ public class Spaceship : MonoBehaviour
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
-        var distance = Vector2.Distance(transform.position, mainPlayerPos);
-        Debug.Log("Distance to spaceship: " + distance);
+        distance = Vector2.Distance(transform.position, mainPlayerPos);
     }
 }

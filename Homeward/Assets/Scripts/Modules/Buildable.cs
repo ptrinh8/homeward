@@ -14,6 +14,10 @@ public class Buildable : MonoBehaviour
 	private KeyCode cancelKey = KeyCode.E;
 	private Color color;
 
+    private GameObject player;
+    private float buildActionTime;
+    private bool buildingFlag;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -24,6 +28,10 @@ public class Buildable : MonoBehaviour
 		color.a = 0.5f;
 		spriteRenderer.color = color;
 		buildingProgress = 0;
+
+        player = GameObject.FindWithTag("Player");
+        buildingFlag = true;
+        buildActionTime = 0f;
 	}
 	
 	// Update is called once per frame
@@ -38,20 +46,38 @@ public class Buildable : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (Input.GetKeyDown(cancelKey))
-            Destroy(gameObject);
+        if (other.gameObject.tag == "Player"){
+            if (Input.GetKeyDown(cancelKey))
+                Destroy(gameObject);
 
-        if (Input.GetKeyDown(buildKey))
-        {
-			// Inventory code here
-			if(other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
-			{
-				buildingProgress++;
-				color.a += 0.4f / materialsRequired;
-				spriteRenderer.color = color;
-				other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-			}
+            if (Input.GetKeyDown(buildKey))
+            {
+			    if(other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
+			    {
+                        if (PlayerController.holdingBuildingTool && PlayerController.toolUsingEnable)
+                        {
+                        if (buildingFlag) {
+                            buildingFlag = false;
+                            BuildAction();
+                            Invoke("TimeWait", buildActionTime);
+                        }
+                    }
+			    }
 
+            }
         }
+    }
+
+    void BuildAction()
+    {
+        buildingProgress++;
+        color.a += 0.4f / materialsRequired;
+        spriteRenderer.color = color;
+        player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+    }
+
+    void TimeWait()
+    {
+        buildingFlag = true;
     }
 }
