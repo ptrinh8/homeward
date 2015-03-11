@@ -55,11 +55,6 @@ public class PlayerController : MonoBehaviour
     private KeyCode consumeFoodKey = KeyCode.K;
 
     public Canvas canvas;
-    public RectTransform healthTransform;
-    public RectTransform staminaTransform;
-    private float healthbarPositionY, staminabarPositionY;
-    private float healthbarPositionMinX, staminabarPositionMinX;
-    private float healthbarPositionMaxX, staminabarPositionMaxX;
     private float currentHealth, currentStamina;
 
     //AUDIO STUFF
@@ -182,13 +177,6 @@ public class PlayerController : MonoBehaviour
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
 		healthLostPerSecondNight = 5f;
 
-        /*** Initializing GUI variables ***/
-        healthbarPositionY = healthTransform.position.y;
-        healthbarPositionMaxX = healthTransform.position.x;
-        healthbarPositionMinX = healthTransform.position.x - healthTransform.rect.width;
-        staminabarPositionY = staminaTransform.position.y;
-        staminabarPositionMaxX = staminaTransform.position.x;
-        staminabarPositionMinX = staminaTransform.position.x - staminaTransform.rect.width;
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         onCoolDown = false;
@@ -745,46 +733,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private float mapValues(float currentX, float inMin, float inMax, float minX, float maxX)
-    {
-        return (currentX - inMin) * (maxX - minX) / (inMax - inMin) + minX;
-    }
-
     private void manageHealth()
     {
-        healthText.text = "Health:  " + (int)currentHealth;
-        float currentXHealth = mapValues(currentHealth, 0, maxHealth, healthbarPositionMinX, healthbarPositionMaxX);
-
-        healthTransform.position = new Vector3(currentXHealth, healthbarPositionY);
-
-        if (currentHealth > maxHealth / 2)
-        {
-            healthImage.color = new Color32((byte)mapValues(currentHealth, maxHealth / 2, maxHealth, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
-        }
+        healthText.text = "Health: " + (int)currentHealth;
+        GameObject healthBar = GameObject.Find("HealthBar");
+        Image healthBarImage = healthBar.GetComponent<Image>();
+        healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
     }
 
     private void manageStamina()
     {
-        staminaText.text = "Stamina:    " + (int)currentStamina;
-        currentXStamina = mapValues(currentStamina, 0, maxStamina, staminabarPositionMinX, staminabarPositionMaxX);
-
-        staminaTransform.position = new Vector3(currentXStamina, staminabarPositionY);
-
-        if (currentStamina > maxStamina / 2)
-        {
-            staminaImage.color = new Color32((byte)mapValues(currentStamina, maxStamina / 2, maxStamina, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            staminaImage.color = new Color32(255, (byte)mapValues(currentStamina, 0, maxStamina / 2, 0, 255), 0, 255);
-        }
-
-        //staminaTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250.0f); // 250 = width of the health bar
-        //staminaTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 25.0f); // 25 = height of the health bar
+        staminaText.text = "Stamina: " + (int)currentStamina;
+        GameObject healthBar = GameObject.Find("StaminaBar");
+        Image healthBarImage = healthBar.GetComponent<Image>();
+        healthBarImage.fillAmount = (float)currentStamina / 100.0F;
     }
 
 	private void Sleep()
