@@ -61,6 +61,18 @@ public class AudioController : MonoBehaviour {
 	private AirControl airControl;
 	public float controllerSoundPressure;
 	public float controllerPressure;
+
+	//airlock stuff
+	private FMOD.Studio.EventInstance airlockSound;
+	public FMOD.Studio.ParameterInstance airlockPressure;
+	public FMOD.Studio.ParameterInstance airlockTransition;
+	public FMOD.Studio.PLAYBACK_STATE airlockPlaybackState;
+	public bool pressureRisingFalling;
+	public float audioPressureTimer;
+	public float airlockDuration;
+	public float audioTimer;
+	public bool airlockActivated;
+	public bool playerLeft;
 	// Use this for initialization
 	void Start () {
 		music1 = FMOD_StudioSystem.instance.GetEvent("event:/Music1");
@@ -89,24 +101,53 @@ public class AudioController : MonoBehaviour {
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		songPlaying = false;
 		controllerSoundPressure = 0f;
+
+		airlockSound = FMOD_StudioSystem.instance.GetEvent("event:/Airlock");
+		airlockSound.getParameter("AirlockPressure", out airlockPressure);
+		airlockSound.getParameter("AirlockTransition", out airlockTransition);
+		playerLeft = false;
+		audioPressureTimer = 0f;
 	}
 	// Update is called once per frame
 	void Update () {
 		//stemTrigger.setValue(stemTriggerValue);
-
-		controllerPressure = controllerSoundPressure;
 		drone.getPlaybackState(out dronePlaybackState);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		music1.getPlaybackState(out song1PlaybackState);
 		music2.getPlaybackState(out song2PlaybackState);
 		music3.getPlaybackState(out song3PlaybackState);
 		music4.getPlaybackState(out song4PlaybackState);
+		airlockSound.getPlaybackState(out airlockPlaybackState);
+
 
 		//controllerSoundPressure = GameObject.Find ("Airlock Module(Clone)").GetComponent<AirControl>().soundPressure;
 
 		if (songPlaying == true)
 		{
-			if (songTriggerValue < 1.51f)
+			if (songTriggerValue <= 1.51f)
+			{
+				songTriggerValue += .001f;
+				switch(songSelectNumber)
+				{
+				case 1:
+					stemTrigger1.setValue(songTriggerValue);
+					//Debug.Log ("setting value 1");
+					break;
+				case 2:
+					stemTrigger2.setValue(songTriggerValue);
+					//Debug.Log ("setting value 2");
+					break;
+				case 3:
+					stemTrigger3.setValue(songTriggerValue);
+					//Debug.Log ("setting value 3");
+					break;
+				case 4:
+					stemTrigger4.setValue(songTriggerValue);
+					//Debug.Log ("setting value 4");
+					break;
+				}
+			}
+			else if (songTriggerValue >= 1.51f)
 			{
 				songTriggerValue += .001f;
 				switch(songSelectNumber)
@@ -168,6 +209,52 @@ public class AudioController : MonoBehaviour {
 					music4.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 					break;
 				}
+			}
+		}
+
+		if (airlockActivated == true)
+		{
+			if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+			{
+				airlockSound.start();
+			}
+		}
+
+		if (audioPressureTimer < 0)
+		{
+			pressureRisingFalling = false;
+			audioPressureTimer = 0;
+		}
+
+		if (pressureRisingFalling == true && playerLeft == false)
+		{
+			audioTimer += Time.deltaTime;
+			audioPressureTimer = audioTimer / airlockDuration;
+			controllerSoundPressure = Mathf.Lerp(0f, 10f, audioPressureTimer);
+			airlockPressure.setValue(controllerSoundPressure);
+			airlockTransition.setValue(2.5f);
+		}
+
+		else if (pressureRisingFalling == true && playerLeft == true)
+		{
+			Debug.Log ("pressure rising");
+			audioTimer -= Time.deltaTime;
+			audioPressureTimer = audioTimer / airlockDuration;
+			controllerSoundPressure = Mathf.Lerp(0f, 10f, audioPressureTimer);
+			airlockPressure.setValue(controllerSoundPressure);
+			airlockTransition.setValue(2.5f);
+
+		}
+		else if (pressureRisingFalling == false)
+		{
+			airlockTransition.setValue(3.5f);
+			if (controllerSoundPressure > 5)
+			{
+				playerLeft = true;
+			}
+			else if (controllerSoundPressure < 5)
+			{
+				playerLeft = false;
 			}
 		}
 

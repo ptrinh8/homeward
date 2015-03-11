@@ -18,7 +18,7 @@ public class Refining : MonoBehaviour
 
     private Vector2 worldSpacePos;
     private float loadingStartTime;
-    private float loadingUpdateTime;
+    public float loadingUpdateTime;
     private float loadingPercent;
     private bool timerReached = false;
 
@@ -53,7 +53,7 @@ public class Refining : MonoBehaviour
 	private float refineryDistance;
 	private bool refineryStarted;
     private bool startRefiningProcess = false;
-    private float time = 0.0F;
+    public float time = 0.0F;
 	public float refinerySoundPressure;
 
     private void MineralsValidations()
@@ -124,7 +124,7 @@ public class Refining : MonoBehaviour
 		refineryDistance = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-        time = 50000.0F * Time.deltaTime;
+        time = 1000.0F;
         
 	}
 
@@ -135,9 +135,10 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
 		distance.setValue(refineryDistance);
-		airlockPressure.setValue(GameObject.Find ("AudioObject").GetComponent<AudioController>().controllerPressure);
+		airlockPressure.setValue(audioController.controllerSoundPressure);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
-        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
+        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered || gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken ||
+            !gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
         {
             refineryModuleSpriteRenderer.sprite = noPowerSupplyTexture;
         }
@@ -157,13 +158,12 @@ public class Refining : MonoBehaviour
 
         int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
 
-        if (_mineralCount == 2 || _mineralCount == 3 || _mineralCount == 4 || _mineralCount == 5 || _mineralCount == 6 ||
-            _mineralCount == 7 || _mineralCount == 8 || _mineralCount == 9 || _mineralCount == 10)
+        if (_mineralCount >= 2)
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount > 0)
+		if (_mineralCount > 2)
 		{
 			if (refineryStarted == false)
 			{
@@ -200,13 +200,19 @@ public class Refining : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         UIInventory.SetModuleInventory(moduleInventory); // takahide added
+        //Taylor
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = false;
+        }
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
+            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+            gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
             {
                 showPlayerAndModuleInventory = true;
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
@@ -257,6 +263,12 @@ public class Refining : MonoBehaviour
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
         //UIInventory.SetModuleInventory(null);
+
+        // Taylor
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = true;
+        }
     }
 
     void startTimer()

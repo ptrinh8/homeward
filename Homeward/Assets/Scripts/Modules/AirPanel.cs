@@ -7,9 +7,28 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (Input.GetKeyDown(airLockInteractKey))
+        if (other.gameObject.tag == "Player")
         {
-            gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
+            if (Input.GetKeyDown(airLockInteractKey))
+            {
+                gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
+            }
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = false;
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            PlayerController.toolUsingEnable = true;
         }
     }
 }

@@ -11,24 +11,24 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     private Mining minerals;
-	private DayNightController dayNightController;
+    private DayNightController dayNightController;
     private Spaceship spaceship;
     private EndGame endgame;
 
-	public float speed;
-	public Sprite[] sprites;
-	private SpriteRenderer spriteRenderer;
-	private float animateSpeed;         //Time between frames of animation
-	private float animateTime;          //Variable storing the timer for the animation
-	public int animateIterator;         //Variable storing the frame of the spritesheet to use
-	private int animateZone;            //Specifies the direction of the astronaut's animation (up, down, left, right)
-	private bool frameAscending;        //boolean to tell AnimateFrames if spritesheet animation frame is increasing
-	private bool frameDescending;       //boolean to tell AnimateFrames if spritesheet animation frame is decreasing
-	private int leftRightFootstep = 0;
+    public float speed;
+    public Sprite[] sprites;
+    private SpriteRenderer spriteRenderer;
+    private float animateSpeed;         //Time between frames of animation
+    private float animateTime;          //Variable storing the timer for the animation
+    public int animateIterator;         //Variable storing the frame of the spritesheet to use
+    private int animateZone;            //Specifies the direction of the astronaut's animation (up, down, left, right)
+    private bool frameAscending;        //boolean to tell AnimateFrames if spritesheet animation frame is increasing
+    private bool frameDescending;       //boolean to tell AnimateFrames if spritesheet animation frame is decreasing
+    private int leftRightFootstep = 0;
 
-	public float miningSpeed;	        // mining speed per sec
-	public float miningTimer;	        // record mining time
-	public bool miningNow, isMining;    // miningNow is the signal for mineral class
+    public float miningSpeed;	        // mining speed per sec
+    public float miningTimer;	        // record mining time
+    public bool miningNow, isMining;    // miningNow is the signal for mineral class
     public static bool isRepairing;
     public GameObject textFinder;
 
@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private float timeUntilSleepPenalty;
     public float staminaLostPerSecond;
     public float healthLostPerSecond;
+	public float healthLostPerSecondNight;
 
     public bool canSleep;
     [HideInInspector]
@@ -54,22 +55,25 @@ public class PlayerController : MonoBehaviour
     private KeyCode consumeFoodKey = KeyCode.K;
 
     public Canvas canvas;
-    public RectTransform healthTransform;
-    public RectTransform staminaTransform;
-    private float healthbarPositionY, staminabarPositionY;
-    private float healthbarPositionMinX, staminabarPositionMinX;
-    private float healthbarPositionMaxX, staminabarPositionMaxX;
     private float currentHealth, currentStamina;
 
-	//AUDIO STUFF
-	private AudioController audioController;
-	private int songSelected;
-	private float songLength;
-	public float songTimer;
-	private float songSilenceLength;
-	public float songSilenceTimer;
-	public bool isSongPlaying;
-	public bool isSongQueued;
+    //AUDIO STUFF
+    private AudioController audioController;
+    private int songSelected;
+    private float songLength;
+    public float songTimer;
+    private float songSilenceLength;
+    public float songSilenceTimer;
+    public bool isSongPlaying;
+    public bool isSongQueued;
+
+	//sleeping stuff
+	private float sleepTimePassed;
+	private LocalControl[] allLocalControl;
+	private CentralControl[] allCentralControl;
+	public int durabilityLossAmount;
+
+    public float currentXStamina;
 
     public float CurrentHealth
     {
@@ -98,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
     public static bool holdingRepairTool;
     public static bool holdingMiningTool;
+    public static bool holdingBuildingTool;
 
     public GameObject playerInventory;
 
@@ -106,6 +111,10 @@ public class PlayerController : MonoBehaviour
     public static bool showModuleSelection;
 
     public static bool showPlayerInventory;
+
+	private bool firstSongPlayed;
+    // Taylor
+    public static bool toolUsingEnable = true;
 
     public static bool ShowPlayerInventory
     {
@@ -125,6 +134,7 @@ public class PlayerController : MonoBehaviour
     public Image toolBoxUIImage;
     public Sprite repairToolSprite;
     public Sprite miningToolSprite;
+    public Sprite buildingToolSprite;
 
     private void EndDemo()
     {
@@ -139,24 +149,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     void Start()
     {
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
         spaceship = FindObjectOfType(typeof(Spaceship)) as Spaceship;
         endgame = FindObjectOfType(typeof(EndGame)) as EndGame;
-		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-		
-		speed = 1.0f;
-		animateSpeed = .15f;
-		animateTime = 0f;
-		frameAscending = true;
-		frameDescending = false;
+        dayNightController = GameObject.Find("DayNightController").GetComponent<DayNightController>();
 
-		miningTimer = 0;
-		miningNow = false;
-		isMining = false;
+        speed = 1.0f;
+        animateSpeed = .15f;
+        animateTime = 0f;
+        frameAscending = true;
+        frameDescending = false;
+
+        miningTimer = 0;
+        miningNow = false;
+        isMining = false;
         isRepairing = false;
         holdingRepairTool = false;
+        holdingMiningTool = false;
+        holdingBuildingTool = false;
 
         health = 100;
         stamina = 100f;
@@ -170,14 +183,8 @@ public class PlayerController : MonoBehaviour
         timeUntilSleepPenalty = (dayLength / 10) * 8;
         staminaLostPerSecond = stamina / (dayLength + nightLength);
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
+		healthLostPerSecondNight = 5f;
 
-        /*** Initializing GUI variables ***/
-        healthbarPositionY = healthTransform.position.y;
-        healthbarPositionMaxX = healthTransform.position.x;
-        healthbarPositionMinX = healthTransform.position.x - healthTransform.rect.width;
-        staminabarPositionY = staminaTransform.position.y;
-        staminabarPositionMaxX = staminaTransform.position.x;
-        staminabarPositionMinX = staminaTransform.position.x - staminaTransform.rect.width;
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         onCoolDown = false;
@@ -191,20 +198,23 @@ public class PlayerController : MonoBehaviour
         playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
         playerInventory.AddComponent<UIInventory>();
-		
-		songLength = 120f;
-		songSilenceLength = 180f;
-		songTimer = 0f;
-		songSilenceTimer = 0f;
-		isSongQueued = false;
-		isSongPlaying = false;
-		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
-	}
+
+        songLength = 120f;
+        songSilenceLength = 120f;
+        songTimer = 0f;
+        songSilenceTimer = 0f;
+        isSongQueued = false;
+        isSongPlaying = false;
+        audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
+		firstSongPlayed = false;
+    }
 
     void Update()
     {
         zoomInWhenIndoor();
         EndDemo();
+
+        //CurrentHealth--;
 
         if (holdingRepairTool)
         {
@@ -213,6 +223,10 @@ public class PlayerController : MonoBehaviour
         else if (holdingMiningTool)
         {
             toolBoxUIImage.sprite = miningToolSprite;
+        }
+        else if (holdingBuildingTool)
+        {
+            toolBoxUIImage.sprite = buildingToolSprite;
         }
 
 
@@ -223,59 +237,53 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-		if (isSongQueued == true)
-		{
-			songSilenceTimer += Time.deltaTime;
-			if (songSilenceTimer > songSilenceLength)
-			{
-				//Debug.Log("silence over");
-				if (isSongPlaying == false)
-				{
-					audioController.MusicControl(1, songSelected);
-					isSongPlaying = true;
-				}
-			}
-		}
-		else if (isSongQueued == false)
-		{
-			// Debug.Log ("starting coroutine");
-			StartCoroutine(MusicTrigger());
-		}
+        if (isSongQueued == true)
+        {
+            songSilenceTimer += Time.deltaTime;
+            if (songSilenceTimer > songSilenceLength)
+            {
+                //Debug.Log("silence over");
+                if (isSongPlaying == false)
+                {
+                    audioController.MusicControl(1, songSelected);
+                    isSongPlaying = true;
+                }
+            }
+        }
+        else if (isSongQueued == false)
+        {
+            // Debug.Log ("starting coroutine");
+            StartCoroutine(MusicTrigger());
+        }
 
-		if (isSongPlaying == true)
-		{
-			songTimer += Time.deltaTime;
-			if (songTimer > songLength)
-			{
-				audioController.MusicControl(2, songSelected);
-				songTimer = 0;
-				songSilenceTimer = 0;
-				isSongPlaying = false;
-				isSongQueued = false;
-			}
-		}
+        if (isSongPlaying == true)
+        {
+            songTimer += Time.deltaTime;
+            if (songTimer > songLength)
+            {
+                audioController.MusicControl(2, songSelected);
+                songTimer = 0;
+                songSilenceTimer = 0;
+                isSongPlaying = false;
+                isSongQueued = false;
+            }
+        }
 
-		/*** if inside in a module turn the flag on ***/
-		if (CentralControl.isInside)
-		{
-//			if (hold repair tool)
-			{
-				if (Input.GetKeyDown(KeyCode.F))
-				{
-					isRepairing = true;
-				}
-			}
+        /*** if inside in a module turn the flag on ***/
+        if (CentralControl.isInside)
+        {
+            //			if (hold repair tool)
+            {
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    isRepairing = true;
+                }
+            }
+        }
 
-			audioController.DroneControl(0);
-		}
-		else if (CentralControl.isInside == false)
-		{
-			audioController.DroneControl(1);
-		}
-
-		if (health > 0)
-		{
-			staminaTimer += Time.deltaTime;
+        if (currentHealth > 0)
+        {
+            staminaTimer += Time.deltaTime;
 
             if (Input.GetKeyDown(KeyCode.Tab))
             {
@@ -309,11 +317,16 @@ public class PlayerController : MonoBehaviour
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                     item = GameObject.Find("Material").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
+                    playerInventory.GetComponent<Inventory>().DebugShowInventory();
                 }
 
                 if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
                 {
                     Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("BuildingTool").GetComponent<Item>();
+                    playerInventory.GetComponent<Inventory>().AddItem(item);
+                    item = GameObject.Find("MiningTool").GetComponent<Item>();
                     playerInventory.GetComponent<Inventory>().AddItem(item);
                 }
             }
@@ -371,15 +384,14 @@ public class PlayerController : MonoBehaviour
                 if (CentralControl.isInside == false)
                 {
                     healthTimer += Time.deltaTime;
-                    if (healthTimer > nightLength / 5)
+                    if (healthTimer > 1f)
                     {
                         if (currentHealth > 0)
                         {
                             StartCoroutine(CoolDownDamage());
-                            currentHealth -= healthLostPerSecond;
+                            currentHealth -= healthLostPerSecondNight;
                             manageHealth();
                         }
-                        health -= 26;
                         healthTimer = 0;
                     }
                 }
@@ -440,208 +452,217 @@ public class PlayerController : MonoBehaviour
             }
 
             direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-			rigidbody2D.velocity = direction * speed;   // speed is changable by us
+            rigidbody2D.velocity = direction * speed;   // speed is changable by us
 
-			//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-			if(rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
-			{
-				AnimateFrames(1);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
-			}
-			else if(rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
-			{
-				AnimateFrames(0);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
-			}
-			else if(rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
-			{
-				AnimateFrames(3);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
-			else if(rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
-			{
-				AnimateFrames(2);
-				this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-			}
-		}
-	}
-    
-	/*---------------------------------------------------------------------------------------------------------------------------------------------------
-	 * AnimateFrames takes an int that tells which "zone" or "direction" the character is facing
-	 * It then tells animateIterator to iterate back and forth across the spritesheet to create a walking animation in each direction
-	 * ------------------------------------------------------------------------------------------------------------------------------------------------*/
-	void AnimateFrames(int animateZoneNumber)
-	{
-		animateTime += Time.deltaTime; //add game clock time to our timer
-		if (animateTime >= animateSpeed) //if our timer has passed the time to switch frames
-		{
-			if (animateZoneNumber == 0)
-			{
-				if (animateIterator == 0) //bottom of iterator zone, should ascend
-				{
-					//audioController.PlayFootstep(0);
-					frameAscending = true;
-					frameDescending = false;
-				}
-				else if (animateIterator == 1)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
-				else if (animateIterator == 2) // top of iterator zone, should descend
-				{
-					//audioController.PlayFootstep(1);
-					frameAscending = false;
-					frameDescending = true;
-				}
+            //using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
+            if (rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && rigidbody2D.velocity.x != 0))		// y > 0
+            {
+                AnimateFrames(1);
+                this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+            }
+            else if (rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && rigidbody2D.velocity.x != 0))		// y < 0
+            {
+                AnimateFrames(0);
+                this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+            }
+            else if (rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x > 0
+            {
+                AnimateFrames(3);
+                this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+            }
+            else if (rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.y != 0))	// x < 0
+            {
+                AnimateFrames(2);
+                this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+            }
 
-				if (animateIterator > 2) // when switching directions, if our animation is facing one direction make sure it switches to the proper direction
-				{
-					animateIterator = 1;
-				}
-				else if (frameAscending == true && frameDescending == false) //ascend if frameascending is true
-				{
-					animateIterator++;
-				}
-				else if (frameAscending == false && frameDescending == true) //descend if framedescending is true
-				{
-					animateIterator--;
-				}
-			}
-			else if (animateZoneNumber == 1)
+
+			if (canSleep == true)
 			{
-				if (animateIterator == 3)
+				if (Input.GetKeyDown(KeyCode.F))
 				{
-					//audioController.PlayFootstep(0);
-					frameAscending = true;
-					frameDescending = false;
-				}
-				else if (animateIterator == 4)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
-				else if (animateIterator == 5)
-				{
-					//audioController.PlayFootstep(1);
-					frameAscending = false;
-					frameDescending = true;
-				}
-				
-				if (animateIterator < 3 || animateIterator > 5)
-				{
-					animateIterator = 4;
-				}
-				else if (frameAscending == true && frameDescending == false)
-				{
-					animateIterator++;
-				}
-				else if (frameAscending == false && frameDescending == true)
-				{
-					animateIterator--;
+					Sleep ();
 				}
 			}
-			else if (animateZoneNumber == 2)
-			{
-				if (animateIterator == 6)
-				{
-					//audioController.PlayFootstep(0);
-					frameAscending = true;
-					frameDescending = false;
-				}
-				else if (animateIterator == 7)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
-				else if (animateIterator == 8)
-				{
-					//audioController.PlayFootstep(1);
-					frameAscending = false;
-					frameDescending = true;
-				}
-				
-				if (animateIterator < 6 || animateIterator > 8)
-				{
-					animateIterator = 7;
-				}
-				else if (frameAscending == true && frameDescending == false)
-				{
-					animateIterator++;
-				}
-				else if (frameAscending == false && frameDescending == true)
-				{
-					animateIterator--;
-				}
-			}
-			else if (animateZoneNumber == 3)
-			{
-				if (animateIterator == 9)
-				{
-					//audioController.PlayFootstep(0);
-					frameAscending = true;
-					frameDescending = false;
-				}
-				else if (animateIterator == 10)
-				{
-					if (leftRightFootstep == 0)
-					{
-						audioController.PlayFootstep(0);
-						leftRightFootstep = 1;
-					}
-					else
-					{
-						audioController.PlayFootstep(1);
-						leftRightFootstep = 0;
-					}
-				}
-				else if (animateIterator == 11)
-				{
-					//audioController.PlayFootstep(1);
-					frameAscending = false;
-					frameDescending = true;
-				}
-				
-				if (animateIterator < 9 || animateIterator > 11)
-				{
-					animateIterator = 10;
-				}
-				else if (frameAscending == true && frameDescending == false)
-				{
-					animateIterator++;
-				}
-				else if (frameAscending == false && frameDescending == true)
-				{
-					animateIterator--;
-				}
-			}
-			animateTime = 0; //reset timer after animation time has passed
-		}
-	}
+        }
+    }
+
+    /*---------------------------------------------------------------------------------------------------------------------------------------------------
+     * AnimateFrames takes an int that tells which "zone" or "direction" the character is facing
+     * It then tells animateIterator to iterate back and forth across the spritesheet to create a walking animation in each direction
+     * ------------------------------------------------------------------------------------------------------------------------------------------------*/
+    void AnimateFrames(int animateZoneNumber)
+    {
+        animateTime += Time.deltaTime; //add game clock time to our timer
+        if (animateTime >= animateSpeed) //if our timer has passed the time to switch frames
+        {
+            if (animateZoneNumber == 0)
+            {
+                if (animateIterator == 0) //bottom of iterator zone, should ascend
+                {
+                    //audioController.PlayFootstep(0);
+                    frameAscending = true;
+                    frameDescending = false;
+                }
+                else if (animateIterator == 1)
+                {
+                    if (leftRightFootstep == 0)
+                    {
+                        audioController.PlayFootstep(0);
+                        leftRightFootstep = 1;
+                    }
+                    else
+                    {
+                        audioController.PlayFootstep(1);
+                        leftRightFootstep = 0;
+                    }
+                }
+                else if (animateIterator == 2) // top of iterator zone, should descend
+                {
+                    //audioController.PlayFootstep(1);
+                    frameAscending = false;
+                    frameDescending = true;
+                }
+
+                if (animateIterator > 2) // when switching directions, if our animation is facing one direction make sure it switches to the proper direction
+                {
+                    animateIterator = 1;
+                }
+                else if (frameAscending == true && frameDescending == false) //ascend if frameascending is true
+                {
+                    animateIterator++;
+                }
+                else if (frameAscending == false && frameDescending == true) //descend if framedescending is true
+                {
+                    animateIterator--;
+                }
+            }
+            else if (animateZoneNumber == 1)
+            {
+                if (animateIterator == 3)
+                {
+                    //audioController.PlayFootstep(0);
+                    frameAscending = true;
+                    frameDescending = false;
+                }
+                else if (animateIterator == 4)
+                {
+                    if (leftRightFootstep == 0)
+                    {
+                        audioController.PlayFootstep(0);
+                        leftRightFootstep = 1;
+                    }
+                    else
+                    {
+                        audioController.PlayFootstep(1);
+                        leftRightFootstep = 0;
+                    }
+                }
+                else if (animateIterator == 5)
+                {
+                    //audioController.PlayFootstep(1);
+                    frameAscending = false;
+                    frameDescending = true;
+                }
+
+                if (animateIterator < 3 || animateIterator > 5)
+                {
+                    animateIterator = 4;
+                }
+                else if (frameAscending == true && frameDescending == false)
+                {
+                    animateIterator++;
+                }
+                else if (frameAscending == false && frameDescending == true)
+                {
+                    animateIterator--;
+                }
+            }
+            else if (animateZoneNumber == 2)
+            {
+                if (animateIterator == 6)
+                {
+                    //audioController.PlayFootstep(0);
+                    frameAscending = true;
+                    frameDescending = false;
+                }
+                else if (animateIterator == 7)
+                {
+                    if (leftRightFootstep == 0)
+                    {
+                        audioController.PlayFootstep(0);
+                        leftRightFootstep = 1;
+                    }
+                    else
+                    {
+                        audioController.PlayFootstep(1);
+                        leftRightFootstep = 0;
+                    }
+                }
+                else if (animateIterator == 8)
+                {
+                    //audioController.PlayFootstep(1);
+                    frameAscending = false;
+                    frameDescending = true;
+                }
+
+                if (animateIterator < 6 || animateIterator > 8)
+                {
+                    animateIterator = 7;
+                }
+                else if (frameAscending == true && frameDescending == false)
+                {
+                    animateIterator++;
+                }
+                else if (frameAscending == false && frameDescending == true)
+                {
+                    animateIterator--;
+                }
+            }
+            else if (animateZoneNumber == 3)
+            {
+                if (animateIterator == 9)
+                {
+                    //audioController.PlayFootstep(0);
+                    frameAscending = true;
+                    frameDescending = false;
+                }
+                else if (animateIterator == 10)
+                {
+                    if (leftRightFootstep == 0)
+                    {
+                        audioController.PlayFootstep(0);
+                        leftRightFootstep = 1;
+                    }
+                    else
+                    {
+                        audioController.PlayFootstep(1);
+                        leftRightFootstep = 0;
+                    }
+                }
+                else if (animateIterator == 11)
+                {
+                    //audioController.PlayFootstep(1);
+                    frameAscending = false;
+                    frameDescending = true;
+                }
+
+                if (animateIterator < 9 || animateIterator > 11)
+                {
+                    animateIterator = 10;
+                }
+                else if (frameAscending == true && frameDescending == false)
+                {
+                    animateIterator++;
+                }
+                else if (frameAscending == false && frameDescending == true)
+                {
+                    animateIterator--;
+                }
+            }
+            animateTime = 0; //reset timer after animation time has passed
+        }
+    }
 
     void zoomInWhenOnBase()
     {
@@ -729,50 +750,43 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private float mapValues(float currentX, float inMin, float inMax, float minX, float maxX)
-    {
-        return (currentX - inMin) * (maxX - minX) / (inMax - inMin) + minX;
-    }
-
     private void manageHealth()
     {
-        healthText.text = "Health:  " + currentHealth;
-        float currentXHealth = mapValues(currentHealth, 0, maxHealth, healthbarPositionMinX, healthbarPositionMaxX);
-
-        healthTransform.position = new Vector3(currentXHealth, healthbarPositionY);
-
-        if (currentHealth > maxHealth / 2)
-        {
-            healthImage.color = new Color32((byte)mapValues(currentHealth, maxHealth / 2, maxHealth, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            healthImage.color = new Color32(255, (byte)mapValues(currentHealth, 0, maxHealth / 2, 0, 255), 0, 255);
-        }
-
-        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250.0f); // 250 = width of the health bar
-        healthTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 25.0f); // 25 = height of the health bar
+        healthText.text = "Health: " + (int)currentHealth;
+        GameObject healthBar = GameObject.Find("HealthBar");
+        Image healthBarImage = healthBar.GetComponent<Image>();
+        healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
     }
 
     private void manageStamina()
     {
-        staminaText.text = "Stamina:    " + currentStamina;
-
-        //Debug.Log("staminabarPositionY: "+staminabarPositionY+", maxstamina: " + maxStamina + ", staminaMinX: " + staminabarPositionMinX + ", staminaMaxX: " + staminabarPositionMaxX);
-
-
-        float currentXStamina = mapValues(currentStamina, 0, maxStamina, staminabarPositionMinX, staminabarPositionMaxX);
-        staminaTransform.position = new Vector3(currentXStamina, staminabarPositionY);
-
-        if (currentStamina > maxStamina / 2)
-        {
-            staminaImage.color = new Color32((byte)mapValues(currentStamina, maxStamina / 2, maxStamina, 255, 0), 255, 0, 255);
-        }
-        else
-        {
-            staminaImage.color = new Color32(255, (byte)mapValues(currentStamina, 0, maxStamina / 2, 0, 255), 0, 255);
-        }
+        staminaText.text = "Stamina: " + (int)currentStamina;
+        GameObject healthBar = GameObject.Find("StaminaBar");
+        Image healthBarImage = healthBar.GetComponent<Image>();
+        healthBarImage.fillAmount = (float)currentStamina / 100.0F;
     }
+
+	private void Sleep()
+	{
+		currentHealth = 100;
+		currentStamina = 100;
+		sleepTimePassed = (dayNightController.dayCycleLength / dayNightController.hoursPerDay) * 4;
+		dayNightController.currentCycleTime += sleepTimePassed;
+		allLocalControl = FindObjectsOfType<LocalControl>();
+		allCentralControl = FindObjectsOfType<CentralControl>();
+		
+
+
+		for (int i = 0; i < allLocalControl.Length; i++)
+		{
+			allLocalControl[i].durability -= (int) sleepTimePassed / (int) allLocalControl[i].durabilityLossTime;
+		}
+
+		for (int i = 0; i < allCentralControl.Length; i++)
+		{
+			allCentralControl[i].durability -= ((int) sleepTimePassed / (int) allCentralControl[i].durabilityLossTime) / 2;
+		}
+	}
 
     IEnumerator CoolDownDamage()
     {
@@ -781,19 +795,26 @@ public class PlayerController : MonoBehaviour
         onCoolDown = false;
     }
 
-	IEnumerator MusicTrigger()
-	{
-		// Debug.Log ("checking trigger");
-		if (Random.Range (0, 4) > 2)
+    IEnumerator MusicTrigger()
+    {
+        // Debug.Log ("checking trigger");
+        if (Random.Range(0, 4) > 2)
+        {
+            // Debug.Log ("song queued");
+            if (isSongPlaying == false)
+            {
+                // Debug.Log ("selecting song");
+                songSelected = Random.Range(1, 5);
+				songLength = Random.Range (100f, 200f);
+				songSilenceLength = Random.Range(100f, 200f);
+                isSongQueued = true;
+				firstSongPlayed = true;
+            }
+        }
+		if (firstSongPlayed == false)
 		{
-			// Debug.Log ("song queued");
-			if (isSongPlaying == false)
-			{
-				// Debug.Log ("selecting song");
-				songSelected = Random.Range(1, 5);
-				isSongQueued = true;
-			}
+        	yield return new WaitForSeconds(3f);
 		}
 		yield return new WaitForSeconds(30f);
-	}
+    }
 }

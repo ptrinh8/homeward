@@ -6,7 +6,7 @@ public class AirControl : MonoBehaviour {
 
     private bool air;
     private float timer;
-    private int flag;
+    public int flag;
     public float duration;
     public Scrollbar airPressureBar;
     public int manuallyOperateDifficulty;
@@ -90,34 +90,46 @@ public class AirControl : MonoBehaviour {
         moduleControl = gameObject.transform.root.gameObject.GetComponent<LocalControl>();
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 		soundPressure = 0f;
+		audioController.airlockDuration = duration;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		airlockSound.getPlaybackState(out airlockPlaybackState);
-		audioController.controllerSoundPressure = this.soundPressure;
+		//audioController.controllerSoundPressure = this.soundPressure;
+		audioController.airlockActivated = this.airlockActivated;
+		//audioController.audioPressureTimer = pressureTimer;
+		
+	
 
         if (flag == 0) { 
             // do nothing
+			/*
 			soundTransition = 3.5f;
 			airlockTransition.setValue(soundTransition);
+			*/
         }
         else if (flag == 1)
         {
             if (airPressureBar.size < 1)
             {
+				//Debug.Log ("pressure rising");
                 timer += Time.deltaTime;
-				pressureTimer = timer / duration;
-                airPressureBar.size = timer / duration;
+				airPressureBar.size = timer / duration;
+				//pressureTimer = timer / duration;
+				/*
 				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
 				airlockPressure.setValue(soundPressure);
 				soundTransition = 2.5f;
 				airlockTransition.setValue(soundTransition);
+				*/
+				audioController.pressureRisingFalling = true;
+				//audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
-
+				audioController.pressureRisingFalling = false;
                 airPressureBar.size = 1;
                 flag = 0;
                 air = true;
@@ -125,17 +137,23 @@ public class AirControl : MonoBehaviour {
         }
         else if (flag == -1)
         {
-            if (airPressureBar.size > 0) {
+            if (airPressureBar.size > 0) 
+			{
                 timer -= Time.deltaTime;
                 airPressureBar.size = timer / duration;
-				pressureTimer = timer / duration;
+				//pressureTimer = timer / duration;
+				/*
 				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
 				airlockPressure.setValue(soundPressure);
 				soundTransition = 2.5f;
 				airlockTransition.setValue(soundTransition);
+				*/
+				audioController.pressureRisingFalling = true;
+				//audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
+				audioController.pressureRisingFalling = false;
                 airPressureBar.size = 0;
                 flag = 0;
                 air = false;
@@ -145,7 +163,7 @@ public class AirControl : MonoBehaviour {
 		if (airlockActivated == true)
 		{
 			doorTimer += Time.deltaTime;
-			if (air)
+			if (audioController.playerLeft == false)
 			{
 				if (doorTimer >= doorLength)
 				{
@@ -154,7 +172,7 @@ public class AirControl : MonoBehaviour {
 					airlockActivated = false;
 				}
 			}
-			else
+			else if (audioController.playerLeft == true)
 			{
 				if (doorTimer >= doorLength)
 				{
@@ -170,8 +188,16 @@ public class AirControl : MonoBehaviour {
     {
         if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
         {
-			airlockActivated = true;
-			airlockSound.start();
+			if (airlockActivated == false)
+			{
+				airlockActivated = true;
+				audioController.airlockActivated = this.airlockActivated;
+				/*
+				if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+				{
+					airlockSound.start();
+				}*/
+			}
         }
     }
 
