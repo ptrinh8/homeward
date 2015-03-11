@@ -84,12 +84,7 @@ public class Airlock : MonoBehaviour {
                         {
                             if (airControl.Timer < airControl.duration)
                             {
-                                AirInManually();
-                                if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                                {
-                                    if (Input.GetKeyDown(manuallyOperateKey))
-                                        gameObject.SendMessageUpwards("AirModuleActivite");
-                                }
+                                AirIn();
                             }
                             else
                             {
@@ -106,12 +101,7 @@ public class Airlock : MonoBehaviour {
                         {
                             if (airControl.Timer < airControl.duration)
                             {
-                                AirInManually();
-                                if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                                {
-                                    if (Input.GetKeyDown(manuallyOperateKey))
-                                        gameObject.SendMessageUpwards("AirModuleActivite");
-                                }
+                                AirIn();
                             }
                             else
                             {
@@ -131,9 +121,9 @@ public class Airlock : MonoBehaviour {
                 {
                     if (airControl.Air)
                     {
-                        if (airControl.Timer > 0)
+                        if (airControl.Timer > 0 )
                         {
-                            AirOutManually();
+                            AirOut();
                         }
                         else
                         {
@@ -159,12 +149,7 @@ public class Airlock : MonoBehaviour {
                 {
                     if (airControl.Timer > 0)
                     {
-                        AirOutManually();
-                        if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                        {
-                            if (Input.GetKeyDown(manuallyOperateKey))
-                                gameObject.SendMessageUpwards("AirModuleActivite");
-                        }
+                        AirOut();
                     }
                     else
                     {
@@ -196,29 +181,46 @@ public class Airlock : MonoBehaviour {
         playerEnterCheckFlag = true;
 
         AirlockTriggered(true);
+        airControl.ResetTimer();
 		}
     }
 
-    void AirInManually()
+    void AirIn()
     {
-        if (!moduleControl.isOn || !moduleControl.IsPowered || moduleControl.IsBroken)
+        if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
         {
-            if (Input.GetKeyDown(manuallyOperateKey))
+            airControl.Flag = 0;
+            airControl.Timer += Time.deltaTime;
+            airControl.airPressureBar.size = airControl.Timer / airControl.duration;
+        }
+        else
+        {
+            if (airControl.Flag != -1)
             {
                 airControl.Flag = -1;
+            }
+            if (Input.GetKeyDown(manuallyOperateKey))
+            {
                 airControl.Timer += Time.deltaTime * airControl.manuallyOperateDifficulty;
                 airControl.airPressureBar.size = airControl.Timer / airControl.duration;
             }
         }
     }
 
-    void AirOutManually()
+    void AirOut()
     {
-        if (!moduleControl.isOn || !moduleControl.IsPowered || moduleControl.IsBroken)
+        if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
         {
+            airControl.Flag = 0;
+            airControl.Timer -= Time.deltaTime;
+            airControl.airPressureBar.size = airControl.Timer / airControl.duration;
+        }
+        else
+        {
+            if (airControl.Flag != 1)
+                airControl.Flag = 1;
             if (Input.GetKeyDown(manuallyOperateKey))
             {
-                airControl.Flag = 1;
                 airControl.Timer -= Time.deltaTime * airControl.manuallyOperateDifficulty;
                 airControl.airPressureBar.size = airControl.Timer / airControl.duration;
             }

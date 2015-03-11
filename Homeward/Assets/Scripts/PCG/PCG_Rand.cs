@@ -10,11 +10,8 @@ using System.Collections.Generic;
 public class PCG_Rand : MonoBehaviour 
 {
     // Make changes to these values in the editor.
-    [HideInInspector]
-    public List<float> tempRndNosRock1 = new List<float>(20000);
-    [HideInInspector]
-    public List<float> tempRndNosRock2 = new List<float>(20000);
-    
+    public List<float> tempRndNosRock1 = new List<float>();
+    public List<float> tempRndNosRock2 = new List<float>();
 
     public List<float> RndNosRock1
     {

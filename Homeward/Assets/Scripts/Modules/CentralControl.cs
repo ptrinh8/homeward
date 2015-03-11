@@ -15,28 +15,23 @@ public class CentralControl : MonoBehaviour {
 	private int moduleID;
 	private static bool[] visited;
 	private List <GameObject> locals; // List of all the modules within the outpost
-	public int durability;
+	private int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
-	public float durabilityLossTime;
+	private float durabilityLossTime;
 	public float durabilityLossSpeed;
 	private bool isBroken;
 	private Text moduleStatusText;
 	private int pos;
 
     public GameObject refineryModule;
-    //public GameObject foodModule;
     public GameObject airlockModule;
 
     /*** UI module flags by Takahide ***/
     public static bool healthStaminaModuleExists;
     public static bool moduleControlModuleExists;
     public static bool radarModuleExists;
-	private KeyCode repairKey = KeyCode.F;
-
-    private GameObject player;
-    private float repairActionTime;
-    private bool repairingFlag;
+	private KeyCode repairKey = KeyCode.R;
 
 	// Use this for initialization
 	void Start () {
@@ -50,20 +45,15 @@ public class CentralControl : MonoBehaviour {
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
+		durabilityLossSpeed = 1;
 
         /*** UI module flags ***/
         healthStaminaModuleExists = false;
         moduleControlModuleExists = false;
         radarModuleExists = false;
 
-        player = GameObject.FindWithTag("Player");
-        repairingFlag = true;
-        repairActionTime = 0f;
-
         Invoke("InitializeRefineryModule", Time.deltaTime);
-        GameObject.FindWithTag("ModuleBuilding").SendMessage("Register", gameObject, SendMessageOptions.RequireReceiver);
 	}
-
     void InitializeRefineryModule()
     {
         if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
@@ -74,7 +64,7 @@ public class CentralControl : MonoBehaviour {
             refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 2.85f, transform.position.y, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 270)
             refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 2.85f, 0), transform.rotation) as GameObject;
-
+        
         Invoke("InitializeRefineryModuleVariable", Time.deltaTime);
         Invoke("InitializeAirlockModule", Time.deltaTime);
     }
@@ -249,45 +239,11 @@ public class CentralControl : MonoBehaviour {
 		else
 			moduleStatusText.text = "Broken";
 		
-		if (isEnter) {
-            if (Input.GetKeyDown(repairKey))
-            {
-                if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
-                {
-                    if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
-                    {
-                        if (repairingFlag)
-                        {
-                            repairingFlag = false;
-                            RepairAction();
-                            Invoke("TimeWait", repairActionTime);
-                        }
-                    }
-                }
-            }
+		if (isEnter && Input.GetKeyDown(repairKey)) {
+			//	Inventary code here
+			if (durability + 5 <= 100)
+				durability += 5;
+			else durability = 100;
 		}
 	}
-
-    void RepairAction()
-    {
-        if (!isBroken)
-        {
-            if (durability + 10 <= 100)
-            {
-                durability += 10;
-            }
-            else durability = 100;
-        }
-        else
-        {
-            durability += 10;
-            isBroken = false;
-        }
-        player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-    }
-
-    void TimeWait()
-    {
-        repairingFlag = true;
-    }
 }

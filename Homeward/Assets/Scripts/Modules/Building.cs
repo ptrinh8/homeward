@@ -45,6 +45,9 @@ public class Building : MonoBehaviour {
 	private Dictionary<string, bool> moduleDictionary;
 
 	public GameObject habitatModule;
+	public GameObject refineryModule;
+    public GameObject airlockModule;
+
     public static bool isDeploying;
 
 	// Use this for initialization

@@ -18,7 +18,7 @@ public class Refining : MonoBehaviour
 
     private Vector2 worldSpacePos;
     private float loadingStartTime;
-    public float loadingUpdateTime;
+    private float loadingUpdateTime;
     private float loadingPercent;
     private bool timerReached = false;
 
@@ -42,19 +42,17 @@ public class Refining : MonoBehaviour
     private KeyCode keyToAddItemsFromMainPlayerInventory = KeyCode.K;
     private KeyCode keyToAddItemsDirectlyToModuleinventory = KeyCode.L;
 
-	public AudioController audioController;
+	private AudioController audioController;
 	public float distanceBetweenPlayerAndRefinery;
 	private FMOD.Studio.EventInstance refineryMachine;
 	private FMOD.Studio.ParameterInstance startingStopping;
 	private FMOD.Studio.ParameterInstance distance;
-	private FMOD.Studio.ParameterInstance airlockPressure;
 	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
 	private float refineryStartingStopping;
 	private float refineryDistance;
 	private bool refineryStarted;
     private bool startRefiningProcess = false;
-    public float time = 0.0F;
-	public float refinerySoundPressure;
+    private float time = 0.0F;
 
     private void MineralsValidations()
     {
@@ -106,6 +104,8 @@ public class Refining : MonoBehaviour
 
         moduleInventory = Instantiate(moduleInventory) as GameObject;
         moduleInventory.transform.SetParent(GameObject.Find("Canvas").transform);
+        moduleInventory.GetComponent<Inventory>().slots = 4; //tak added 3/11
+        moduleInventory.GetComponent<Inventory>().rows = 1; //tak added 3/11
         moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
@@ -119,12 +119,10 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		refineryMachine.getParameter("StartingStopping", out startingStopping);
 		refineryMachine.getParameter("Distance", out distance);
-		refineryMachine.getParameter("AirlockPressure", out airlockPressure);
-		refinerySoundPressure = 0f;
 		refineryDistance = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-        time = 1000.0F;
+        time = 50000.0F * Time.deltaTime;
         
 	}
 
@@ -135,10 +133,8 @@ public class Refining : MonoBehaviour
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
 		distance.setValue(refineryDistance);
-		airlockPressure.setValue(audioController.controllerSoundPressure);
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
-        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered || gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken ||
-            !gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {
             refineryModuleSpriteRenderer.sprite = noPowerSupplyTexture;
         }
@@ -158,12 +154,13 @@ public class Refining : MonoBehaviour
 
         int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
 
-        if (_mineralCount >= 2)
+        if (_mineralCount == 2 || _mineralCount == 3 || _mineralCount == 4 || _mineralCount == 5 || _mineralCount == 6 ||
+            _mineralCount == 7 || _mineralCount == 8 || _mineralCount == 9 || _mineralCount == 10)
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount > 2)
+		if (_mineralCount > 0)
 		{
 			if (refineryStarted == false)
 			{
@@ -200,19 +197,13 @@ public class Refining : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         UIInventory.SetModuleInventory(moduleInventory); // takahide added
-        //Taylor
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerController.toolUsingEnable = false;
-        }
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
-            gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
             {
                 showPlayerAndModuleInventory = true;
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
@@ -263,12 +254,6 @@ public class Refining : MonoBehaviour
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
         //UIInventory.SetModuleInventory(null);
-
-        // Taylor
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerController.toolUsingEnable = true;
-        }
     }
 
     void startTimer()

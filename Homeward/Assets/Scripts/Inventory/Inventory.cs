@@ -16,6 +16,8 @@ public class Inventory : MonoBehaviour {
 
     public int rows;
 
+    [HideInInspector] public int columns;
+
     public float slotPaddingLeft, slotPaddingTop;
 
     public float slotSize;
@@ -73,7 +75,7 @@ public class Inventory : MonoBehaviour {
         inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
         inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHeight);
 
-        int columns = slots / rows;
+        columns = slots / rows;
 
         
 
@@ -254,6 +256,7 @@ public class Inventory : MonoBehaviour {
 
                 if(!tmp.IsEmpty)
                 {
+                     Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
         }

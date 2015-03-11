@@ -15,7 +15,6 @@ public enum ItemName
 {
     MiningTool,
     RepairingTool,
-    BuildingTool,
     Mineral,
     Water,
     Food1,
@@ -49,8 +48,6 @@ public class Item : MonoBehaviour
             case ItemName.Mineral:
                 break;
             case ItemName.MiningTool:
-                break;
-            case ItemName.BuildingTool:
                 break;
             case ItemName.Material:
                 break;

@@ -30,19 +30,17 @@ public class LocalControl : MonoBehaviour {
 	public bool isOn;
 	private KeyCode turnKey = KeyCode.T;
 
-	public int durability;
+	private int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
-	public float durabilityLossTime;
+	private float durabilityLossTime;
 	public float durabilityLossSpeed;
 	private bool isBroken, flag;
 	private Text moduleStatusText;
 	private int pos; 
-	private KeyCode repairKey = KeyCode.F;
+	private KeyCode repairKey = KeyCode.R;
 
 	private GameObject player;
-    private float repairActionTime;
-    private bool repairingFlag;
 
 	public bool IsEnter 
 	{
@@ -79,12 +77,11 @@ public class LocalControl : MonoBehaviour {
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
+		durabilityLossSpeed = 10;
 		isEnter = true;
 		flag = true;
 
 		player = GameObject.FindWithTag("Player");
-        repairingFlag = true;
-        repairActionTime = 5f;
 	}
 	
 	// Update is called once per frame
@@ -166,47 +163,31 @@ public class LocalControl : MonoBehaviour {
 		isOn = flag;
 		center.SendMessage("CheckPowerSupply");
 		if (!isOn) {
-            //foreach (Transform child in transform) 
-            //    if (child.gameObject.tag == "Machine") {
-            //        child.gameObject.SetActive(false);
-            //    }
+			foreach (Transform child in transform) 
+				if (child.gameObject.tag == "Machine") {
+					child.gameObject.SetActive(false);
+				}
 			if (center.GetComponent<CentralControl>().isEnterOutpost)
 				spriteRenderer.sprite = turnedOffSprite;
 		} else if (isPowered){
-            //foreach (Transform child in transform)
-            //    if (child.gameObject.tag == "Machine")
-            //    {
-            //        child.gameObject.SetActive(true);
-            //    }
+            foreach (Transform child in transform)
+                if (child.gameObject.tag == "Machine")
+                {
+                    child.gameObject.SetActive(true);
+                }
 			spriteRenderer.sprite = indoorSprite;
 		} else spriteRenderer.sprite = noPowerSprite;
 		spriteRenderer.sortingOrder = -3;
 	}
 
-	void OnTriggerStay2D(Collider2D other)
-    {
+	void OnTriggerStay2D(Collider2D other){
 		if (other.gameObject.tag == "Player"){
 			//Debug.Log("Press T to turn on/off module");
-			if (Input.GetKeyDown(turnKey) && !isBroken) {
+			if (Input.GetKeyDown(turnKey)) {
 				SwitchTriggered(!isOn);
 			}
 		}
 	}
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerController.toolUsingEnable = false;
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other) {
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerController.toolUsingEnable = true;
-        }
-    }
 
 	void AddConnection(GameObject other) {
 		if (connections == null)
@@ -231,22 +212,21 @@ public class LocalControl : MonoBehaviour {
 			}
 		}
 
-		if (isEnter) {
-            if (Input.GetKeyDown(repairKey))
-            {
-                if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
-                {
-                    if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
-                    {
-                        if (repairingFlag)
-                        {
-                            repairingFlag = false;
-                            RepairAction();
-                            Invoke("TimeWait", repairActionTime);
-                        }
-                    }
-                }
-            }
+		if (isEnter && Input.GetKeyDown(repairKey)) {
+			if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100) {
+				if (!isBroken) {
+					if (durability + 10 <= 100) {
+						durability += 10;
+					}
+					else durability = 100;
+				} else {
+					durability += 10;
+					isBroken = false;
+					SwitchTriggered(true);
+					flag = true;
+				}
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+			}
 		}
 
 		if (durability > 0) {
@@ -256,29 +236,4 @@ public class LocalControl : MonoBehaviour {
 		}else
 			moduleStatusText.text = "Broken";
 	}
-
-    void RepairAction()
-    {
-        if (!isBroken)
-        {
-            if (durability + 10 <= 100)
-            {
-                durability += 10;
-            }
-            else durability = 100;
-        }
-        else
-        {
-            durability += 10;
-            isBroken = false;
-            SwitchTriggered(true);
-            flag = true;
-        }
-        player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-    }
-
-    void TimeWait()
-    {
-        repairingFlag = true;
-    }
 }

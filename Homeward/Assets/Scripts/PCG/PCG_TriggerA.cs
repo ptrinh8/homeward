@@ -1,42 +1,40 @@
-﻿using UnityEngine;
+﻿// ==================================================================================
+// <file="PCG_TriggerA.cs" product="Homeward">
+// <date>02-12-2014</date>
+// ==================================================================================
+
+using UnityEngine;
 using System.Collections;
 
 public class PCG_TriggerA : MonoBehaviour 
-{
-
+{   
     [HideInInspector]
-    public bool playerInsideCircleTriggerA = false;
+    public bool playerInsideTriggerA = false;
     [HideInInspector]
-    public bool playerExitedCircleTriggerA = false;
+    public bool playerExitedTriggerA = false;
 
     private bool doOnce = false;
 
-    void Start()
+	void Start () 
     {
 
-        playerInsideCircleTriggerA = false;
-    }
+        playerInsideTriggerA = false;
+	}
 
-    void Update()
+	void Update () 
     {
 
-    }
+	}
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.name == "MainPlayer")
-        {
-            playerInsideCircleTriggerA = true;
-            playerExitedCircleTriggerA = false;
-        }
+        playerInsideTriggerA = true;
+        playerExitedTriggerA = false;
     }
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.gameObject.name == "MainPlayer")
-        {
-            playerInsideCircleTriggerA = false;
-            playerExitedCircleTriggerA = true;
-        }
+        playerInsideTriggerA = false;
+        playerExitedTriggerA = true;
     }
 }

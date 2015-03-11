@@ -74,8 +74,7 @@ public class Food : MonoBehaviour
     void Update()
     {
         var refineryModuleSpriteRenderer = refineryModule.GetComponent<SpriteRenderer>();
-        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered || gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken ||
-            !gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+        if (!gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
         {
             refineryModuleSpriteRenderer.sprite = noPowerSupplyTexture;
         }
@@ -121,8 +120,7 @@ public class Food : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
-            gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered)
             {
                 showPlayerAndModuleInventory = true;
                 PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
