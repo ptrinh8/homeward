@@ -96,7 +96,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
         st.highlightedSprite = highlight;
         st.pressedSprite = neutral;
 
-        GetComponent<Button>().spriteState = st;
+        //GetComponent<Button>().spriteState = st;
     }
 
     public Item GetItem()

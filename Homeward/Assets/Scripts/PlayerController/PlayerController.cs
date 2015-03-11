@@ -786,6 +786,8 @@ public class PlayerController : MonoBehaviour
 	{
 		currentHealth = 100;
 		currentStamina = 100;
+		manageHealth();
+		manageStamina();
 		sleepTimePassed = (dayNightController.dayCycleLength / dayNightController.hoursPerDay) * 4;
 		dayNightController.currentCycleTime += sleepTimePassed;
 		allLocalControl = FindObjectsOfType<LocalControl>();
