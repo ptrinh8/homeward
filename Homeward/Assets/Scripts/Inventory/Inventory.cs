@@ -284,6 +284,7 @@ public class Inventory : MonoBehaviour {
 
     public int CountItems(ItemName itemName)
     {
+		int itemCount = 0;
         if (IsEmpty)
         {
             //Debug.Log("This Inventory is Empty");
@@ -302,11 +303,12 @@ public class Inventory : MonoBehaviour {
                     if (!tmp.IsEmpty && itemName == tmp.GetCurrentItem().itemName)
                     {
                         //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
-                        return tmp.Items.Count;
+                        //return tmp.Items.Count;
+						itemCount += tmp.Items.Count;
                     }
                 }
             }
-            return 0;
+			return itemCount;
         }
     }
 

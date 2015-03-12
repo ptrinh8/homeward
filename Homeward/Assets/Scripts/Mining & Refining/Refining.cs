@@ -163,7 +163,7 @@ public class Refining : MonoBehaviour
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount > 2)
+		if (_mineralCount >= 2)
 		{
 			if (refineryStarted == false)
 			{

@@ -227,6 +227,7 @@ public class PlayerController : MonoBehaviour
     {
         zoomInWhenIndoor();
         EndDemo();
+		//Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
 
         //CurrentHealth--;
 
@@ -379,7 +380,7 @@ public class PlayerController : MonoBehaviour
 
             }
 
-            if (stamina <= 50)
+            if (currentStamina <= 50)
             {
                 healthTimer += Time.deltaTime;
                 if (healthTimer > 1f)
@@ -395,7 +396,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            if (dayNightController.currentPhase == DayNightController.DayPhase.Night || dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
+            if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
             {
                 if (CentralControl.isInside == false)
                 {
