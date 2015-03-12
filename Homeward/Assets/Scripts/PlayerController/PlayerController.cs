@@ -1,4 +1,4 @@
-﻿// =======================================================================
+// =======================================================================
 // <file="PlayerController.cs" product="Homeward">
 // <date>2014-11-12</date>
 // =======================================================================
@@ -161,6 +161,7 @@ public class PlayerController : MonoBehaviour
     public Sprite repairToolSprite;
     public Sprite miningToolSprite;
     public Sprite buildingToolSprite;
+	public Sprite defaultSprite;
 
     private void EndDemo()
     {
@@ -265,6 +266,10 @@ public class PlayerController : MonoBehaviour
         {
             toolBoxUIImage.sprite = buildingToolSprite;
         }
+		else
+		{
+			toolBoxUIImage.sprite = defaultSprite;
+		}
 
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
@@ -375,6 +380,28 @@ public class PlayerController : MonoBehaviour
 	                    item = GameObject.Find("MiningTool").GetComponent<Item>();
 	                    playerInventory.GetComponent<Inventory>().AddItem(item);
 	                }
+
+					if (Input.GetKeyDown(KeyCode.Y))
+					{
+						if (holdingBuildingTool == true)
+						{
+							Item item = GameObject.Find ("BuildingTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						else if (holdingMiningTool == true)
+						{
+							Item item = GameObject.Find ("MiningTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						else if (holdingRepairTool == true)
+						{
+							Item item = GameObject.Find ("RepairingTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						holdingBuildingTool = false;
+						holdingMiningTool = false;
+						holdingRepairTool = false;
+					}
 	            }
 	            else
 	            {
