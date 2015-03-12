@@ -5,10 +5,22 @@ public class EndGame : MonoBehaviour
 {
     private float fadeSpeed = 1.5f;     
     private bool sceneStarting = true;  
+	private PlayerController player;
+
+	void Start()
+	{
+		player = GameObject.Find("MainPlayer").GetComponent<PlayerController>();
+	}
 
     void Update()
     {
-        if (sceneStarting) { StartScene(); }
+        if (sceneStarting) 
+		{ 
+			if (player.isSleeping == false)
+			{
+				StartScene(); 
+			}
+		}
     }
 
     public void FadeToClear()
