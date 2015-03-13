@@ -13,6 +13,7 @@ public class Spaceship : MonoBehaviour
     public static float distance;
 
 	private Vector2 position;
+	private int quadrant;
 
     public bool DemoEnds
     {
@@ -50,8 +51,27 @@ public class Spaceship : MonoBehaviour
 
     void Start()
     {
-		position.x = Random.Range(350f, 400f);
-		position.y = Random.Range(350f, 400f);
+		quadrant = Random.Range(0, 3);
+		if (quadrant == 0)
+		{
+			position.x = Random.Range(350f, 400f);
+			position.y = Random.Range(350f, 400f);
+		}
+		else if (quadrant == 1)
+		{
+			position.x = Random.Range(0f, 250f);
+			position.y = Random.Range(350f, 400f);
+		}
+		else if (quadrant == 3)
+		{
+			position.x = Random.Range(0, 250f);
+			position.y = Random.Range(0f, 250f);
+		}
+		else if (quadrant == 4)
+		{
+			position.x = Random.Range(350f, 400f);
+			position.y = Random.Range(0f, 250f);
+		}
 
 		this.transform.position = position;
     }

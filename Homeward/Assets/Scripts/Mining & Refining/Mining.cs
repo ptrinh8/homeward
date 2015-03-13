@@ -94,6 +94,12 @@ public class Mining : MonoBehaviour
 			}
             if (loadingUpdateTime == time)
             {
+				randomMineralsQuantity--;
+				Item item = GameObject.Find("Mineral").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+				StopTimer();
+				timerReached = false;
+				/*
                 if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) < GameObject.Find("Mineral").GetComponent<Item>().maxSize)
                 {
                     randomMineralsQuantity--;
@@ -101,7 +107,7 @@ public class Mining : MonoBehaviour
                     mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
                     StopTimer();
                     timerReached = false;
-                }
+                }*/
                 isPlayerMining = false;
             }
         }

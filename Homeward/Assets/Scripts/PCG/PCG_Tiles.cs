@@ -6,6 +6,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class PCG_Tiles : MonoBehaviour 
 {
@@ -13,6 +14,7 @@ public class PCG_Tiles : MonoBehaviour
     private PCG_TriggerB trigger1 = new PCG_TriggerB();
     private PCG_TriggerC trigger2 = new PCG_TriggerC();
     private PCG_TriggerD trigger3 = new PCG_TriggerD();
+    private PCG_rocks pcg_rocks = new PCG_rocks();
 
     public GameObject tile;
     public GameObject planetTextureA, planetTextureB, planetTextureC, planetTextureD;
@@ -44,7 +46,6 @@ public class PCG_Tiles : MonoBehaviour
             _y[i] = 5 + _Yincrement;
             _Yincrement = _Yincrement + 5;
 
-            // move down to the right side after touching vertiLmt
             if (i == vertiLmt || i == vertiLmt+vertiLmtINC)
             {
                 vertiLmtINC = vertiLmtINC + vertiLmt;
@@ -56,7 +57,6 @@ public class PCG_Tiles : MonoBehaviour
         {
             _x[j] = 5 + _Xincrement;
 
-            // increment x part of grid -> after touching vertiLimit 
             if (j == vertiLmt || j == vertiLmt + vertiLmtINC_again)
             {
                 vertiLmtINC_again = vertiLmtINC_again + vertiLmt;
@@ -78,6 +78,12 @@ public class PCG_Tiles : MonoBehaviour
                 addRemoveTiles = true;
                 triggerEntered = false;
                 moveTrigger = false;
+
+                GameObject[] gameObjectTile = GameObject.FindGameObjectsWithTag("FinalTextures");
+                List<GameObject> gameObjectTileList = gameObjectTile.ToList();
+                List<GameObject> finalList = gameObjectTileList.Distinct().ToList();
+
+
                 for (int i = 0; i < 11071; i++)
                 {
                         var distance = Vector2.Distance(new Vector2(_x[i], _y[i]), mainPlayerPos);
@@ -85,6 +91,12 @@ public class PCG_Tiles : MonoBehaviour
                         {
                             tiles[i] = Instantiate(tile, new Vector3(_x[i], _y[i], 0), transform.rotation) as GameObject;
                             tiles[i].tag = "FinalTextures";
+                            tiles[i].name = "FinalTextures " + i;
+
+                            if (tiles[i].name == "FinalTextures 90")
+                            {
+                                tiles[i].GetComponentInChildren<SpriteRenderer>().enabled = false;
+                            }
 
                             if ((rand.tempRndNosRock1[i] < 0.33F) && (rand.tempRndNosRock1[i] > 0.00F))
                             {
@@ -98,7 +110,15 @@ public class PCG_Tiles : MonoBehaviour
                             {
                                 tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureD.GetComponentInChildren<SpriteRenderer>().sprite;
                             }
-                    }
+
+                            foreach (GameObject item in finalList)
+                            {
+                                if (item.name == tiles[i].name)
+                                {
+                                    Destroy(tiles[i]);
+                                }
+                            }
+                        }
 
                 }
 
@@ -131,6 +151,9 @@ public class PCG_Tiles : MonoBehaviour
                 trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
                 trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
                 trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                pcg_rocks.moveTrigger = true;
+                pcg_rocks.addRemoveTiles = false;
+                pcg_rocks.triggerEntered = true;
             }
         }
         if (trigger1.playerInsideCircleTriggerA1 == true)
@@ -145,6 +168,9 @@ public class PCG_Tiles : MonoBehaviour
                 trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
                 trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
                 trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                pcg_rocks.moveTrigger = true;
+                pcg_rocks.addRemoveTiles = false;
+                pcg_rocks.triggerEntered = true;
             }
         }
         if (trigger2.playerInsideCircleTriggerA2 == true)
@@ -158,6 +184,9 @@ public class PCG_Tiles : MonoBehaviour
                 trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
                 trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
                 trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                pcg_rocks.moveTrigger = true;
+                pcg_rocks.addRemoveTiles = false;
+                pcg_rocks.triggerEntered = true;
             }
         }
         if (trigger3.playerInsideCircleTriggerA3 == true)
@@ -171,6 +200,9 @@ public class PCG_Tiles : MonoBehaviour
                 trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
                 trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
                 trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                pcg_rocks.moveTrigger = true;
+                pcg_rocks.addRemoveTiles = false;
+                pcg_rocks.triggerEntered = true;
             }
         }
     }
@@ -182,6 +214,7 @@ public class PCG_Tiles : MonoBehaviour
         trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
         trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
         trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
+        pcg_rocks = FindObjectOfType(typeof(PCG_rocks)) as PCG_rocks;
         RndNosGeneration();	
 
         GameObject mainPlayer = GameObject.Find("MainPlayer");
