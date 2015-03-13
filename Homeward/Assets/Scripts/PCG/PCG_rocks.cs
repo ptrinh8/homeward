@@ -17,9 +17,13 @@ public class PCG_rocks : MonoBehaviour
     private int[] _y = new int[620];
     private bool doOnce = false;
 
+    [HideInInspector]
     public bool triggerEntered = false;
+    [HideInInspector]
     public bool addRemoveTiles = false;
+    [HideInInspector]
     public bool initialFunctionCall = false;
+    [HideInInspector]
     public bool moveTrigger = false;
 
     public bool TriggerEntered_Property { get { return triggerEntered; } set { triggerEntered = value; } }
