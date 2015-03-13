@@ -8,6 +8,8 @@
 
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
 #endregion
 
@@ -41,6 +43,11 @@ using System.Collections;
 /// </remarks>
 public class DayNightController : MonoBehaviour
 {
+    private float temp_10minsclock;
+    private float temp;
+    private float for_temp;
+    private bool resetValues;
+
     /// <summary>
     /// The number of days passed from the beginning
     /// </summary>
@@ -55,6 +62,7 @@ public class DayNightController : MonoBehaviour
     /// The current time within the day cycle. Modify to change the World Time.
     /// </summary>
     public float currentCycleTime;
+    public int currentCycleTime_int;
  
     //Would be the amount of time the sky takes to transition if UpdateSkybox were used.
     //public float skyTransitionTime;
@@ -153,8 +161,7 @@ public class DayNightController : MonoBehaviour
     /// The specified intensity of the directional light, if one exists. This value will be
     /// faded to 0 during dusk, and faded from 0 back to this value during dawn.
     /// </summary>
-    private float lightIntensity;
- 
+    private float lightIntensity; 
     /// <summary>
     /// Initializes working variables and performs starting calculations.
     /// </summary>
@@ -170,6 +177,9 @@ public class DayNightController : MonoBehaviour
         nightTime = duskTime + quarterDay;
         if (light != null)
         { lightIntensity = light.intensity; }
+        temp = 10.0F;
+        for_temp = 0.0F;
+        resetValues = false;
     }
  
     /// <summary>
@@ -197,6 +207,52 @@ public class DayNightController : MonoBehaviour
             { daySkybox = box.material; }
         }
     }
+
+    void ManageClock()
+    {
+        int temp_12hrclock;
+        temp_12hrclock = worldTimeHour;
+        if (worldTimeHour > 10) { temp_12hrclock = worldTimeHour - 10; }
+        GameObject hourBar = GameObject.Find("Hour");
+        Image hourBarImage = hourBar.GetComponent<Image>();
+        hourBarImage.fillAmount = (float)temp_12hrclock / 10.0F;
+
+        currentCycleTime_int = (int)currentCycleTime;
+        temp_10minsclock = currentCycleTime;
+        if (temp_10minsclock > 10.0F) { temp_10minsclock = currentCycleTime - temp; }
+
+        for (int i = 0; i < 11; i++)
+        {
+            if (currentCycleTime > (20.0F + for_temp))
+            {
+                temp = 20.0F + for_temp;
+                for_temp += 10.0F;
+            }
+        }
+
+        if (currentCycleTime_int == 200) { resetValues = false; }
+
+        if (currentCycleTime_int == 0)
+        {
+            if (!resetValues)
+            {
+                resetValues = false;
+                temp = 10.0F;
+                for_temp = 0.0F;
+            }
+        }
+
+        GameObject minsBar = GameObject.Find("Mins");
+        Image minsBarImage = minsBar.GetComponent<Image>();
+        minsBarImage.fillAmount = (float)temp_10minsclock / 10.0F;
+
+        Text currentTimeText = GameObject.Find("CurrentTimeText").GetComponent<Text>();
+        currentTimeText.text = worldTimeHour + ":" + (int)temp_10minsclock + "\nh:m";
+        Text currentDaysPassedText = GameObject.Find("DaysPassedText").GetComponent<Text>();
+        currentDaysPassedText.text = "Current Days Passed: " + dayCount;
+        Text currentTimeofTheDay = GameObject.Find("NightDawnDayDuskText").GetComponent<Text>();
+        currentTimeofTheDay.text = "Current Phase: " + currentPhase;
+    }
  
     // Use this for initialization
     void Start()
@@ -207,6 +263,8 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ManageClock();
+
         // Rudementary phase-check algorithm:
         if (currentCycleTime > nightTime && currentPhase == DayPhase.Dusk)
         {
