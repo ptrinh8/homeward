@@ -38,6 +38,13 @@ public class CentralControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
 
+    private bool newGameFlag;
+
+    void Awake()
+    {
+        newGameFlag = true;
+    }
+
 	// Use this for initialization
 	void Start () {
 		locals = new List<GameObject>(); 
@@ -60,8 +67,10 @@ public class CentralControl : MonoBehaviour {
         repairingFlag = true;
         repairActionTime = 0f;
 
-        Invoke("InitializeRefineryModule", Time.deltaTime);
+        if (!newGameFlag)
+            Invoke("InitializeRefineryModule", Time.deltaTime);
         GameObject.FindWithTag("ModuleBuilding").SendMessage("Register", gameObject, SendMessageOptions.RequireReceiver);
+        newGameFlag = true;
 	}
 
     void InitializeRefineryModule()
@@ -112,7 +121,7 @@ public class CentralControl : MonoBehaviour {
 			ShowOutside();
 
 		DurabilityLoss();
-        //Debug.Log(transform.rotation.eulerAngles.z);
+        DisplayText();
 	}
 
 	void ShowInside () {
@@ -289,5 +298,23 @@ public class CentralControl : MonoBehaviour {
     void TimeWait()
     {
         repairingFlag = true;
+    }
+
+    void DisplayText()
+    {
+        if (isEnter)
+        {
+            if (moduleStatusText.enabled == false)
+            {
+                moduleStatusText.enabled = true;
+            }
+        }
+        else
+        {
+            if (moduleStatusText.enabled == true)
+            {
+                moduleStatusText.enabled = false;
+            }
+        }
     }
 }

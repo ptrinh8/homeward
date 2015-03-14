@@ -44,6 +44,8 @@ public class LocalControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
 
+    private bool newGameFlag;
+
 	public bool IsEnter 
 	{
 		get {
@@ -67,6 +69,12 @@ public class LocalControl : MonoBehaviour {
             return isBroken;
         }
     }
+
+    void Awake()
+    {
+        newGameFlag = true;
+    }
+
 	// Use this for initialization
 	void Start () {
 		connections = new List<GameObject>();
@@ -79,12 +87,15 @@ public class LocalControl : MonoBehaviour {
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
-		isEnter = true;
 		flag = true;
+        if (!newGameFlag)
+            isEnter = true;
+        else isEnter = false;
 
 		player = GameObject.FindWithTag("Player");
         repairingFlag = true;
         repairActionTime = 5f;
+        newGameFlag = false;
 	}
 	
 	// Update is called once per frame
@@ -94,6 +105,7 @@ public class LocalControl : MonoBehaviour {
 			checkFlag = false;
 		}
 		DurabilityLoss();
+        DisplayText();
 	}
 
 	void DoorWayTriggered (bool isDoorway) {
@@ -280,5 +292,23 @@ public class LocalControl : MonoBehaviour {
     void TimeWait()
     {
         repairingFlag = true;
+    }
+
+    void DisplayText()
+    {
+        if (isEnter)
+        {
+            if (moduleStatusText.enabled == false)
+            {
+                moduleStatusText.enabled = true;
+            }
+        }
+        else
+        {
+            if (moduleStatusText.enabled == true)
+            {
+                moduleStatusText.enabled = false;
+            }
+        }
     }
 }
