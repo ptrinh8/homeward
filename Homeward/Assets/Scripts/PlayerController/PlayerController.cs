@@ -30,9 +30,8 @@ public class PlayerController : MonoBehaviour
 	private float deadTimer;
 	private float deadLength;
 
-    public float miningSpeed;	        // mining speed per sec
+    public float miningCooldown;	        // mining speed per sec
     public float miningTimer;	        // record mining time
-    public bool miningNow, isMining;    // miningNow is the signal for mineral class
     public static bool isRepairing;
     public GameObject textFinder;
 
@@ -123,12 +122,6 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public float x, y;
 
-    public bool PlayerIsMiningNow
-    {
-        set { miningNow = value; }
-        get { return miningNow; }
-    }
-
     public static bool holdingRepairTool;
     public static bool holdingMiningTool;
     public static bool holdingBuildingTool;
@@ -165,6 +158,8 @@ public class PlayerController : MonoBehaviour
     public Sprite miningToolSprite;
     public Sprite buildingToolSprite;
 	public Sprite defaultSprite;
+
+	public Mining nearestMineral;
 
     private void EndDemo()
     {
@@ -209,8 +204,6 @@ public class PlayerController : MonoBehaviour
         frameDescending = false;
 
         miningTimer = 0;
-        miningNow = false;
-        isMining = false;
         isRepairing = false;
         holdingRepairTool = false;
         holdingMiningTool = false;
@@ -263,6 +256,8 @@ public class PlayerController : MonoBehaviour
 
 		deadTimer = 0f;
 		deadLength = 3f;
+
+		miningCooldown = 2f;
     }
 
     void Update()
@@ -351,11 +346,24 @@ public class PlayerController : MonoBehaviour
 			if (isSleeping == false)
 			{
 	            staminaTimer += Time.deltaTime;
+				miningTimer += Time.deltaTime;
 
 	            if (Input.GetKeyDown(KeyCode.Tab))
 	            {
 	                //TODO
 	            }
+
+				if (miningTimer >= miningCooldown)
+				{
+					if (Input.GetKeyDown(KeyCode.F))
+					{
+						if (nearestMineral != null)
+						{
+							nearestMineral.Mine();
+							miningTimer = 0;
+						}
+					}
+				}
 
 	            if (Input.GetKeyDown(KeyCode.B))
 	            {

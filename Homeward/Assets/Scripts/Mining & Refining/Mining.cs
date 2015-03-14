@@ -14,7 +14,6 @@ public class Mining : MonoBehaviour
 
     public int minimumMineralsThatCanBeExtracted;
     public int maximumMineralsThatCanBeExtracted;
-    [HideInInspector]
     public int randomMineralsQuantity;
 
     public GameObject moduleInventory;
@@ -30,7 +29,7 @@ public class Mining : MonoBehaviour
 
     private float time = 0.0F;
     private bool timerReached = false;
-    private float loadingUpdateTime;
+    public float loadingUpdateTime;
     private float loadingStartTime;
     private float loadingPercent;
 
@@ -84,34 +83,16 @@ public class Mining : MonoBehaviour
         StartDestoryMineCoroutine();
         MineralsValidations();
 
-        if (playerInMiningPosition && isPlayerMining)
-        {
-            StartTimer();
-			if (miningSoundPlayed == false)
-			{
-				audioController.PlayMiningSound();
-				miningSoundPlayed = true;
-			}
-            if (loadingUpdateTime == time)
-            {
-				randomMineralsQuantity--;
-				Item item = GameObject.Find("Mineral").GetComponent<Item>();
-				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-				StopTimer();
-				timerReached = false;
-				/*
-                if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) < GameObject.Find("Mineral").GetComponent<Item>().maxSize)
-                {
-                    randomMineralsQuantity--;
-                    Item item = GameObject.Find("Mineral").GetComponent<Item>();
-                    mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-                    StopTimer();
-                    timerReached = false;
-                }*/
-                isPlayerMining = false;
-            }
-        }
+        
     }
+
+	public void Mine()
+	{
+		audioController.PlayMiningSound();
+		randomMineralsQuantity--;
+		Item item = GameObject.Find("Mineral").GetComponent<Item>();
+		mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+	}
 
     IEnumerator DestroyMine()
     {
@@ -122,11 +103,19 @@ public class Mining : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player") { playerInMiningPosition = true; }
+        if (other.gameObject.tag == "Player") 
+		{
+			playerController.nearestMineral = this;
+			playerInMiningPosition = true; 
+		}
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player") { playerInMiningPosition = false; }
+        if (other.gameObject.tag == "Player") 
+		{ 
+			playerController.nearestMineral = null;
+			playerInMiningPosition = false; 
+		}
     }
 }
