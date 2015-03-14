@@ -14,21 +14,23 @@ public class ModuleSelection : MonoBehaviour
 
     private float moduleSelectionWidth, moduleSelectionHeight;
 
-    public int moduleSlots; // set in inspector
+    [HideInInspector] public int moduleSlots;
 
-    public int moduleRows;
+    [HideInInspector] public int moduleRows;
 
     [HideInInspector] public int moduleColumns;
 
-    public float moduleSlotPaddingLeft, moduleSlotPaddingTop;
+    [HideInInspector] public float moduleSlotPaddingLeft;
+    
+    [HideInInspector] public float moduleSlotPaddingTop;
 
-    public float moduleSlotSize;
+    [HideInInspector] public float moduleSlotSize;
 
     public GameObject moduleSlotPrefab;
 
     private ModuleItem habitatModule, connectorModule, foodModule, healthstaminaModule,
         moduleControlModule, powerModule, radarModule, refineryModule, robotModule,
-        storageModule;
+        storageModule, airlockModule;
 
     [HideInInspector] public RectTransform moduleSelectionRect;
 
@@ -43,10 +45,14 @@ public class ModuleSelection : MonoBehaviour
     // Use this for initialization
     void Awake()
     {
+        moduleSlots = 12;
+        moduleRows = 2;
+        moduleSlotPaddingLeft = 3.0f;
+        moduleSlotPaddingTop = 3.0f;
+        moduleSlotSize = 60.0f;
+
         CreateLayout();
         SetModuleItems();
-
-        DebugShowInventory();
     }
 
 
@@ -64,6 +70,7 @@ public class ModuleSelection : MonoBehaviour
         refineryModule = GameObject.Find("UIRefineryModule").GetComponent<ModuleItem>();
         robotModule = GameObject.Find("UIRobotModule").GetComponent<ModuleItem>();
         storageModule = GameObject.Find("UIStorageModule").GetComponent<ModuleItem>();
+        airlockModule = GameObject.Find("UIAirlockModule").GetComponent<ModuleItem>();
         
         AddItem(habitatModule);
         AddItem(connectorModule);
@@ -75,6 +82,7 @@ public class ModuleSelection : MonoBehaviour
         AddItem(refineryModule);
         AddItem(robotModule);
         AddItem(storageModule);
+        AddItem(airlockModule);
     }
 
 

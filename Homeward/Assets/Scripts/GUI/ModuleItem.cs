@@ -6,14 +6,14 @@ public enum ModuleItemName
     HabitatModule,
     ConnectorModule,
     FoodModule,
-    AirlockModule,
     HealthStaminaModule,
     ModuleControlModule,
     PowerModule,
     RadarModule,
     RefineryModule,
     RobotModule,
-    StorageModule
+    StorageModule,
+    AirlockModule
 }
 
 [System.Serializable]

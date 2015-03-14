@@ -110,8 +110,8 @@ public class UIInventory : MonoBehaviour
         newBox.transform.localScale = new Vector3(1, 1, 1);
 
         selectionBoxRect.localPosition = whichInventory.GetComponent<Inventory>().inventoryRect.localPosition
-            + new Vector3(nth % whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
-                (-1) * nth / whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
+            + new Vector3(nth % whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
+                (-1) * nth / whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, selectionBoxSize);
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, selectionBoxSize);
     }
