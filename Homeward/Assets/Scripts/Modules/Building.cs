@@ -44,8 +44,10 @@ public class Building : MonoBehaviour {
 
 	private Dictionary<string, bool> moduleDictionary;
 
-	public GameObject habitatModule;
     public static bool isDeploying;
+
+    public List<GameObject> initialModules = new List<GameObject>();
+    private int i = 0;  // initialize in order
 
 	// Use this for initialization
 	void Start () {
@@ -97,8 +99,6 @@ public class Building : MonoBehaviour {
 		moduleDictionary.Add("StorageModule", true);
 		moduleDictionary.Add("RobotModule", true);
         moduleDictionary.Add("AirlockModule", true);
-
-		Instantiate(habitatModule, new Vector3(365, 293, 0),  Quaternion.identity);
 
         isDeploying = false;
 	}
@@ -158,6 +158,12 @@ public class Building : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (i < initialModules.Count)
+        {
+            initialModules[i].SetActive(true);
+            i++;
+        }
+
         if (!CentralControl.isInside)
         {
             if (Input.GetKeyDown(habitatModuleKey))
