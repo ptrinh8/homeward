@@ -168,7 +168,7 @@ public class DayNightController : MonoBehaviour
     void Initialize()
     {
         //remainingTransition = skyTransitionTime; //Would indicate that the game should start with an active transition, if UpdateSkybox were used.
-		dayCycleLength = 200f;
+		dayCycleLength = 400f;
         dayCount = 0;
         quarterDay = dayCycleLength * 0.25f;
         dawnTime = 0.0f;
@@ -219,32 +219,32 @@ public class DayNightController : MonoBehaviour
 
         currentCycleTime_int = (int)currentCycleTime;
         temp_10minsclock = currentCycleTime;
-        if (temp_10minsclock > 10.0F) { temp_10minsclock = currentCycleTime - temp; }
+        if (temp_10minsclock > (dayCycleLength / hoursPerDay)) { temp_10minsclock = currentCycleTime - temp; }
 
         for (int i = 0; i < 11; i++)
         {
-            if (currentCycleTime > (20.0F + for_temp))
+            if (currentCycleTime > ((dayCycleLength / 10) + for_temp))
             {
-                temp = 20.0F + for_temp;
-                for_temp += 10.0F;
+                temp = (dayCycleLength / 10) + for_temp;
+                for_temp += dayCycleLength / hoursPerDay;
             }
         }
 
-        if (currentCycleTime_int == 200) { resetValues = false; }
+        if (currentCycleTime_int == dayCycleLength) { resetValues = false; }
 
         if (currentCycleTime_int == 0)
         {
             if (!resetValues)
             {
                 resetValues = false;
-                temp = 10.0F;
+                temp = dayCycleLength / hoursPerDay;
                 for_temp = 0.0F;
             }
         }
 
         GameObject minsBar = GameObject.Find("Mins");
         Image minsBarImage = minsBar.GetComponent<Image>();
-        minsBarImage.fillAmount = (float)temp_10minsclock / 10.0F;
+        minsBarImage.fillAmount = (float)temp_10minsclock / (dayCycleLength / hoursPerDay);
 
         Text currentTimeText = GameObject.Find("CurrentTimeText").GetComponent<Text>();
         currentTimeText.text = worldTimeHour + ":" + (int)temp_10minsclock + "\nh:m";
