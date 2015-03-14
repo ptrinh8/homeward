@@ -17,6 +17,7 @@ public class Building : MonoBehaviour {
 	public GameObject storageModuleDeploying;
 	public GameObject robotModuleDeploying;
     public GameObject airlockModuleDeploying;
+    public GameObject oxygenModuleDeploying;
 
 	private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
 	private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
@@ -29,6 +30,7 @@ public class Building : MonoBehaviour {
 	private Deployable storageModuleDeployable;
 	private Deployable robotModuleDeployable;
     private Deployable airlockModuleDeployable;
+    private Deployable oxygenModuleDeployable;
 
 	private KeyCode habitatModuleKey = KeyCode.Alpha1;
 	private KeyCode connectorModuleKey = KeyCode.Alpha2;
@@ -41,6 +43,7 @@ public class Building : MonoBehaviour {
 	private KeyCode storageModuleKey = KeyCode.Alpha9;
 	private KeyCode robotModuleKey = KeyCode.Alpha0;
     private KeyCode airlockModuleKey = KeyCode.F1;
+    private KeyCode oxygenModuleKey = KeyCode.F2;
 
 	private Dictionary<string, bool> moduleDictionary;
 
@@ -74,6 +77,8 @@ public class Building : MonoBehaviour {
 		robotModuleDeploying.SetActive(false);
         airlockModuleDeploying = Instantiate(airlockModuleDeploying) as GameObject;
         airlockModuleDeploying.SetActive(false);
+        oxygenModuleDeploying = Instantiate(oxygenModuleDeploying) as GameObject;
+        oxygenModuleDeploying.SetActive(false);
 
 		habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
 		connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
@@ -86,6 +91,7 @@ public class Building : MonoBehaviour {
 		storageModuleDeployable = storageModuleDeploying.GetComponent<Deployable>();
 		robotModuleDeployable = robotModuleDeploying.GetComponent<Deployable>();
         airlockModuleDeployable = airlockModuleDeploying.GetComponent<Deployable>();
+        oxygenModuleDeployable = oxygenModuleDeploying.GetComponent<Deployable>();
 
 		moduleDictionary = new Dictionary<string, bool>(); 
 		moduleDictionary.Add("HabitatModule", true);
@@ -99,6 +105,7 @@ public class Building : MonoBehaviour {
 		moduleDictionary.Add("StorageModule", true);
 		moduleDictionary.Add("RobotModule", true);
         moduleDictionary.Add("AirlockModule", true);
+        moduleDictionary.Add("OxygenModule", true);
 
         isDeploying = false;
 	}
@@ -153,6 +160,11 @@ public class Building : MonoBehaviour {
         {
             airlockModuleDeployable.isDeploying = !airlockModuleDeployable.isDeploying;
             airlockModuleDeploying.SetActive(airlockModuleDeployable.isDeploying);
+        }
+        if (oxygenModuleDeployable.isDeploying && moduleDictionary["OxygenModule"])
+        {
+            oxygenModuleDeployable.isDeploying = !oxygenModuleDeployable.isDeploying;
+            airlockModuleDeploying.SetActive(oxygenModuleDeployable.isDeploying);
         }
 	}
 	
@@ -254,6 +266,14 @@ public class Building : MonoBehaviour {
                 airlockModuleDeployable.isDeploying = !airlockModuleDeployable.isDeploying;
                 airlockModuleDeploying.SetActive(airlockModuleDeployable.isDeploying);
                 isDeploying = airlockModuleDeployable.isDeploying;
+            }
+
+            if (Input.GetKeyDown(oxygenModuleKey))
+            {
+                NowBuilding("OxygenModule");
+                oxygenModuleDeployable.isDeploying = !oxygenModuleDeployable.isDeploying;
+                oxygenModuleDeploying.SetActive(oxygenModuleDeployable.isDeploying);
+                isDeploying = oxygenModuleDeployable.isDeploying;
             }
         }
 	}
