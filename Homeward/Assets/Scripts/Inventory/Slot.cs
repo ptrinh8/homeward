@@ -110,8 +110,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
 
             if (items.Count == 0/*IsEmpty*/)
             {
-                isEmpty = true;
-                ChangeSprite(slotEmpty, slotHighLighted);
+                ClearSlot();
             }
 
             return item;

@@ -35,6 +35,7 @@ public class UIInventory : MonoBehaviour
     public static void SetModuleInventory(GameObject moduleInv)
     {
         moduleInventory = moduleInv;
+        if (moduleInventory == null) Debug.Log("asdfasdfasdfasdf");
         firstTimeFlag = true;
     }
 
@@ -63,22 +64,26 @@ public class UIInventory : MonoBehaviour
                 if (firstTimeFlag)
                 {
                     //playerInventory.GetComponent<Inventory>().DebugShowInventory();
-
+                    Debug.Log("oioioioi");
                     ResetUIInventory();
                     slots = playerInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     drawSelectionBox(0, playerInventory);
+                    Debug.Log(allSlots.Count);
                 }
             }
             else
             {
                 if (firstTimeFlag)
                 {
+                    Debug.Log("uiuiuii");
                     ResetUIInventory();
                     slots = playerInventory.GetComponent<Inventory>().slots + moduleInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     allSlots.AddRange(moduleInventory.GetComponent<Inventory>().allSlots);
                     drawSelectionBox(0, playerInventory);
+                    Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots.Count);
+                    if (moduleInventory.GetComponent<Inventory>().allSlots == null) Debug.Log("null");
                 }
             }
 
@@ -110,8 +115,8 @@ public class UIInventory : MonoBehaviour
         newBox.transform.localScale = new Vector3(1, 1, 1);
 
         selectionBoxRect.localPosition = whichInventory.GetComponent<Inventory>().inventoryRect.localPosition
-            + new Vector3(nth % whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
-                (-1) * nth / whichInventory.GetComponent<Inventory>().rows * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
+            + new Vector3(nth % whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingLeft),
+                (-1) * nth / whichInventory.GetComponent<Inventory>().columns * (whichInventory.GetComponent<Inventory>().slotSize + whichInventory.GetComponent<Inventory>().slotPaddingTop));
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, selectionBoxSize);
         selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, selectionBoxSize);
     }
@@ -273,6 +278,8 @@ public class UIInventory : MonoBehaviour
             /*** search for slot ***/
             int i = 0;
 
+            Debug.Log(slots + " "+ allSlots.Count);
+
             foreach (GameObject slot in allSlots)
             {
                 if (i == nthBox)
@@ -295,6 +302,19 @@ public class UIInventory : MonoBehaviour
                     if (GetSlot(slot) != null)
                     {
                         Item item = GetSlot(slot).GetItem();
+
+                        if (slot.GetComponent<Slot>().IsEmpty)
+                        {
+                            if (nthBox < playerInventory.GetComponent<Inventory>().slots)
+                            {
+                                playerInventory.GetComponent<Inventory>().EmptySlots++;
+                            }
+                            else
+                            {
+                                moduleInventory.GetComponent<Inventory>().EmptySlots++;
+                            }
+                        }
+                        
 
                         //if (from != null)
                         {
@@ -359,7 +379,7 @@ public class UIInventory : MonoBehaviour
 
     private Slot GetSlot(GameObject clicked)
     {
-        if (from == null)
+        //if (from == null)
         {
             if (!clicked.GetComponent<Slot>().IsEmpty)
             {
@@ -404,24 +424,76 @@ public class UIInventory : MonoBehaviour
 
         if (to != null && from != null)
         {
-            Stack<Item> tmpTo = new Stack<Item>(to.Items);
-
-            to.AddItems(from.Items);
-
-            if (tmpTo.Count == 0)
+            if (!to.IsEmpty)
             {
-                from.ClearSlot();
-            }
-            else
-            {
-                from.AddItems(tmpTo);
-            }
+                if (to.CurrentItem.itemName == from.CurrentItem.itemName)
+                {
+                    //Debug.Log("to.count =" + to.Items.Count + ", from.count = " + from.Items.Count + ", max = " + to.CurrentItem.maxSize);
+                    if (to.Items.Count + from.Items.Count <= to.CurrentItem.maxSize)
+                    {
+                        foreach (Item item in from.Items)
+                        {
+                            to.AddItem(item);
+                        }
 
-            from.GetComponent<Image>().color = Color.white;
+                        from.ClearSlot();
+                        from.GetComponent<Image>().color = Color.white;
+                    }
+                    else if (from.Items.Count < from.CurrentItem.maxSize && to.Items.Count < to.CurrentItem.maxSize && to.Items.Count + from.Items.Count > to.CurrentItem.maxSize)
+                    {
+                        int deductCount = from.Items.Count + to.Items.Count - to.CurrentItem.maxSize;
+
+                        for (int i = 0; i < deductCount; i++)
+                        {
+                            if (!from.IsEmpty)
+                            {
+                                from.GetItem();
+                            }
+                        }
+
+                        foreach (Item item in from.Items)
+                        {
+                            to.AddItem(item);
+                        }
+
+                        from.GetComponent<Image>().color = Color.white;
+                    }
+                    else 
+                    {
+                        SwapItems();
+                    }
+                }
+                else
+                {
+                    SwapItems();
+                }
+            }
+            else 
+            {
+                SwapItems();
+            }
 
             to = null;
             from = null;
             hoverObject = null;
         }
+    }
+
+    void SwapItems()
+    {
+        Stack<Item> tmpTo = new Stack<Item>(to.Items);
+
+        to.AddItems(from.Items);
+
+        if (tmpTo.Count == 0)
+        {
+            from.ClearSlot();
+        }
+        else
+        {
+            from.AddItems(tmpTo);
+        }
+
+        from.GetComponent<Image>().color = Color.white;
     }
 }

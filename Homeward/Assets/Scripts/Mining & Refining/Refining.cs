@@ -106,6 +106,8 @@ public class Refining : MonoBehaviour
 
         moduleInventory = Instantiate(moduleInventory) as GameObject;
         moduleInventory.transform.SetParent(GameObject.Find("Canvas").transform);
+        moduleInventory.GetComponent<Inventory>().slots = 4; //tak added 3/11
+        moduleInventory.GetComponent<Inventory>().rows = 1; //tak added 3/11
         moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
@@ -262,7 +264,7 @@ public class Refining : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        //UIInventory.SetModuleInventory(null);
+        UIInventory.SetModuleInventory(null);
 
         // Taylor
         if (other.gameObject.tag == "Player")
