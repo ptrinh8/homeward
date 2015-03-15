@@ -52,6 +52,10 @@ public class PlayerController : MonoBehaviour
     public float healthLostPerSecond;
     public float healthLostPerSecondNight;
 
+	private float oxygen;
+	private float oxygenDEC = 1F;
+
+
     public bool canSleep;
     [HideInInspector]
     public bool isKeyEnabled = true;
@@ -111,7 +115,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     public float maxHealth, maxStamina;
-    public Text healthText, staminaText;
+    public Text healthText, staminaText, oxygenText;
     public Image healthImage, staminaImage;
     public float coolDown;
     private bool onCoolDown;
@@ -175,6 +179,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+	private void ManageOxygenLevels()
+	{
+		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
+		else { oxygen -= oxygenDEC * Time.deltaTime; }
+		if (oxygen < 0.0F) { oxygen = 0.0F; }
+		if (oxygen > 100.0F) { oxygen = 100.0F; }
+		oxygenText.text = "Oxygen: " + (int)oxygen;
+		GameObject oxygenBar = GameObject.Find("OxygenBar");
+		Image oxygenBarImage = oxygenBar.GetComponent<Image>();
+		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
+		if (oxygen < 90.0F) { CurrentHealth -= 0.1F * Time.deltaTime; }
+	}
+
 
     void Start()
     {
@@ -197,6 +214,7 @@ public class PlayerController : MonoBehaviour
 
         health = 100;
         stamina = 100f;
+		oxygen = 100.0f;
 
         canSleep = false;
 
@@ -259,13 +277,14 @@ public class PlayerController : MonoBehaviour
 		deadTimer = 0f;
 		deadLength = 3f;
 
-		miningCooldown = 2f;
+		miningCooldown = 1f;
     }
 
     void Update()
     {
         zoomInWhenIndoor();
         EndDemo();
+		ManageOxygenLevels();
         //Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
 
         //CurrentHealth--;
@@ -372,10 +391,13 @@ public class PlayerController : MonoBehaviour
 				{
 					if (Input.GetKeyDown(KeyCode.F))
 					{
-						if (nearestMineral != null)
+						if (holdingMiningTool == true)
 						{
-							nearestMineral.Mine();
-							miningTimer = 0;
+							if (nearestMineral != null)
+							{
+								nearestMineral.Mine();
+								miningTimer = 0;
+							}
 						}
 					}
 				}
