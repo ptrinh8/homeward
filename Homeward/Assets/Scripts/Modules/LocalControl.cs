@@ -44,8 +44,6 @@ public class LocalControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
 
-    private bool newGameFlag;
-
 	public bool IsEnter 
 	{
 		get {
@@ -70,11 +68,6 @@ public class LocalControl : MonoBehaviour {
         }
     }
 
-    void Awake()
-    {
-        newGameFlag = true;
-    }
-
 	// Use this for initialization
 	void Start () {
 		connections = new List<GameObject>();
@@ -88,14 +81,13 @@ public class LocalControl : MonoBehaviour {
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
 		flag = true;
-        if (!newGameFlag)
+        if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
             isEnter = true;
         else isEnter = false;
 
 		player = GameObject.FindWithTag("Player");
         repairingFlag = true;
         repairActionTime = 5f;
-        newGameFlag = false;
 	}
 	
 	// Update is called once per frame

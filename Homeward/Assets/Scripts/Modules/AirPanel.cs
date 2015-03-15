@@ -4,10 +4,11 @@ using System.Collections;
 public class AirPanel : MonoBehaviour {
 
     private KeyCode airLockInteractKey = KeyCode.F;
+    private bool nearAirPenalFlag = false;
 
-    void OnTriggerStay2D(Collider2D other)
+    void Update()
     {
-        if (other.gameObject.tag == "Player")
+        if (nearAirPenalFlag)
         {
             if (Input.GetKeyDown(airLockInteractKey))
             {
@@ -16,10 +17,22 @@ public class AirPanel : MonoBehaviour {
         }
     }
 
+    //void OnTriggerStay2D(Collider2D other)
+    //{
+    //    if (other.gameObject.tag == "Player")
+    //    {
+    //        if (Input.GetKeyDown(airLockInteractKey))
+    //        {
+    //            gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
+    //        }
+    //    }
+    //}
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
+            nearAirPenalFlag = true;
             PlayerController.toolUsingEnable = false;
         }
     }
@@ -28,6 +41,7 @@ public class AirPanel : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
+            nearAirPenalFlag = false;
             PlayerController.toolUsingEnable = true;
         }
     }
