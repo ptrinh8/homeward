@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/****
+ * it is dangerous to use emptySlots if you are accessing directly to slot in Slot.cs
+ * */
+
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -248,10 +253,10 @@ public class Inventory : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
-
             foreach (GameObject slot in allSlots)
             {
+                Debug.Log("Num occupied slots = " + (slots - emptySlots));
+
                 Slot tmp = slot.GetComponent<Slot>();
 
                 if(!tmp.IsEmpty)
@@ -292,8 +297,6 @@ public class Inventory : MonoBehaviour {
         }
         else
         {
-           // Debug.Log("Num Occupied Slots = " + (slots - emptySlots));
-
             foreach (GameObject slot in allSlots)
             {
                 Slot tmp = slot.GetComponent<Slot>();

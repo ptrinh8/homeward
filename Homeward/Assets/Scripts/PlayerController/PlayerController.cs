@@ -158,6 +158,8 @@ public class PlayerController : MonoBehaviour
         set { keyCode_I_Works = value; }
     }
 
+    private static bool keyCode_B_Works;
+
     /*** Tool Box UI ***/
     public Image toolBoxUIImage;
     public Sprite repairToolSprite;
@@ -229,6 +231,7 @@ public class PlayerController : MonoBehaviour
         playerInventory.AddComponent<UIInventory>();
 
         /*** Module Selection ***/
+        keyCode_B_Works = true;
         moduleSelection = Instantiate(moduleSelection) as GameObject;
         moduleSelection.transform.SetParent(GameObject.Find("Canvas").transform);
         moduleSelection.transform.position = new Vector3(250.0f, Screen.height - 100.0f, 0.0f);
@@ -357,13 +360,13 @@ public class PlayerController : MonoBehaviour
                     //TODO
                 }
 
-                if (Input.GetKeyDown(KeyCode.B))
+                if (Input.GetKeyDown(KeyCode.B) && keyCode_B_Works)
                 {
                     showModuleSelection = !showModuleSelection;
                     moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
                 }
 
-                if (Input.GetKeyDown(KeyCode.I) == true && keyCode_I_Works)
+                if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                 {
                     showPlayerInventory = !showPlayerInventory;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
@@ -374,6 +377,7 @@ public class PlayerController : MonoBehaviour
                  * **************************************************************/
                 if (showPlayerInventory) // player is able to control inventory only when inventory is visible
                 {
+                    keyCode_B_Works = false;
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
@@ -424,6 +428,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    keyCode_B_Works = true;
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
@@ -437,11 +442,13 @@ public class PlayerController : MonoBehaviour
                 * **************************************************************/
                 if (showModuleSelection)
                 {
+                    keyCode_I_Works = false;
                     moduleSelection.GetComponent<CanvasGroup>().alpha = 1;
                     moduleDescription.GetComponent<CanvasGroup>().alpha = 1;
                 }
                 else
                 {
+                    keyCode_I_Works = true;
                     moduleSelection.GetComponent<CanvasGroup>().alpha = 0;
                     moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
                 }

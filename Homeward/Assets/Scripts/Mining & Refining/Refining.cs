@@ -264,7 +264,7 @@ public class Refining : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        //UIInventory.SetModuleInventory(null);
+        UIInventory.SetModuleInventory(null);
 
         // Taylor
         if (other.gameObject.tag == "Player")
