@@ -13,8 +13,8 @@ public class PCG_rocks : MonoBehaviour
     private PCG_Rand rand = new PCG_Rand();
 
     public GameObject rock;
-    private int[] _x = new int[620];
-    private int[] _y = new int[620];
+    private int[] _x = new int[820];
+    private int[] _y = new int[820];
     private bool doOnce = false;
 
     [HideInInspector]
@@ -36,30 +36,21 @@ public class PCG_rocks : MonoBehaviour
     int xx = 0;
     int hh = 0;
 
-    private GameObject[] rocks = new GameObject[620];
+    private GameObject[] rocks = new GameObject[820];
 
     public void RndNosGeneration()
     {
-        for (int i = 0; i < 620; i++)
+        for (int i = 0; i < 820; i++)
         {
-            _y[i] = Random.Range(jj, jj + 21);
-            jj = jj + 21;
-            if (i == 21 || i == 21+xx)
-            {
-                xx = xx + 21;
-                jj = 0;
-            }
+            _y[i] = Random.Range(jj, jj + 10);
+            jj = jj + 15;
+            if (i == 20 || i == 30 + xx) { xx = xx + 30; jj = 0; }
         }
 
-        for (int j = 0; j < 620; j++)
+        for (int j = 0; j < 820; j++)
         {
-
-            _x[j] = Random.Range(ii, ii + 19);
-            if (j == 21 || j == 21 + hh)
-            {
-                hh = hh + 21;
-                ii = ii + 21;
-            }
+            _x[j] = Random.Range(ii, ii + 9);
+            if (j == 20 || j == 20 + hh) { hh = hh + 20; ii = ii + 15; }
         }
 
     }
@@ -82,8 +73,7 @@ public class PCG_rocks : MonoBehaviour
                 List<GameObject> gameObjectTileList = gameObjectTile.ToList();
                 List<GameObject> finalList = gameObjectTileList.Distinct().ToList();
 
-
-                for (int i = 0; i < 620; i++)
+                for (int i = 0; i < 820; i++)
                 {
                     var distance = Vector2.Distance(new Vector2(_x[i], _y[i]), mainPlayerPos);
                     if (distance < 20.0F)
@@ -93,27 +83,15 @@ public class PCG_rocks : MonoBehaviour
                         rocks[i].tag = "RocksOnScreen";
                         rocks[i].name = "Rocks " + i;
 
-                        if (rand.tempRndNosRock1[i] < 0.25F)
-                        {
-                        }
-                        else if ((rand.tempRndNosRock1[i] < 0.50F) && (rand.tempRndNosRock1[i] > 0.25F))
-                        {
-                        }
-                        else if (rand.tempRndNosRock1[i] < 0.75F && (rand.tempRndNosRock1[i] > 0.50F))
-                        {
-                        }
-                        else if (rand.tempRndNosRock1[i] > 0.75F)
-                        {
-                        }
+                        if (rand.tempRndNosRock1[i] < 0.25F) { }
+                        else if ((rand.tempRndNosRock1[i] < 0.50F) && (rand.tempRndNosRock1[i] > 0.25F)) { }
+                        else if (rand.tempRndNosRock1[i] < 0.75F && (rand.tempRndNosRock1[i] > 0.50F)) { }
+                        else if (rand.tempRndNosRock1[i] > 0.75F) { }
 
                         foreach (GameObject item in finalList)
                         {
-                            if (item.name == rocks[i].name)
-                            {
-                                Destroy(rocks[i]);
-                            }
+                            if (item.name == rocks[i].name) { Destroy(rocks[i]); }
                         }
-
                     }
                 }
 
@@ -121,10 +99,7 @@ public class PCG_rocks : MonoBehaviour
                 foreach (GameObject texture in allTexturesMyFriend)
                 {
                     var distance2 = Vector2.Distance(texture.transform.position, mainPlayerPos);
-                    if (distance2 > 20.0F)
-                    {
-                        GameObject.Destroy(texture);
-                    }
+                    if (distance2 > 20.0F) { GameObject.Destroy(texture); }
                 }
             }
         }
@@ -133,8 +108,7 @@ public class PCG_rocks : MonoBehaviour
     void Start() 
     {
         rand = FindObjectOfType(typeof(PCG_Rand)) as PCG_Rand;
-        RndNosGeneration();
-	
+        RndNosGeneration();	
 	}
 	
 	void Update () 
