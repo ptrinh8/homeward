@@ -96,6 +96,14 @@ public class LocalControl : MonoBehaviour {
 			center.SendMessage("CheckPowerSupply");
 			checkFlag = false;
 		}
+        if (isEnter)
+        {
+            if (GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir != gameObject.GetComponent<AirControl>().Air)
+            {
+                GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
+            }
+        }
+
 		DurabilityLoss();
         DisplayText();
 	}

@@ -162,6 +162,22 @@ public class PlayerController : MonoBehaviour
 
 	public Mining nearestMineral;
 
+    //Taylor
+    private bool environmentAir;
+
+    public bool EnvironmentalAir
+    {
+        get
+        {
+            return environmentAir;
+        }
+        set
+        {
+            environmentAir = value;
+        }
+    }
+    // Taylor End 
+
     private void EndDemo()
     {
         if (spaceship.playerInsideSpaceship == true)
@@ -260,6 +276,9 @@ public class PlayerController : MonoBehaviour
 		deadLength = 3f;
 
 		miningCooldown = 2f;
+
+        // Taylor
+        environmentAir = true;
     }
 
     void Update()
