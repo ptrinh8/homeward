@@ -21,10 +21,7 @@ public enum ItemName
     Food1,
     Food2,
     Food3,
-    Material, 
-	MiningToolEquipped,
-	RepairingToolEquipped,
-	BuildingToolEquipped
+    Material
 }
 
 [System.Serializable]
@@ -61,12 +58,6 @@ public class Item : MonoBehaviour
                 PlayerController.holdingRepairTool = true;
                 Debug.Log("RepairingTool Equiped");
                 break;
-			case ItemName.MiningToolEquipped:
-				break;
-			case ItemName.BuildingToolEquipped:
-				break;
-			case ItemName.RepairingToolEquipped:
-				break;
         }
     }
 }

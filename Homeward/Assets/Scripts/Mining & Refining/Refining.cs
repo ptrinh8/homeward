@@ -292,18 +292,4 @@ public class Refining : MonoBehaviour
     {
         loadingPercent = loadingUpdateTime/5;
     }
-
-	public void RefinerySleepFinish()
-	{
-		for (int i = 0; i < (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) / 2); i++)
-		{
-			Item item = GameObject.Find("Material").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
-		}
-
-		for (int j = 0; j <= moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral); j++)
-		{
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-		}
-	}
 }
