@@ -38,13 +38,6 @@ public class CentralControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
 
-    private bool newGameFlag;
-
-    void Awake()
-    {
-        newGameFlag = true;
-    }
-
 	// Use this for initialization
 	void Start () {
 		locals = new List<GameObject>(); 
@@ -67,10 +60,9 @@ public class CentralControl : MonoBehaviour {
         repairingFlag = true;
         repairActionTime = 0f;
 
-        if (!newGameFlag)
+        if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
             Invoke("InitializeRefineryModule", Time.deltaTime);
         GameObject.FindWithTag("ModuleBuilding").SendMessage("Register", gameObject, SendMessageOptions.RequireReceiver);
-        newGameFlag = true;
 	}
 
     void InitializeRefineryModule()

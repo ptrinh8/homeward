@@ -66,6 +66,16 @@ public class Building : MonoBehaviour
     public List<GameObject> initialModules = new List<GameObject>();
     private int i = 0;  // initialize in order
 
+    private bool newGameFlag;
+
+    public bool NewGameFlag
+    {
+        get
+        {
+            return newGameFlag;
+        }
+    }
+
 	// Use this for initialization
 	void Start () {
 		// Instantiate the "on-player-blueprint", setActive(true) when needed
@@ -133,6 +143,8 @@ public class Building : MonoBehaviour
         spawnRobotModuleFlag = false;
         spawnStorageModuleFlag = false;
         spawnAirlockModuleFlag = false;
+
+        newGameFlag = true;
     }
 
     void NowBuilding(string module)
@@ -209,7 +221,13 @@ public class Building : MonoBehaviour
         {
             initialModules[i].SetActive(true);
             i++;
+        } 
+        else
+        {
+            if (newGameFlag != false)
+                newGameFlag = false;
         }
+
         if (!CentralControl.isInside)
         {
             if (Input.GetKeyDown(habitatModuleKey) || spawnHabitatModuleFlag)

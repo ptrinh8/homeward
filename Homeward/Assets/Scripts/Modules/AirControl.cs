@@ -98,7 +98,7 @@ public class AirControl : MonoBehaviour {
 
 		airlockSound.getPlaybackState(out airlockPlaybackState);
 		//audioController.controllerSoundPressure = this.soundPressure;
-		audioController.airlockActivated = this.airlockActivated;
+		//audioController.airlockActivated = this.airlockActivated;
 		//audioController.audioPressureTimer = pressureTimer;
 		
 	
@@ -170,6 +170,7 @@ public class AirControl : MonoBehaviour {
 					flag = -1;
 					doorTimer = 0;
 					airlockActivated = false;
+					audioController.airlockActivated = false;
 				}
 			}
 			else if (audioController.playerLeft == true)
@@ -179,6 +180,7 @@ public class AirControl : MonoBehaviour {
 					flag = 1;
 					doorTimer = 0;
 					airlockActivated = false;
+					audioController.airlockActivated = false;
 				}
 			}
 		}
@@ -191,7 +193,7 @@ public class AirControl : MonoBehaviour {
 			if (airlockActivated == false)
 			{
 				airlockActivated = true;
-				audioController.airlockActivated = this.airlockActivated;
+				audioController.airlockActivated = true;
 				/*
 				if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
 				{
