@@ -21,7 +21,8 @@ public enum ItemName
     Food1,
     Food2,
     Food3,
-    Material
+    Material,
+    Oxygen
 }
 
 [System.Serializable]

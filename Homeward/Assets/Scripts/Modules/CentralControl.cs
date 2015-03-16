@@ -119,18 +119,18 @@ public class CentralControl : MonoBehaviour {
         DisplayText();
         if (isInside)
         {
-            spriteRenderer.material = GameObject.Find("Sprites-Default").GetComponent<SpriteRenderer>().material;
+            spriteRenderer.material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
             foreach (GameObject local in locals)
             {
-                local.GetComponent<SpriteRenderer>().material = GameObject.Find("Sprites-Default").GetComponent<SpriteRenderer>().material;
+                local.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
             }
         }
         else
         {
-            spriteRenderer.material = GameObject.Find("DayNightReacting").GetComponent<SpriteRenderer>().material;
+            spriteRenderer.material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
             foreach (GameObject local in locals)
             {
-                local.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReacting").GetComponent<SpriteRenderer>().material;
+                local.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
             }
         }
 	}

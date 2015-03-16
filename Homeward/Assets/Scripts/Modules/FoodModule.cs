@@ -106,6 +106,8 @@ public class FoodModule : MonoBehaviour
 
         moduleInventory = Instantiate(moduleInventory) as GameObject;
         moduleInventory.transform.SetParent(GameObject.Find("Canvas").transform);
+        moduleInventory.GetComponent<Inventory>().slots = 4;
+        moduleInventory.GetComponent<Inventory>().rows = 1;
         moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
@@ -260,7 +262,7 @@ public class FoodModule : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        //UIInventory.SetModuleInventory(null);
+        UIInventory.SetModuleInventory(null);
     }
 
     void startTimer()
