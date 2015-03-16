@@ -45,6 +45,10 @@ public class UIModuleSelection : MonoBehaviour
         player = GameObject.Find("MainPlayer");
 		moduleSelection = player.GetComponent<PlayerController>().moduleSelection;
         description = player.GetComponent<PlayerController>().moduleDescription.GetComponentInChildren<Text>();
+        RectTransform descriptionRect = description.GetComponent<RectTransform>();
+        descriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionWidth - 10.0f);
+        descriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionHeight - 5.0f);
+
         selectionBoxSize = moduleSelection.GetComponent<ModuleSelection>().moduleSlotSize + 7.0f;
 		rows = moduleSelection.GetComponent<ModuleSelection>().moduleRows;
 		columns = moduleSelection.GetComponent<ModuleSelection>().moduleColumns;

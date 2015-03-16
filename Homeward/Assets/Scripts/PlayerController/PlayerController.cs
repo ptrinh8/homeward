@@ -52,6 +52,10 @@ public class PlayerController : MonoBehaviour
     public float healthLostPerSecond;
     public float healthLostPerSecondNight;
 
+	private float oxygen;
+	private float oxygenDEC = 1F;
+
+
     public bool canSleep;
     [HideInInspector]
     public bool isKeyEnabled = true;
@@ -111,7 +115,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     public float maxHealth, maxStamina;
-    public Text healthText, staminaText;
+    public Text healthText, staminaText, oxygenText;
     public Image healthImage, staminaImage;
     public float coolDown;
     private bool onCoolDown;
@@ -191,6 +195,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+	private void ManageOxygenLevels()
+	{
+		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
+		else { oxygen -= oxygenDEC * Time.deltaTime; }
+		if (oxygen < 0.0F) { oxygen = 0.0F; }
+		if (oxygen > 100.0F) { oxygen = 100.0F; }
+		oxygenText.text = "Oxygen: " + (int)oxygen;
+		GameObject oxygenBar = GameObject.Find("OxygenBar");
+		Image oxygenBarImage = oxygenBar.GetComponent<Image>();
+		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
+		if (oxygen < 90.0F) { CurrentHealth -= 0.1F * Time.deltaTime; }
+	}
+
 
     void Start()
     {
@@ -213,6 +230,7 @@ public class PlayerController : MonoBehaviour
 
         health = 100;
         stamina = 100f;
+		oxygen = 100.0f;
 
         canSleep = false;
 
@@ -252,7 +270,10 @@ public class PlayerController : MonoBehaviour
 
         moduleDescription = Instantiate(moduleDescription) as GameObject;
         moduleDescription.transform.SetParent(moduleSelection.transform);
-        moduleDescription.transform.position = moduleSelection.transform.position - new Vector3(0.0f, 140.0f);
+        moduleDescription.transform.localPosition = - new Vector3(0.0f, 80.0f);
+        RectTransform moduleDescriptionRect = moduleDescription.GetComponent<RectTransform>();
+        moduleDescriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionWidth);
+        moduleDescriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionHeight);
         moduleDescription.AddComponent<CanvasGroup>();
         moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
 
@@ -274,8 +295,8 @@ public class PlayerController : MonoBehaviour
 		
 		deadTimer = 0f;
 		deadLength = 3f;
-
-		miningCooldown = 2f;
+		
+		miningCooldown = 1f;
 
         // Taylor
         environmentAir = true;
@@ -285,6 +306,7 @@ public class PlayerController : MonoBehaviour
     {
         zoomInWhenIndoor();
         EndDemo();
+		ManageOxygenLevels();
         //Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
 
         //CurrentHealth--;
@@ -391,10 +413,13 @@ public class PlayerController : MonoBehaviour
 				{
 					if (Input.GetKeyDown(KeyCode.F))
 					{
-						if (nearestMineral != null)
+						if (holdingMiningTool == true)
 						{
-							nearestMineral.Mine();
-							miningTimer = 0;
+							if (nearestMineral != null)
+							{
+								nearestMineral.Mine();
+								miningTimer = 0;
+							}
 						}
 					}
 				}
