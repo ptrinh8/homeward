@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour
     private float sleepTimePassed;
     private LocalControl[] allLocalControl;
     private CentralControl[] allCentralControl;
+	private Refining[] allRefineries;
     public int durabilityLossAmount;
     public GUITexture sleepTexture;
     private float sleepFadeOutLength;
@@ -977,6 +978,7 @@ public class PlayerController : MonoBehaviour
         dayNightController.currentCycleTime += sleepTimePassed;
         allLocalControl = FindObjectsOfType<LocalControl>();
         allCentralControl = FindObjectsOfType<CentralControl>();
+		allRefineries = FindObjectsOfType<Refining>();
 
 
 
@@ -989,6 +991,11 @@ public class PlayerController : MonoBehaviour
         {
             allCentralControl[i].durability -= ((int)sleepTimePassed / (int)allCentralControl[i].durabilityLossTime) / 2;
         }
+
+		for (int i = 0; i < allRefineries.Length; i++)
+		{
+			allRefineries[i].RefinerySleepFinish();
+		}
     }
 
     IEnumerator CoolDownDamage()
