@@ -12,7 +12,7 @@ public class ModuleSelection : MonoBehaviour
 
     [HideInInspector] public  List<GameObject> allModuleSlots;
 
-    private float moduleSelectionWidth, moduleSelectionHeight;
+    [HideInInspector] public float moduleSelectionWidth, moduleSelectionHeight;
 
     [HideInInspector] public int moduleSlots;
 
@@ -49,7 +49,7 @@ public class ModuleSelection : MonoBehaviour
         moduleRows = 2;
         moduleSlotPaddingLeft = 3.0f;
         moduleSlotPaddingTop = 3.0f;
-        moduleSlotSize = 60.0f;
+        moduleSlotSize = 30.0f;
 
         CreateLayout();
         SetModuleItems();
