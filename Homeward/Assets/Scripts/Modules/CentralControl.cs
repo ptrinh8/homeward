@@ -38,6 +38,9 @@ public class CentralControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
 
+    public Material dayNightReactingMaterial;
+    public Material defaultMaterial;
+
 	// Use this for initialization
 	void Start () {
 		locals = new List<GameObject>(); 
@@ -114,6 +117,22 @@ public class CentralControl : MonoBehaviour {
 
 		DurabilityLoss();
         DisplayText();
+        if (isInside)
+        {
+            spriteRenderer.material = GameObject.Find("Sprites-Default").GetComponent<SpriteRenderer>().material;
+            foreach (GameObject local in locals)
+            {
+                local.GetComponent<SpriteRenderer>().material = GameObject.Find("Sprites-Default").GetComponent<SpriteRenderer>().material;
+            }
+        }
+        else
+        {
+            spriteRenderer.material = GameObject.Find("DayNightReacting").GetComponent<SpriteRenderer>().material;
+            foreach (GameObject local in locals)
+            {
+                local.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReacting").GetComponent<SpriteRenderer>().material;
+            }
+        }
 	}
 
 	void ShowInside () {

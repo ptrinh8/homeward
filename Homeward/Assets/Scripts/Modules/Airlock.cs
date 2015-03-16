@@ -61,6 +61,7 @@ public class Airlock : MonoBehaviour {
 
 	void OnTriggerStay2D (Collider2D other) 
     {
+        spriteRenderer.material = gameObject.transform.root.gameObject.GetComponent<SpriteRenderer>().material;
 		// Record the direction when player enters the trigger
 		if (other.gameObject.tag == "Player") {
             if (playerEnterCheckFlag)
