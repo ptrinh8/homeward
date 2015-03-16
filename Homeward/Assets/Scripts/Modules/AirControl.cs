@@ -127,7 +127,7 @@ public class AirControl : MonoBehaviour {
 				audioController.pressureRisingFalling = true;
 				//audioController.audioPressureTimer = pressureTimer;
             }
-            else if ()
+            else
             {
 				audioController.pressureRisingFalling = false;
                 airPressureBar.size = 1;
