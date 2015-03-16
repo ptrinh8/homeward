@@ -236,7 +236,10 @@ public class PlayerController : MonoBehaviour
 
         moduleDescription = Instantiate(moduleDescription) as GameObject;
         moduleDescription.transform.SetParent(moduleSelection.transform);
-        moduleDescription.transform.position = moduleSelection.transform.position - new Vector3(0.0f, 140.0f);
+        moduleDescription.transform.localPosition = - new Vector3(0.0f, 80.0f);
+        RectTransform moduleDescriptionRect = moduleDescription.GetComponent<RectTransform>();
+        moduleDescriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionWidth);
+        moduleDescriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionHeight);
         moduleDescription.AddComponent<CanvasGroup>();
         moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
 
