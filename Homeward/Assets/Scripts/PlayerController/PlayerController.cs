@@ -197,7 +197,11 @@ public class PlayerController : MonoBehaviour
 
 	private void ManageOxygenLevels()
 	{
-		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
+		if (environmentAir) 
+        { 
+            /* What happens to oxygen when the player is inside the base? */
+            oxygen += oxygenDEC * Time.deltaTime * 50;
+        }
 		else { oxygen -= oxygenDEC * Time.deltaTime; }
 		if (oxygen < 0.0F) { oxygen = 0.0F; }
 		if (oxygen > 100.0F) { oxygen = 100.0F; }
