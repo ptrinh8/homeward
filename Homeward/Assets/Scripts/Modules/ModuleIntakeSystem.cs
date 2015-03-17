@@ -19,8 +19,8 @@ public class ModuleIntakeSystem : MonoBehaviour
     int refinedMineralsCreated;
     Vector2 worldSpacePos;
 
-    float loadingStartTime;
-    float loadingUpdateTime;
+    public float loadingStartTime;
+    public float loadingUpdateTime;
     float loadingPercent;
     bool timerReached = false;
 
@@ -209,8 +209,16 @@ public class ModuleIntakeSystem : MonoBehaviour
                     refineryStarted = true;
                 }
             }
+			else
+			{
+				if (refineryStarted == true)
+				{
+					refineryStartingStopping = 2.5f;
+					refineryStarted = false;
+				}
+			}
         }
-        if (FoodModule || OxygenModule)
+        else if (FoodModule || OxygenModule)
         {
             int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material);
             if (_mineralCount >= 2) { RefiningProcess(refineryModuleSpriteRenderer); }
@@ -224,32 +232,15 @@ public class ModuleIntakeSystem : MonoBehaviour
                     refineryStarted = true;
                 }
             }
-        }
-
-        if (OxygenModule)
-        {
-            int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material);
-            if (_mineralCount >= 2) { RefiningProcess(refineryModuleSpriteRenderer); }
-
-            if (_mineralCount >= 2)
-            {
-                if (refineryStarted == false)
-                {
-                    refineryMachine.start();
-                    refineryStartingStopping = 1.5f;
-                    refineryStarted = true;
-                }
-            }
-        }
-
-        else
-        {
-            if (refineryStarted == true)
-            {
-                refineryStartingStopping = 2.5f;
-                refineryStarted = false;
-            }
-        }
+			else
+			{
+				if (refineryStarted == true)
+				{
+					refineryStartingStopping = 2.5f;
+					refineryStarted = false;
+				}
+			}
+		}
 
         if (!addRefinedMineralOnce)
         {

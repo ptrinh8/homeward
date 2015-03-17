@@ -25,7 +25,8 @@ public enum ItemName
 	MiningToolEquipped,
 	RepairingToolEquipped,
 	BuildingToolEquipped,
-	Oxygen
+	Oxygen,
+	Test
 }
 
 [System.Serializable]
@@ -69,6 +70,8 @@ public class Item : MonoBehaviour
 		case ItemName.RepairingToolEquipped:
 			break;
 		case ItemName.Oxygen:
+			break;
+		case ItemName.Test:
 			break;
         }
     }
