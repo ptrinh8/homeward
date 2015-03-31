@@ -132,10 +132,6 @@ public class Refining : MonoBehaviour
 
     void Update()
     {
-        // Taylor
-        gameObject.GetComponent<SpriteRenderer>().material = gameObject.transform.root.gameObject.GetComponent<SpriteRenderer>().material;
-        // Taylor End
-
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);

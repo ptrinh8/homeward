@@ -10,7 +10,7 @@ public class LocalControl : MonoBehaviour {
 	public Sprite outdoorSprite;
 	public Sprite noPowerSprite;
 	public Sprite turnedOffSprite;
-	public float powerConsumption;
+	public int powerConsumption;
 	private SpriteRenderer spriteRenderer;
 	public float minimumPowerLevel;
 	private bool isPowered, isEnter;

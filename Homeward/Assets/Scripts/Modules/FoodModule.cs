@@ -106,8 +106,6 @@ public class FoodModule : MonoBehaviour
 
         moduleInventory = Instantiate(moduleInventory) as GameObject;
         moduleInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        moduleInventory.GetComponent<Inventory>().slots = 4;
-        moduleInventory.GetComponent<Inventory>().rows = 1;
         moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
         showPlayerAndModuleInventory = false;
         moduleInventory.SetActive(showPlayerAndModuleInventory);
@@ -132,10 +130,6 @@ public class FoodModule : MonoBehaviour
 
     void Update()
     {
-        // Taylor
-        gameObject.GetComponent<SpriteRenderer>().material = gameObject.transform.root.gameObject.GetComponent<SpriteRenderer>().material;
-        // Taylor End
-
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
@@ -262,7 +256,7 @@ public class FoodModule : MonoBehaviour
         moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
         PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
         PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        UIInventory.SetModuleInventory(null);
+        //UIInventory.SetModuleInventory(null);
     }
 
     void startTimer()

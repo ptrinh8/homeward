@@ -8,7 +8,6 @@ public class AirPanel : MonoBehaviour {
 
     void Update()
     {
-        gameObject.GetComponent<SpriteRenderer>().material = gameObject.transform.root.gameObject.GetComponent<SpriteRenderer>().material;
         if (nearAirPenalFlag)
         {
             if (Input.GetKeyDown(airLockInteractKey))
