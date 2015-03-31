@@ -57,6 +57,14 @@ public class Airlock : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Vector2.Distance(mainPlayer.transform.position, transform.position) < 0.35f)
+        {
+            AirCheck();
+        }
+        else
+        {
+            AirlockTriggered(true);
+        }
 	}
 
 	void OnTriggerStay2D (Collider2D other) 
@@ -69,112 +77,6 @@ public class Airlock : MonoBehaviour {
                 y = playerController.y;
                 playerEnterCheckFlag = false;
             }
-
-            if (CentralControl.isInside)
-            {
-                if (gameObject.GetComponentInParent<DoorWayController>().ConnectedTo != null) 
-                {
-                    if (gameObject.GetComponentInParent<DoorWayController>().ConnectedTo.GetComponentInParent<AirControl>().Air)
-                    {
-                        if (airControl.Air && airControl.airPressureBar.size == 1)
-                        {
-                            AirlockTriggered(false);
-                        }
-                        else
-                        {
-                            if (airControl.Timer < airControl.duration)
-                            {
-                                AirInManually();
-                                if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                                {
-                                    if (Input.GetKeyDown(manuallyOperateKey))
-                                        gameObject.SendMessageUpwards("AirModuleActivite");
-                                }
-                            }
-                            else
-                            {
-                                AirlockTriggered(false);
-                                airControl.airPressureBar.size = 1;
-                                airControl.Air = true;
-                                airControl.Flag = 0;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (airControl.Air && airControl.airPressureBar.size == 1)
-                        {
-                            if (airControl.Timer < airControl.duration)
-                            {
-                                AirInManually();
-                                if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                                {
-                                    if (Input.GetKeyDown(manuallyOperateKey))
-                                        gameObject.SendMessageUpwards("AirModuleActivite");
-                                }
-                            }
-                            else
-                            {
-                                AirlockTriggered(false);
-                                airControl.airPressureBar.size = 1;
-                                airControl.Air = true;
-                                airControl.Flag = 0;
-                            }
-                        }
-                        else
-                        {
-                            AirlockTriggered(false);
-                        }
-                    }
-                }
-                else
-                {
-                    if (airControl.Air)
-                    {
-                        if (airControl.Timer > 0)
-                        {
-                            AirOutManually();
-                        }
-                        else
-                        {
-                            AirlockTriggered(false);
-                            airControl.airPressureBar.size = 0;
-                            airControl.Air = false;
-                            airControl.Flag = 0;
-                        }
-                    }
-                    else if (airControl.airPressureBar.size == 0)
-                    {
-                        AirlockTriggered(false);
-                    }
-                }
-            }
-            else
-            {
-                if (!airControl.Air)
-                {
-                    AirlockTriggered(false);
-                }
-                else
-                {
-                    if (airControl.Timer > 0)
-                    {
-                        AirOutManually();
-                        if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
-                        {
-                            if (Input.GetKeyDown(manuallyOperateKey))
-                                gameObject.SendMessageUpwards("AirModuleActivite");
-                        }
-                    }
-                    else
-                    {
-                        AirlockTriggered(false);
-                        airControl.airPressureBar.size = 0;
-                        airControl.Air = false;
-                        airControl.Flag = 0;
-                    }
-                }
-            }
         }
     }
 
@@ -183,19 +85,16 @@ public class Airlock : MonoBehaviour {
 			// should not show indoor if player enters and exits the trigger in a "z" route
 			if (xEnter) {
 				// should not show indoor if player enters and exits the trigger in same direction
-				if (playerController.x == x)
-					if (gameObject.transform.root.gameObject.tag == "HabitatModule")
-						gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-					else 
-						gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-			} else if (playerController.y == y)
-				if (gameObject.transform.root.gameObject.tag == "HabitatModule")
-					gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-				else 
+                if (playerController.x == x)
+                {
 					gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-        playerEnterCheckFlag = true;
-
-        AirlockTriggered(true);
+                }
+            }
+            else if (playerController.y == y)
+            {
+				gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+            }
+            playerEnterCheckFlag = true;
 		}
     }
 
@@ -227,10 +126,121 @@ public class Airlock : MonoBehaviour {
 
     void AirlockTriggered(bool disabled)
     {
-        spriteRenderer.enabled = disabled;
-        foreach (BoxCollider2D collider in colliders)
-            if (!collider.isTrigger)
-                collider.enabled = disabled;
+        if (spriteRenderer.enabled != disabled)
+        {
+            spriteRenderer.enabled = disabled;
+            foreach (BoxCollider2D collider in colliders)
+                if (!collider.isTrigger)
+                    collider.enabled = disabled;
+        }
     }
 
+    void AirCheck()
+    {
+        if (CentralControl.isInside)
+        {
+            if (gameObject.GetComponentInParent<DoorWayController>().ConnectedTo != null)
+            {
+                if (gameObject.GetComponentInParent<DoorWayController>().ConnectedTo.GetComponentInParent<AirControl>().Air)
+                {
+                    if (airControl.Air && airControl.airPressureBar.size == 1)
+                    {
+                        AirlockTriggered(false);
+                    }
+                    else
+                    {
+                        if (airControl.Timer < airControl.duration)
+                        {
+                            AirInManually();
+                            if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
+                            {
+                                if (Input.GetKeyDown(manuallyOperateKey))
+                                    gameObject.SendMessageUpwards("AirModuleActivite");
+                            }
+                        }
+                        else
+                        {
+                            AirlockTriggered(false);
+                            airControl.airPressureBar.size = 1;
+                            airControl.Air = true;
+                            airControl.Flag = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    if (airControl.Air && airControl.airPressureBar.size == 1)
+                    {
+                        if (airControl.Timer < airControl.duration)
+                        {
+                            AirInManually();
+                            if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
+                            {
+                                if (Input.GetKeyDown(manuallyOperateKey))
+                                    gameObject.SendMessageUpwards("AirModuleActivite");
+                            }
+                        }
+                        else
+                        {
+                            AirlockTriggered(false);
+                            airControl.airPressureBar.size = 1;
+                            airControl.Air = true;
+                            airControl.Flag = 0;
+                        }
+                    }
+                    else
+                    {
+                        AirlockTriggered(false);
+                    }
+                }
+            }
+            else
+            {
+                if (airControl.Air)
+                {
+                    if (airControl.Timer > 0)
+                    {
+                        AirOutManually();
+                    }
+                    else
+                    {
+                        AirlockTriggered(false);
+                        airControl.airPressureBar.size = 0;
+                        airControl.Air = false;
+                        airControl.Flag = 0;
+                    }
+                }
+                else if (airControl.airPressureBar.size == 0)
+                {
+                    AirlockTriggered(false);
+                }
+            }
+        }
+        else
+        {
+            if (!airControl.Air)
+            {
+                AirlockTriggered(false);
+            }
+            else
+            {
+                if (airControl.Timer > 0)
+                {
+                    AirOutManually();
+                    if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
+                    {
+                        if (Input.GetKeyDown(manuallyOperateKey))
+                            gameObject.SendMessageUpwards("AirModuleActivite");
+                    }
+                }
+                else
+                {
+                    AirlockTriggered(false);
+                    airControl.airPressureBar.size = 0;
+                    airControl.Air = false;
+                    airControl.Flag = 0;
+                }
+            }
+        }
+    }
 }

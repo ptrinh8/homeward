@@ -52,14 +52,17 @@ public class Buildable : MonoBehaviour
 
             if (Input.GetKeyDown(buildKey))
             {
+                Debug.Log("0");
 			    if(other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
 			    {
+                    Debug.Log("1");
                         if (PlayerController.holdingBuildingTool && PlayerController.toolUsingEnable)
                         {
-                        if (buildingFlag) {
-                            buildingFlag = false;
-                            BuildAction();
-                            Invoke("TimeWait", buildActionTime);
+                            Debug.Log("2");
+                            if (buildingFlag) {
+                                buildingFlag = false;
+                                BuildAction();
+                                Invoke("TimeWait", buildActionTime);
                         }
                     }
 			    }
