@@ -36,6 +36,7 @@ public class DistantHabitatModule : MonoBehaviour {
             if (habitatModules[key] < habitatModules[minObject])
             {
                 minObject = key;
+                if (minObject == null) Debug.LogError("asdf");
             }
         }
 
