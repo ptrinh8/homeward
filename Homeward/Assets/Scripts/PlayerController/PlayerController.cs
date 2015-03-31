@@ -197,11 +197,7 @@ public class PlayerController : MonoBehaviour
 
 	private void ManageOxygenLevels()
 	{
-		if (environmentAir) 
-        { 
-            /* What happens to oxygen when the player is inside the base? */
-            oxygen += oxygenDEC * Time.deltaTime * 50;
-        }
+		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
 		else { oxygen -= oxygenDEC * Time.deltaTime; }
 		if (oxygen < 0.0F) { oxygen = 0.0F; }
 		if (oxygen > 100.0F) { oxygen = 100.0F; }
@@ -389,6 +385,8 @@ public class PlayerController : MonoBehaviour
             isDead = true;
         }
 
+        
+
         if (currentHealth > 0 && isDead == false)
         {
             if (isSleeping == false)
@@ -447,8 +445,6 @@ public class PlayerController : MonoBehaviour
                         playerInventory.GetComponent<Inventory>().AddItem(item);
                         item = GameObject.Find("Food1").GetComponent<Item>();
                         playerInventory.GetComponent<Inventory>().AddItem(item);
-						item = GameObject.Find ("Oxygen").GetComponent<Item>();
-						playerInventory.GetComponent<Inventory>().AddItem(item);
                         playerInventory.GetComponent<Inventory>().DebugShowInventory();
                     }
 
@@ -963,6 +959,16 @@ public class PlayerController : MonoBehaviour
         GameObject healthBar = GameObject.Find("HealthBar");
         Image healthBarImage = healthBar.GetComponent<Image>();
         healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
+        //if (!CentralControl.healthStaminaModuleExists)
+        //{
+        //    Debug.LogError("12121212");
+        //    healthBar.SetActive(false);
+        //}
+        //else
+        //{
+        //    Debug.LogError("iiiiiii");
+        //    healthBar.SetActive(true);
+        //}
     }
 
     private void manageStamina()
@@ -971,6 +977,16 @@ public class PlayerController : MonoBehaviour
         GameObject healthBar = GameObject.Find("StaminaBar");
         Image healthBarImage = healthBar.GetComponent<Image>();
         healthBarImage.fillAmount = (float)currentStamina / 100.0F;
+        //if (!CentralControl.healthStaminaModuleExists)
+        //{
+        //    Debug.LogError("1111");
+        //    //healthBar.SetActive(false);
+        //}
+        //else
+        //{
+        //    Debug.LogError("2222");
+        //    //healthBar.SetActive(true);
+        //}
     }
 
     private void Sleep()
