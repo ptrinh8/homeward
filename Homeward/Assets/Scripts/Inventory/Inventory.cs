@@ -269,12 +269,14 @@ public class Inventory : MonoBehaviour {
 
     public void ClearSlot(ItemName itemName)
     {
+		Debug.Log (itemName);
         if (IsEmpty)
         {
             //Debug.Log("This Inventory is Empty");
         }
         else
         {
+
             foreach (GameObject slot in allSlots)
             {
                 Slot tmp = slot.GetComponent<Slot>();

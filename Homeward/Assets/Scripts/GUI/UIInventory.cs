@@ -302,6 +302,122 @@ public class UIInventory : MonoBehaviour
                     if (GetSlot(slot) != null)
                     {
                         Item item = GetSlot(slot).GetItem();
+						/*
+						if (item.itemName == ItemName.MiningTool)
+						{
+							if (PlayerController.holdingRepairTool == true)
+							{
+								playerInventory.GetComponent<Inventory>().ClearSlot(ItemName.RepairingToolEquipped);	
+								Item tool = GameObject.Find ("RepairingTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(tool);
+							}
+
+							Item equipped = GameObject.Find("MiningToolEquipped").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(equipped);
+
+							PlayerController.holdingMiningTool = true;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = false;
+						}
+						else if (item.itemName == ItemName.BuildingTool)
+						{
+							Item equipped = GameObject.Find("BuildingToolEquipped").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(equipped);
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = true;
+							PlayerController.holdingRepairTool = false;
+						}
+						else if (item.itemName == ItemName.RepairingTool)
+						{
+							Item equipped = GameObject.Find("RepairingToolEquipped").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(equipped);
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = true;
+						}*/
+
+
+						if (item.itemName == ItemName.MiningTool)
+						{
+							if (PlayerController.holdingBuildingTool == true)
+							{
+								Item thing = GameObject.Find ("BuildingTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							else if (PlayerController.holdingRepairTool == true)
+							{
+								Item thing = GameObject.Find ("RepairingTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							PlayerController.holdingMiningTool = true;
+							PlayerController.holdingRepairTool = false;
+							PlayerController.holdingBuildingTool = false;
+						}
+						else if (item.itemName == ItemName.RepairingTool)
+						{
+							if (PlayerController.holdingMiningTool == true)
+							{
+								Item thing = GameObject.Find ("MiningTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							else if (PlayerController.holdingBuildingTool)
+							{
+								Item thing = GameObject.Find ("BuildingTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingRepairTool = true;
+							PlayerController.holdingBuildingTool = false;
+						}
+						else if (item.itemName == ItemName.BuildingTool)
+						{
+							if (PlayerController.holdingMiningTool == true)
+							{
+								Item thing = GameObject.Find ("MiningTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							else if (PlayerController.holdingRepairTool == true)
+							{
+								Item thing = GameObject.Find ("RepairingTool").GetComponent<Item>();
+								playerInventory.GetComponent<Inventory>().AddItem(thing);
+							}
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = true;
+							PlayerController.holdingRepairTool = false;
+						}
+						else if (item.itemName == ItemName.MiningToolEquipped)
+						{
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = false;
+							playerInventory.GetComponent<Inventory>().ClearSlot(ItemName.MiningToolEquipped);
+							Item tool = GameObject.Find("MiningTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(tool);
+						}
+						else if (item.itemName == ItemName.RepairingToolEquipped)
+						{
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = false;
+							playerInventory.GetComponent<Inventory>().ClearSlot(ItemName.RepairingToolEquipped);
+							Item tool = GameObject.Find("RepairingTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(tool);
+						}
+						else if (item.itemName == ItemName.BuildingToolEquipped)
+						{
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = false;
+							playerInventory.GetComponent<Inventory>().ClearSlot(ItemName.BuildingToolEquipped);
+							Item tool = GameObject.Find("BuildingTool").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(tool);
+						}
+						else
+						{
+							PlayerController.holdingMiningTool = false;
+							PlayerController.holdingBuildingTool = false;
+							PlayerController.holdingRepairTool = false;
+						}
 
                         if (slot.GetComponent<Slot>().IsEmpty)
                         {
@@ -318,31 +434,6 @@ public class UIInventory : MonoBehaviour
 
                         //if (from != null)
                         {
-                            if (item.itemName == ItemName.MiningTool)
-                            {
-                                PlayerController.holdingMiningTool = true;
-                                PlayerController.holdingRepairTool = false;
-                                PlayerController.holdingBuildingTool = false;
-                            }
-                            else if (item.itemName == ItemName.RepairingTool)
-                            {
-                                PlayerController.holdingMiningTool = false;
-                                PlayerController.holdingRepairTool = true;
-                                PlayerController.holdingBuildingTool = false;
-                            }
-                            else if (item.itemName == ItemName.BuildingTool)
-                            {
-                                PlayerController.holdingMiningTool = false;
-                                PlayerController.holdingBuildingTool = true;
-                                PlayerController.holdingRepairTool = false;
-                            }
-                            else 
-                            {
-                                PlayerController.holdingMiningTool = false;
-                                PlayerController.holdingBuildingTool = false;
-                                PlayerController.holdingRepairTool = false;
-                            }
-
                             //Taylor
                             if (item.itemName == ItemName.Food1)
                             {

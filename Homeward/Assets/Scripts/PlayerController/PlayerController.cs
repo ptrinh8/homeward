@@ -54,6 +54,12 @@ public class PlayerController : MonoBehaviour
 
 	private float oxygen;
 	private float oxygenDEC = 1F;
+	private float oxygenTimer;
+	private float oxygenLossTime = 1f;
+	private float oxygenLossAmount;
+	private float oxygenHealthTimer;
+	private float oxygenHealthLossTime = 1f;
+	private float oxygenHealthLossAmount = .5f;
 
 
     public bool canSleep;
@@ -197,15 +203,20 @@ public class PlayerController : MonoBehaviour
 
 	private void ManageOxygenLevels()
 	{
+		oxygenTimer += Time.deltaTime;
 		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
-		else { oxygen -= oxygenDEC * Time.deltaTime; }
+		else if (oxygenTimer >= oxygenLossTime){ 
+
+			oxygen -= oxygenLossAmount; 
+			oxygenTimer = 0;
+		
+		}
 		if (oxygen < 0.0F) { oxygen = 0.0F; }
 		if (oxygen > 100.0F) { oxygen = 100.0F; }
 		oxygenText.text = "Oxygen: " + (int)oxygen;
 		GameObject oxygenBar = GameObject.Find("OxygenBar");
 		Image oxygenBarImage = oxygenBar.GetComponent<Image>();
 		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
-		if (oxygen < 90.0F) { CurrentHealth -= 0.1F * Time.deltaTime; }
 	}
 
 
@@ -240,6 +251,7 @@ public class PlayerController : MonoBehaviour
         nightLength = dayNightController.dayCycleLength / 2;
         timeUntilSleepPenalty = (dayLength / 10) * 8;
         staminaLostPerSecond = stamina / (dayLength + nightLength);
+		oxygenLossAmount = oxygen / (dayLength + nightLength) * 2;
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
         healthLostPerSecondNight = 5f;
 
@@ -327,7 +339,6 @@ public class PlayerController : MonoBehaviour
         {
             toolBoxUIImage.sprite = defaultSprite;
         }
-
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
         {
@@ -538,6 +549,21 @@ public class PlayerController : MonoBehaviour
                         healthTimer = 0;
                     }
                 }
+
+				if (oxygen <= 50)
+				{
+					oxygenHealthTimer += Time.deltaTime;
+					if (oxygenHealthTimer > 1f)
+					{
+						if (currentHealth > 0)
+						{
+							StartCoroutine(CoolDownDamage());
+							currentHealth -= oxygenHealthLossAmount;
+							manageHealth();
+						} 
+						oxygenHealthTimer = 0;
+					}
+				}
 
                 if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
                 {
