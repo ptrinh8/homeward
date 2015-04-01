@@ -19,7 +19,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     public Sprite slotEmpty;
     public Sprite slotHighLighted;
 
-    private bool isEmpty;
+    public bool isEmpty;
 
     public bool IsEmpty
     {
