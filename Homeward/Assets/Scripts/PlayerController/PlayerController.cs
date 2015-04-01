@@ -166,6 +166,13 @@ public class PlayerController : MonoBehaviour
 
 	public Mining nearestMineral;
 
+    private GameObject UIHealthBar;
+    private GameObject UIStaminaBar;
+    private GameObject UIOxygenBar;
+    private GameObject UIClock;
+    private GameObject RadarCamera;
+    private GameObject ToolBoxObject;
+
     //Taylor
     private bool environmentAir;
 
@@ -231,6 +238,18 @@ public class PlayerController : MonoBehaviour
         health = 100;
         stamina = 100f;
 		oxygen = 100.0f;
+
+        UIHealthBar = GameObject.Find("Health Bar Background");
+        UIHealthBar.AddComponent<CanvasGroup>();
+        UIStaminaBar = GameObject.Find("Stamina Bar Background");
+        UIStaminaBar.AddComponent<CanvasGroup>();
+        UIOxygenBar = GameObject.Find("Oxygen Bar Background");
+        UIOxygenBar.AddComponent<CanvasGroup>();
+        UIClock = GameObject.Find("Clock");
+        UIClock.AddComponent<CanvasGroup>();
+        RadarCamera = GameObject.Find("RadarCamera");
+        ToolBoxObject = GameObject.Find("ToolBoxImage");
+        ToolBoxObject.AddComponent<CanvasGroup>();
 
         canSleep = false;
 
@@ -306,10 +325,24 @@ public class PlayerController : MonoBehaviour
     {
         zoomInWhenIndoor();
         EndDemo();
-		ManageOxygenLevels();
-        //Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
+        ManageOxygenLevels();
 
-        //CurrentHealth--;
+        if (CentralControl.healthStaminaModuleExists)
+        {
+            UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
+            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
+            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
+            UIClock.GetComponent<CanvasGroup>().alpha = 1;
+            RadarCamera.camera.cullingMask |= (1<<LayerMask.NameToLayer("Radar"));
+        }
+        else
+        {
+            UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
+            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
+            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
+            UIClock.GetComponent<CanvasGroup>().alpha = 0;
+            RadarCamera.camera.cullingMask &= ~(1<<LayerMask.NameToLayer("Radar"));
+        }
 
         if (holdingRepairTool)
         {
@@ -435,7 +468,7 @@ public class PlayerController : MonoBehaviour
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
-
+                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
 
                     if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
                     {
@@ -486,6 +519,7 @@ public class PlayerController : MonoBehaviour
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
+                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
                 }
                 /*******************************************************************
                  * Inventory END

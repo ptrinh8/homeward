@@ -22,13 +22,11 @@ public class Radar : MonoBehaviour {
 
     public Transform helpTransform;
 
-    private GameObject radarObject;
-
     void OutpostGenerated(GameObject habitatModule) // called from sendmessage() in DistantHabitatModule.cs
     {
         trackedObjects.Add(habitatModule);
+        DestroyRadarObjects();
         CreateRadarObjects();
-        Debug.Log("tracked object num = " + trackedObjects.Count);
     }
 
     
@@ -36,16 +34,9 @@ public class Radar : MonoBehaviour {
     void Start()
     {
         switchDistance = 5.5f;
-        //GameObject habitatModule = GameObject.FindWithTag("ModuleBuilding").GetComponent<Building>().initialModules[0];
         trackedObjects = new List<GameObject>();
-        //trackedObjects.Add(habitatModule);
-        radarObject = GameObject.Find("RadarBackground");
-        radarObject.AddComponent<CanvasGroup>();
-        radarObject.GetComponent<CanvasGroup>().alpha = 1;
-
         radarObjects = new List<GameObject>();
         borderObjects = new List<GameObject>();
-        //CreateRadarObjects();
     }
 
 
@@ -67,24 +58,25 @@ public class Radar : MonoBehaviour {
                 radarObjects[i].layer = LayerMask.NameToLayer("Radar");
             }
         }
-
-        if (!CentralControl.radarModuleExists)
-        {
-            radarObject.GetComponent<CanvasGroup>().alpha = 0;
-        }
-        else
-        {
-            radarObject.GetComponent<CanvasGroup>().alpha = 1;
-        }
     }
 
+    void DestroyRadarObjects()
+    {
+        foreach (GameObject i in radarObjects)
+        {
+            Destroy(i);
+        }
+
+        foreach (GameObject k in borderObjects)
+        {
+            Destroy(k);
+        }
+    }
 
     void CreateRadarObjects()
     {
         radarObjects.Clear();
         borderObjects.Clear();
-
-        Debug.Log("num trackedObjects = " + trackedObjects.Count);
 
         foreach (GameObject o in trackedObjects)
         {
@@ -94,7 +86,8 @@ public class Radar : MonoBehaviour {
             GameObject j = Instantiate(radarPrefab, o.transform.position, Quaternion.identity) as GameObject;
             j.transform.position = new Vector3(j.transform.position.x, j.transform.position.y, 2.0f);
             borderObjects.Add(j);
-            Debug.Log("1111111111111111111");
         }
     }
+
+    
 }
