@@ -22,13 +22,13 @@ public class Radar : MonoBehaviour {
 
     public Transform helpTransform;
 
-    private static bool outpostGeneratedFlag;
-
     private GameObject radarObject;
 
-    public static void tellOutpostGenerated()
+    void OutpostGenerated(GameObject habitatModule) // called from sendmessage() in DistantHabitatModule.cs
     {
-        outpostGeneratedFlag = true;
+        trackedObjects.Add(habitatModule);
+        CreateRadarObjects();
+        Debug.Log("tracked object num = " + trackedObjects.Count);
     }
 
     
@@ -36,29 +36,22 @@ public class Radar : MonoBehaviour {
     void Start()
     {
         switchDistance = 5.5f;
-        outpostGeneratedFlag = false;
-        GameObject habitatModule = GameObject.FindWithTag("ModuleBuilding").GetComponent<Building>().initialModules[0];
+        //GameObject habitatModule = GameObject.FindWithTag("ModuleBuilding").GetComponent<Building>().initialModules[0];
         trackedObjects = new List<GameObject>();
-        trackedObjects.Add(habitatModule);
+        //trackedObjects.Add(habitatModule);
         radarObject = GameObject.Find("RadarBackground");
         radarObject.AddComponent<CanvasGroup>();
         radarObject.GetComponent<CanvasGroup>().alpha = 1;
 
         radarObjects = new List<GameObject>();
         borderObjects = new List<GameObject>();
-        CreateRadarObjects();
+        //CreateRadarObjects();
     }
 
 
 
     void Update()
     {
-        if (outpostGeneratedFlag) //TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-        {
-            trackedObjects.Add(GameObject.Find("HabitatModule"));
-            CreateRadarObjects();
-        }
-
         for (int i = 0; i < radarObjects.Count; i++)
         {
             if (Vector3.Distance(radarObjects[i].transform.position, transform.position) > switchDistance)
@@ -91,6 +84,8 @@ public class Radar : MonoBehaviour {
         radarObjects.Clear();
         borderObjects.Clear();
 
+        Debug.Log("num trackedObjects = " + trackedObjects.Count);
+
         foreach (GameObject o in trackedObjects)
         {
             GameObject k = Instantiate(radarPrefab, o.transform.position, Quaternion.identity) as GameObject;
@@ -99,6 +94,7 @@ public class Radar : MonoBehaviour {
             GameObject j = Instantiate(radarPrefab, o.transform.position, Quaternion.identity) as GameObject;
             j.transform.position = new Vector3(j.transform.position.x, j.transform.position.y, 2.0f);
             borderObjects.Add(j);
+            Debug.Log("1111111111111111111");
         }
     }
 }

@@ -51,10 +51,13 @@ public class Inventory : MonoBehaviour {
 
     public bool IsEmpty
     {
-        get { return emptySlots == 0; }
+        get { return emptySlots == slots; }
     }
 
-
+    public bool IsFull
+    {
+        get { return emptySlots == 0; }
+    }
 
 	void Start () 
     {
@@ -271,7 +274,7 @@ public class Inventory : MonoBehaviour {
     {
         if (IsEmpty)
         {
-            //Debug.Log("This Inventory is Empty");
+            Debug.Log("This Inventory is Empty");
         }
         else
         {
