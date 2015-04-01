@@ -133,6 +133,10 @@ public class PlayerController : MonoBehaviour
     public static bool holdingMiningTool;
     public static bool holdingBuildingTool;
 
+	public bool holdingRepairToolCheck;
+	public bool holdingMiningToolCheck;
+	public bool holdingBuildingToolCheck;
+
     public GameObject playerInventory;
 
     public GameObject moduleSelection;
@@ -322,6 +326,10 @@ public class PlayerController : MonoBehaviour
         //Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
 
         //CurrentHealth--;
+
+		holdingBuildingToolCheck = holdingBuildingTool;
+		holdingRepairToolCheck = holdingRepairTool;
+		holdingMiningToolCheck = holdingMiningTool;
 
         if (holdingRepairTool)
         {

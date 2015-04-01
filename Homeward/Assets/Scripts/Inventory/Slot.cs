@@ -120,6 +120,19 @@ public class Slot : MonoBehaviour, IPointerClickHandler
         return null;
     }
 
+	public Item CheckItem()
+	{
+		if (!IsEmpty)
+		{
+			isEmpty = false;
+			Item item = items.Peek();
+
+			return item;
+		}
+		Debug.LogError("Slot.cs Error: Item is null");
+		return null;
+	}
+
     public void ClearSlot()
     {
         items.Clear();
