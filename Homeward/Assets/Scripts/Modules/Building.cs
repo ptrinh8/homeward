@@ -65,7 +65,7 @@ public class Building : MonoBehaviour
 	public static bool spawnRobotModuleFlag;
 	public static bool spawnStorageModuleFlag;
 	public static bool spawnAirlockModuleFlag;
-    public static bool spawnUIModuleFlag;
+    public static bool spawnOxygenModuleFlag;
 
     public List<GameObject> initialModules = new List<GameObject>();
     private int i = 0;  // initialize in order
@@ -151,7 +151,7 @@ public class Building : MonoBehaviour
         spawnRobotModuleFlag = false;
         spawnStorageModuleFlag = false;
         spawnAirlockModuleFlag = false;
-        spawnUIModuleFlag = false;
+        spawnOxygenModuleFlag = false;
 
         newGameFlag = true;
     }
@@ -334,7 +334,7 @@ public class Building : MonoBehaviour
                 isDeploying = airlockModuleDeployable.isDeploying;
             }
 
-			if (Input.GetKeyDown(oxygenModuleKey))
+			if (Input.GetKeyDown(oxygenModuleKey) || spawnOxygenModuleFlag)
 			{
 				NowBuilding("OxygenModule");
 				oxygenModuleDeployable.isDeploying = !oxygenModuleDeployable.isDeploying;
@@ -361,7 +361,7 @@ public class Building : MonoBehaviour
             spawnRobotModuleFlag = false;
             spawnStorageModuleFlag = false;
             spawnAirlockModuleFlag = false;
-            spawnUIModuleFlag = false;
+            spawnOxygenModuleFlag = false;
         }
     }
 }
