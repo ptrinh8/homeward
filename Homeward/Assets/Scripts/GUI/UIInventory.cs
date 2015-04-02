@@ -32,10 +32,6 @@ public class UIInventory : MonoBehaviour
 
     private static List<GameObject> allSlots;
 
-	public Sprite miningToolEquippedSprite;
-	public Sprite repairingToolEquippedSprite;
-	public Sprite buildingToolEquippedSprite;
-
     public static void SetModuleInventory(GameObject moduleInv)
     {
         moduleInventory = moduleInv;
@@ -56,8 +52,6 @@ public class UIInventory : MonoBehaviour
         playerInventoryRows = playerInventory.GetComponent<Inventory>().rows;
         playerInventorySlots = playerInventory.GetComponent<Inventory>().slots;
         selectionBoxSize = playerInventory.GetComponent<Inventory>().slotSize + 3.0f;
-
-
     }
 
     void Update()
@@ -305,32 +299,9 @@ public class UIInventory : MonoBehaviour
             {
                 if (i == nthBox)
                 {
-					//Debug.Log (slot);
                     if (GetSlot(slot) != null)
                     {
-                        Item item = GetSlot(slot).CheckItem();
-
-						//Debug.Log (slot.GetComponent<Slot>().isEmpty);
-
-						if (item.itemName == ItemName.MiningTool && PlayerController.holdingMiningTool == false)
-						{
-							PlayerController.holdingMiningTool = true;
-							PlayerController.holdingRepairTool = false;
-							PlayerController.holdingBuildingTool = false;
-						}
-						else if (item.itemName == ItemName.RepairingTool && PlayerController.holdingRepairTool == false)
-						{
-							PlayerController.holdingMiningTool = false;
-							PlayerController.holdingRepairTool = true;
-							PlayerController.holdingBuildingTool = false;
-						}
-						else if (item.itemName == ItemName.BuildingTool && PlayerController.holdingBuildingTool == false)
-						{
-							PlayerController.holdingMiningTool = false;
-							PlayerController.holdingBuildingTool = true;
-							PlayerController.holdingRepairTool = false;
-						}
-
+                        Item item = GetSlot(slot).GetItem();
 
                         if (slot.GetComponent<Slot>().IsEmpty)
                         {
@@ -347,6 +318,31 @@ public class UIInventory : MonoBehaviour
 
                         //if (from != null)
                         {
+                            if (item.itemName == ItemName.MiningTool)
+                            {
+                                PlayerController.holdingMiningTool = true;
+                                PlayerController.holdingRepairTool = false;
+                                PlayerController.holdingBuildingTool = false;
+                            }
+                            else if (item.itemName == ItemName.RepairingTool)
+                            {
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingRepairTool = true;
+                                PlayerController.holdingBuildingTool = false;
+                            }
+                            else if (item.itemName == ItemName.BuildingTool)
+                            {
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = true;
+                                PlayerController.holdingRepairTool = false;
+                            }
+                            else 
+                            {
+                                PlayerController.holdingMiningTool = false;
+                                PlayerController.holdingBuildingTool = false;
+                                PlayerController.holdingRepairTool = false;
+                            }
+
                             //Taylor
                             if (item.itemName == ItemName.Food1)
                             {
@@ -364,12 +360,6 @@ public class UIInventory : MonoBehaviour
 
                         }
                     }
-					else
-					{
-						PlayerController.holdingMiningTool = false;
-						PlayerController.holdingBuildingTool = false;
-						PlayerController.holdingRepairTool = false;
-					}
                 }
 
                 i++;

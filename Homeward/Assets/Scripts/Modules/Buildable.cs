@@ -56,13 +56,14 @@ public class Buildable : MonoBehaviour
 			    {
                         if (PlayerController.holdingBuildingTool && PlayerController.toolUsingEnable)
                         {
-                            if (buildingFlag) {
-                                buildingFlag = false;
-                                BuildAction();
-                                Invoke("TimeWait", buildActionTime);
+                        if (buildingFlag) {
+                            buildingFlag = false;
+                            BuildAction();
+                            Invoke("TimeWait", buildActionTime);
                         }
                     }
 			    }
+
             }
         }
     }

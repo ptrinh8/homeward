@@ -22,11 +22,13 @@ public class Radar : MonoBehaviour {
 
     public Transform helpTransform;
 
-    void OutpostGenerated(GameObject habitatModule) // called from sendmessage() in DistantHabitatModule.cs
+    private static bool outpostGeneratedFlag;
+
+    private GameObject radarObject;
+
+    public static void tellOutpostGenerated()
     {
-        trackedObjects.Add(habitatModule);
-        DestroyRadarObjects();
-        CreateRadarObjects();
+        outpostGeneratedFlag = true;
     }
 
     
@@ -34,15 +36,29 @@ public class Radar : MonoBehaviour {
     void Start()
     {
         switchDistance = 5.5f;
+        outpostGeneratedFlag = false;
+        GameObject habitatModule = GameObject.FindWithTag("ModuleBuilding").GetComponent<Building>().initialModules[0];
         trackedObjects = new List<GameObject>();
+        trackedObjects.Add(habitatModule);
+        radarObject = GameObject.Find("RadarBackground");
+        radarObject.AddComponent<CanvasGroup>();
+        radarObject.GetComponent<CanvasGroup>().alpha = 1;
+
         radarObjects = new List<GameObject>();
         borderObjects = new List<GameObject>();
+        CreateRadarObjects();
     }
 
 
 
     void Update()
     {
+        if (outpostGeneratedFlag) //TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+        {
+            trackedObjects.Add(GameObject.Find("HabitatModule"));
+            CreateRadarObjects();
+        }
+
         for (int i = 0; i < radarObjects.Count; i++)
         {
             if (Vector3.Distance(radarObjects[i].transform.position, transform.position) > switchDistance)
@@ -58,20 +74,17 @@ public class Radar : MonoBehaviour {
                 radarObjects[i].layer = LayerMask.NameToLayer("Radar");
             }
         }
-    }
 
-    void DestroyRadarObjects()
-    {
-        foreach (GameObject i in radarObjects)
+        if (!CentralControl.radarModuleExists)
         {
-            Destroy(i);
+            radarObject.GetComponent<CanvasGroup>().alpha = 0;
         }
-
-        foreach (GameObject k in borderObjects)
+        else
         {
-            Destroy(k);
+            radarObject.GetComponent<CanvasGroup>().alpha = 1;
         }
     }
+
 
     void CreateRadarObjects()
     {
@@ -88,6 +101,4 @@ public class Radar : MonoBehaviour {
             borderObjects.Add(j);
         }
     }
-
-    
 }

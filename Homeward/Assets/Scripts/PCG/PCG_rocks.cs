@@ -1,5 +1,5 @@
 ﻿// ==================================================================================
-// <file="PCG_rocks.cs" product="Homeward">
+// <file="PCG_Rocks.cs" product="Homeward">
 // <date>02-12-2014</date>
 // ==================================================================================
 
@@ -8,7 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class PCG_rocks : MonoBehaviour 
+public class PCG_Rocks : MonoBehaviour 
 {
     private PCG_Rand rand = new PCG_Rand();
 
@@ -52,7 +52,6 @@ public class PCG_rocks : MonoBehaviour
             _x[j] = Random.Range(ii, ii + 9);
             if (j == 20 || j == 20 + hh) { hh = hh + 20; ii = ii + 15; }
         }
-
     }
 
     void AddRemoveTiles()

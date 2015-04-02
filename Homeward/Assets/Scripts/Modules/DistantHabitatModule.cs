@@ -24,7 +24,6 @@ public class DistantHabitatModule : MonoBehaviour {
     void Register(GameObject habitatModule)
     {
         habitatModules.Add(habitatModule, Vector2.Distance(habitatModule.transform.position, player.transform.position));
-        player.SendMessage("OutpostGenerated", habitatModule);
         minObject = habitatModule;
     }
 
@@ -37,7 +36,6 @@ public class DistantHabitatModule : MonoBehaviour {
             if (habitatModules[key] < habitatModules[minObject])
             {
                 minObject = key;
-                if (minObject == null) Debug.LogError("asdf");
             }
         }
 

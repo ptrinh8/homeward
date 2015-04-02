@@ -51,13 +51,10 @@ public class Inventory : MonoBehaviour {
 
     public bool IsEmpty
     {
-        get { return emptySlots == slots; }
-    }
-
-    public bool IsFull
-    {
         get { return emptySlots == 0; }
     }
+
+
 
 	void Start () 
     {
@@ -245,45 +242,6 @@ public class Inventory : MonoBehaviour {
         return null;
     }
 
-	public Item CheckItem(ItemName itemName)
-	{
-		if (allSlots == null)
-		{
-			Debug.LogError("Inventory.cs: allSlots is null");
-			return null;
-		}
-		else if (allSlots.Count == 0)
-		{
-			Debug.Log("Inventory.cs: there is no slot in this inventory");
-		}
-		else 
-		{
-			foreach (GameObject slot in allSlots)
-			{
-				Slot tmp = slot.GetComponent<Slot>();
-				
-				if (!tmp.IsEmpty)
-				{
-					if (tmp.CurrentItem.itemName == itemName)
-					{
-						Item item = tmp.CheckItem();
-						
-						if (tmp.IsEmpty)
-						{
-							emptySlots++;
-						}
-						
-						return item;
-					}
-					
-				}
-			}
-		}
-		
-		Debug.LogError("Inventory.cs: Underflow - GetItem() is called when there is nothing to return.");
-		return null;
-	}
-
     /******************************************************************************************
      * Debug
      * ***************************************************************************************/
@@ -311,14 +269,12 @@ public class Inventory : MonoBehaviour {
 
     public void ClearSlot(ItemName itemName)
     {
-		Debug.Log (itemName);
         if (IsEmpty)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
         }
         else
         {
-
             foreach (GameObject slot in allSlots)
             {
                 Slot tmp = slot.GetComponent<Slot>();

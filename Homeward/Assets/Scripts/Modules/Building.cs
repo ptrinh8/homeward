@@ -7,19 +7,18 @@ using System.Linq;
 public class Building : MonoBehaviour
 {
 
-    private GameObject habitatModuleDeploying;	// "on-player-blueprint" in prefabs
-    private GameObject connectorModuleDeploying;		// "on-player-blueprint" in prefabs
-    private GameObject refineryModuleDeploying;
-    private GameObject foodModuleDeploying;
-    private GameObject powerModuleDeploying;
-    private GameObject healthStaminaModuleDeploying;
-    private GameObject moduleControlModuleDeploying;
-    private GameObject radarModuleDeploying;
-    private GameObject storageModuleDeploying;
-    private GameObject robotModuleDeploying;
-    private GameObject airlockModuleDeploying;
-    private GameObject oxygenModuleDeploying;
-    private GameObject UIModuleDeploying;
+    public GameObject habitatModuleDeploying;	// "on-player-blueprint" in prefabs
+    public GameObject connectorModuleDeploying;		// "on-player-blueprint" in prefabs
+    public GameObject refineryModuleDeploying;
+    public GameObject foodModuleDeploying;
+    public GameObject powerModuleDeploying;
+    public GameObject healthStaminaModuleDeploying;
+    public GameObject moduleControlModuleDeploying;
+    public GameObject radarModuleDeploying;
+    public GameObject storageModuleDeploying;
+    public GameObject robotModuleDeploying;
+    public GameObject airlockModuleDeploying;
+    public GameObject oxygenModuleDeploying;
 
     private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
     private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
@@ -33,7 +32,6 @@ public class Building : MonoBehaviour
     private Deployable robotModuleDeployable;
     private Deployable airlockModuleDeployable;
     private Deployable oxygenModuleDeployable;
-    private Deployable UIModuleDeployable;
 
     private KeyCode habitatModuleKey = KeyCode.Alpha1;
     private KeyCode connectorModuleKey = KeyCode.Alpha2;
@@ -47,7 +45,6 @@ public class Building : MonoBehaviour
     private KeyCode robotModuleKey = KeyCode.Alpha0;
     private KeyCode airlockModuleKey = KeyCode.F1;
     private KeyCode oxygenModuleKey = KeyCode.F2;
-    private KeyCode UIModuleKey = KeyCode.F3;
 
     private Dictionary<string, bool> moduleDictionary;
 
@@ -65,7 +62,6 @@ public class Building : MonoBehaviour
 	public static bool spawnRobotModuleFlag;
 	public static bool spawnStorageModuleFlag;
 	public static bool spawnAirlockModuleFlag;
-    public static bool spawnOxygenModuleFlag;
 
     public List<GameObject> initialModules = new List<GameObject>();
     private int i = 0;  // initialize in order
@@ -83,32 +79,30 @@ public class Building : MonoBehaviour
 	// Use this for initialization
 	void Start () {
 		// Instantiate the "on-player-blueprint", setActive(true) when needed
-        habitatModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Habitat Module/Habitat Module Deploying")) as GameObject;
+		habitatModuleDeploying = Instantiate(habitatModuleDeploying) as GameObject;
 		habitatModuleDeploying.SetActive(false);
-        connectorModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Connector Module/Connector Module Deploying")) as GameObject;
+		connectorModuleDeploying = Instantiate(connectorModuleDeploying) as GameObject;
 		connectorModuleDeploying.SetActive(false);
-		refineryModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Refinery Module/Refinery Module Deploying")) as GameObject;
+		refineryModuleDeploying = Instantiate(refineryModuleDeploying) as GameObject;
 		refineryModuleDeploying.SetActive(false);
-		foodModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Food Module/Food Module Deploying")) as GameObject;
+		foodModuleDeploying = Instantiate(foodModuleDeploying) as GameObject;
 		foodModuleDeploying.SetActive(false);
-		powerModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Power Module/Power Module Deploying")) as GameObject;
+		powerModuleDeploying = Instantiate(powerModuleDeploying) as GameObject;
 		powerModuleDeploying.SetActive(false);
-        healthStaminaModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/HealthStaminaModule/HealthStamina Module Deploying")) as GameObject;
+        healthStaminaModuleDeploying = Instantiate(healthStaminaModuleDeploying) as GameObject;
         healthStaminaModuleDeploying.SetActive(false);
-        moduleControlModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/ModuleControlModule/ModuleControlModule Deploying")) as GameObject;
+        moduleControlModuleDeploying = Instantiate(moduleControlModuleDeploying) as GameObject;
         moduleControlModuleDeploying.SetActive(false);
-        radarModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/RadarModule/Radar Module Deploying")) as GameObject;
+        radarModuleDeploying = Instantiate(radarModuleDeploying) as GameObject;
         radarModuleDeploying.SetActive(false);
-        storageModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Storage Module/Storage Module Deploying")) as GameObject;
+        storageModuleDeploying = Instantiate(storageModuleDeploying) as GameObject;
         storageModuleDeploying.SetActive(false);
-        robotModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Robot Module/Robot Module Deploying")) as GameObject;
+        robotModuleDeploying = Instantiate(robotModuleDeploying) as GameObject;
         robotModuleDeploying.SetActive(false);
-        airlockModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Airlock Module/Airlock Module Deploying")) as GameObject;
+        airlockModuleDeploying = Instantiate(airlockModuleDeploying) as GameObject;
         airlockModuleDeploying.SetActive(false);
-        oxygenModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Oxygen Module/Oxygen Module Deploying")) as GameObject;
+        oxygenModuleDeploying = Instantiate(oxygenModuleDeploying) as GameObject;
         oxygenModuleDeploying.SetActive(false);
-        UIModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Oxygen Module/Oxygen Module Deploying")) as GameObject;
-        UIModuleDeploying.SetActive(false);
 
         habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
         connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
@@ -122,7 +116,6 @@ public class Building : MonoBehaviour
         robotModuleDeployable = robotModuleDeploying.GetComponent<Deployable>();
         airlockModuleDeployable = airlockModuleDeploying.GetComponent<Deployable>();
         oxygenModuleDeployable = oxygenModuleDeploying.GetComponent<Deployable>();
-        UIModuleDeployable = UIModuleDeploying.GetComponent<Deployable>();
 
         moduleDictionary = new Dictionary<string, bool>();
         moduleDictionary.Add("HabitatModule", true);
@@ -137,7 +130,6 @@ public class Building : MonoBehaviour
         moduleDictionary.Add("RobotModule", true);
         moduleDictionary.Add("AirlockModule", true);
         moduleDictionary.Add("OxygenModule", true);
-        moduleDictionary.Add("UIModule", true);
         isDeploying = false;
 
         spawnHabitatModuleFlag = false;
@@ -151,7 +143,6 @@ public class Building : MonoBehaviour
         spawnRobotModuleFlag = false;
         spawnStorageModuleFlag = false;
         spawnAirlockModuleFlag = false;
-        spawnOxygenModuleFlag = false;
 
         newGameFlag = true;
     }
@@ -220,12 +211,7 @@ public class Building : MonoBehaviour
         if (oxygenModuleDeployable.isDeploying && moduleDictionary["OxygenModule"])
         {
             oxygenModuleDeployable.isDeploying = !oxygenModuleDeployable.isDeploying;
-            oxygenModuleDeploying.SetActive(oxygenModuleDeployable.isDeploying);
-        }
-        if (UIModuleDeployable.isDeploying && moduleDictionary["UIModule"])
-        {
-            UIModuleDeployable.isDeploying = !UIModuleDeployable.isDeploying;
-            UIModuleDeploying.SetActive(UIModuleDeployable.isDeploying);
+            airlockModuleDeploying.SetActive(oxygenModuleDeployable.isDeploying);
         }
 	}
 	
@@ -304,7 +290,7 @@ public class Building : MonoBehaviour
 
             if (Input.GetKeyDown(radarModuleKey) || spawnRadarModuleFlag)
             {
-                NowBuilding("RadarModule");
+                NowBuilding("RadarControlModule");
                 radarModuleDeployable.isDeploying = !radarModuleDeployable.isDeploying;
                 radarModuleDeploying.SetActive(radarModuleDeployable.isDeploying);
                 isDeploying = radarModuleDeployable.isDeploying;
@@ -334,21 +320,13 @@ public class Building : MonoBehaviour
                 isDeploying = airlockModuleDeployable.isDeploying;
             }
 
-			if (Input.GetKeyDown(oxygenModuleKey) || spawnOxygenModuleFlag)
+			if (Input.GetKeyDown(oxygenModuleKey))
 			{
 				NowBuilding("OxygenModule");
 				oxygenModuleDeployable.isDeploying = !oxygenModuleDeployable.isDeploying;
 				oxygenModuleDeploying.SetActive(oxygenModuleDeployable.isDeploying);
 				isDeploying = oxygenModuleDeployable.isDeploying;
 			}
-
-            if (Input.GetKeyDown(UIModuleKey))
-            {
-                NowBuilding("UIModule");
-                UIModuleDeployable.isDeploying = !UIModuleDeployable.isDeploying;
-                UIModuleDeploying.SetActive(UIModuleDeployable.isDeploying);
-                isDeploying = UIModuleDeployable.isDeploying;
-            }
 
             spawnHabitatModuleFlag = false;
             spawnConnectorModuleFlag = false;
@@ -361,7 +339,6 @@ public class Building : MonoBehaviour
             spawnRobotModuleFlag = false;
             spawnStorageModuleFlag = false;
             spawnAirlockModuleFlag = false;
-            spawnOxygenModuleFlag = false;
         }
     }
 }

@@ -54,12 +54,6 @@ public class PlayerController : MonoBehaviour
 
 	private float oxygen;
 	private float oxygenDEC = 1F;
-	private float oxygenTimer;
-	private float oxygenLossTime = 1f;
-	private float oxygenLossAmount;
-	private float oxygenHealthTimer;
-	private float oxygenHealthLossTime = 1f;
-	private float oxygenHealthLossAmount = .5f;
 
 
     public bool canSleep;
@@ -133,10 +127,6 @@ public class PlayerController : MonoBehaviour
     public static bool holdingMiningTool;
     public static bool holdingBuildingTool;
 
-	public bool holdingRepairToolCheck;
-	public bool holdingMiningToolCheck;
-	public bool holdingBuildingToolCheck;
-
     public GameObject playerInventory;
 
     public GameObject moduleSelection;
@@ -176,13 +166,6 @@ public class PlayerController : MonoBehaviour
 
 	public Mining nearestMineral;
 
-    private GameObject UIHealthBar;
-    private GameObject UIStaminaBar;
-    private GameObject UIOxygenBar;
-    private GameObject UIClock;
-    private GameObject RadarCamera;
-    private GameObject ToolBoxObject;
-
     //Taylor
     private bool environmentAir;
 
@@ -214,20 +197,15 @@ public class PlayerController : MonoBehaviour
 
 	private void ManageOxygenLevels()
 	{
-		oxygenTimer += Time.deltaTime;
 		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
-		else if (oxygenTimer >= oxygenLossTime){ 
-
-			oxygen -= oxygenLossAmount; 
-			oxygenTimer = 0;
-		
-		}
+		else { oxygen -= oxygenDEC * Time.deltaTime; }
 		if (oxygen < 0.0F) { oxygen = 0.0F; }
 		if (oxygen > 100.0F) { oxygen = 100.0F; }
 		oxygenText.text = "Oxygen: " + (int)oxygen;
 		GameObject oxygenBar = GameObject.Find("OxygenBar");
 		Image oxygenBarImage = oxygenBar.GetComponent<Image>();
 		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
+		if (oxygen < 90.0F) { CurrentHealth -= 0.1F * Time.deltaTime; }
 	}
 
 
@@ -254,18 +232,6 @@ public class PlayerController : MonoBehaviour
         stamina = 100f;
 		oxygen = 100.0f;
 
-        UIHealthBar = GameObject.Find("Health Bar Background");
-        UIHealthBar.AddComponent<CanvasGroup>();
-        UIStaminaBar = GameObject.Find("Stamina Bar Background");
-        UIStaminaBar.AddComponent<CanvasGroup>();
-        UIOxygenBar = GameObject.Find("Oxygen Bar Background");
-        UIOxygenBar.AddComponent<CanvasGroup>();
-        UIClock = GameObject.Find("Clock");
-        UIClock.AddComponent<CanvasGroup>();
-        RadarCamera = GameObject.Find("RadarCamera");
-        ToolBoxObject = GameObject.Find("ToolBoxImage");
-        ToolBoxObject.AddComponent<CanvasGroup>();
-
         canSleep = false;
 
         Camera.main.orthographic = true;
@@ -274,7 +240,6 @@ public class PlayerController : MonoBehaviour
         nightLength = dayNightController.dayCycleLength / 2;
         timeUntilSleepPenalty = (dayLength / 10) * 8;
         staminaLostPerSecond = stamina / (dayLength + nightLength);
-		oxygenLossAmount = oxygen / (dayLength + nightLength) * 2;
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
         healthLostPerSecondNight = 5f;
 
@@ -341,28 +306,10 @@ public class PlayerController : MonoBehaviour
     {
         zoomInWhenIndoor();
         EndDemo();
-        ManageOxygenLevels();
+		ManageOxygenLevels();
+        //Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
 
-        if (CentralControl.healthStaminaModuleExists)
-        {
-            UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIClock.GetComponent<CanvasGroup>().alpha = 1;
-            RadarCamera.camera.cullingMask |= (1<<LayerMask.NameToLayer("Radar"));
-        }
-        else
-        {
-            UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIClock.GetComponent<CanvasGroup>().alpha = 0;
-            RadarCamera.camera.cullingMask &= ~(1<<LayerMask.NameToLayer("Radar"));
-        }
-
-		holdingBuildingToolCheck = holdingBuildingTool;
-		holdingRepairToolCheck = holdingRepairTool;
-		holdingMiningToolCheck = holdingMiningTool;
+        //CurrentHealth--;
 
         if (holdingRepairTool)
         {
@@ -380,6 +327,7 @@ public class PlayerController : MonoBehaviour
         {
             toolBoxUIImage.sprite = defaultSprite;
         }
+
 
         if (Input.GetKeyDown(consumeFoodKey) == true)
         {
@@ -487,7 +435,7 @@ public class PlayerController : MonoBehaviour
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
-                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
+
 
                     if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
                     {
@@ -538,7 +486,6 @@ public class PlayerController : MonoBehaviour
                     playerInventory.SetActive(true);
                     playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
-                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
                 }
                 /*******************************************************************
                  * Inventory END
@@ -591,21 +538,6 @@ public class PlayerController : MonoBehaviour
                         healthTimer = 0;
                     }
                 }
-
-				if (oxygen <= 50)
-				{
-					oxygenHealthTimer += Time.deltaTime;
-					if (oxygenHealthTimer > 1f)
-					{
-						if (currentHealth > 0)
-						{
-							StartCoroutine(CoolDownDamage());
-							currentHealth -= oxygenHealthLossAmount;
-							manageHealth();
-						} 
-						oxygenHealthTimer = 0;
-					}
-				}
 
                 if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
                 {
