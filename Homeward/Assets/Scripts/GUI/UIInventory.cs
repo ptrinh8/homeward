@@ -330,6 +330,10 @@ public class UIInventory : MonoBehaviour
 							PlayerController.holdingBuildingTool = true;
 							PlayerController.holdingRepairTool = false;
 						}
+						else if (item.itemName != ItemName.BuildingTool && item.itemName != ItemName.RepairingTool && item.itemName != ItemName.MiningTool)
+						{
+							Item nonItemTool = GetSlot(slot).GetItem();
+						}
 
 
                         if (slot.GetComponent<Slot>().IsEmpty)
