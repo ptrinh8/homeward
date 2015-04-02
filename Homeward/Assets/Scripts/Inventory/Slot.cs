@@ -19,7 +19,7 @@ public class Slot : MonoBehaviour, IPointerClickHandler
     public Sprite slotEmpty;
     public Sprite slotHighLighted;
 
-    private bool isEmpty;
+    public bool isEmpty;
 
     public bool IsEmpty
     {
@@ -119,6 +119,19 @@ public class Slot : MonoBehaviour, IPointerClickHandler
         Debug.LogError("Slot.cs Error: Item is null");
         return null;
     }
+
+	public Item CheckItem()
+	{
+		if (!IsEmpty)
+		{
+			isEmpty = false;
+			Item item = items.Peek();
+
+			return item;
+		}
+		Debug.LogError("Slot.cs Error: Item is null");
+		return null;
+	}
 
     public void ClearSlot()
     {

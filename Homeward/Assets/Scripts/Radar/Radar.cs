@@ -22,13 +22,11 @@ public class Radar : MonoBehaviour {
 
     public Transform helpTransform;
 
-    private static bool outpostGeneratedFlag;
-
-    private GameObject radarObject;
-
-    public static void tellOutpostGenerated()
+    void OutpostGenerated(GameObject habitatModule) // called from sendmessage() in DistantHabitatModule.cs
     {
-        outpostGeneratedFlag = true;
+        trackedObjects.Add(habitatModule);
+        DestroyRadarObjects();
+        CreateRadarObjects();
     }
 
     
@@ -36,29 +34,15 @@ public class Radar : MonoBehaviour {
     void Start()
     {
         switchDistance = 5.5f;
-        outpostGeneratedFlag = false;
-        GameObject habitatModule = GameObject.FindWithTag("ModuleBuilding").GetComponent<Building>().initialModules[0];
         trackedObjects = new List<GameObject>();
-        trackedObjects.Add(habitatModule);
-        radarObject = GameObject.Find("RadarBackground");
-        radarObject.AddComponent<CanvasGroup>();
-        radarObject.GetComponent<CanvasGroup>().alpha = 1;
-
         radarObjects = new List<GameObject>();
         borderObjects = new List<GameObject>();
-        CreateRadarObjects();
     }
 
 
 
     void Update()
     {
-        if (outpostGeneratedFlag) //TODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
-        {
-            trackedObjects.Add(GameObject.Find("HabitatModule"));
-            CreateRadarObjects();
-        }
-
         for (int i = 0; i < radarObjects.Count; i++)
         {
             if (Vector3.Distance(radarObjects[i].transform.position, transform.position) > switchDistance)
@@ -74,17 +58,20 @@ public class Radar : MonoBehaviour {
                 radarObjects[i].layer = LayerMask.NameToLayer("Radar");
             }
         }
-
-        if (!CentralControl.radarModuleExists)
-        {
-            radarObject.GetComponent<CanvasGroup>().alpha = 0;
-        }
-        else
-        {
-            radarObject.GetComponent<CanvasGroup>().alpha = 1;
-        }
     }
 
+    void DestroyRadarObjects()
+    {
+        foreach (GameObject i in radarObjects)
+        {
+            Destroy(i);
+        }
+
+        foreach (GameObject k in borderObjects)
+        {
+            Destroy(k);
+        }
+    }
 
     void CreateRadarObjects()
     {
@@ -101,4 +88,6 @@ public class Radar : MonoBehaviour {
             borderObjects.Add(j);
         }
     }
+
+    
 }
