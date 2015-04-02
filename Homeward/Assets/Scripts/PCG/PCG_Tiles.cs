@@ -14,10 +14,16 @@ public class PCG_Tiles : MonoBehaviour
     private PCG_TriggerB trigger1 = new PCG_TriggerB();
     private PCG_TriggerC trigger2 = new PCG_TriggerC();
     private PCG_TriggerD trigger3 = new PCG_TriggerD();
-    private PCG_rocks pcg_rocks = new PCG_rocks();
+    private PCG_Rocks pcg_rocks = new PCG_Rocks();
 
     public GameObject tile;
-    public GameObject planetTextureA, planetTextureB, planetTextureC, planetTextureD;
+    public GameObject _tileA, _tileB, _tileC, 
+    _tileD, _tileE, _tileF, _tileG, 
+    _tileH, _tileI, _tileJ, _tileK, 
+    _tileL, _tileM, _tileN, _tileO, 
+    _tileP, _tileQ, _tileR, _tileS, 
+    _tileT;
+
     private int[] _x = new int[11071];
     private int[] _y = new int[11071];
     private bool addRemoveTiles = false;
@@ -26,6 +32,7 @@ public class PCG_Tiles : MonoBehaviour
     private bool onceOnceOnce = false;
 
     private PCG_Rand rand = new PCG_Rand();
+    private float increm = 33.0F;
 
     int lowerLmt_Y = 0;
     int lowerLmt_X = 1;
@@ -98,17 +105,30 @@ public class PCG_Tiles : MonoBehaviour
                                 tiles[i].GetComponentInChildren<SpriteRenderer>().enabled = false;
                             }
 
-                            if ((rand.tempRndNosRock1[i] < 0.33F) && (rand.tempRndNosRock1[i] > 0.00F))
+                            switch (RandomNosRangeToExactValues(i))
                             {
-                                tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureB.GetComponentInChildren<SpriteRenderer>().sprite;
-                            }
-                            else if (rand.tempRndNosRock1[i] < 0.66F && (rand.tempRndNosRock1[i] > 0.33F))
-                            {
-                                tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureA.GetComponentInChildren<SpriteRenderer>().sprite;
-                            }
-                            else if (rand.tempRndNosRock1[i] > 0.66F)
-                            {
-                                tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = planetTextureD.GetComponentInChildren<SpriteRenderer>().sprite;
+                                case -1: Debug.LogError("RndNosOutOfBounds"); break;;
+                                case 0: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileA.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 1: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileB.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 2: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileC.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 3: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileD.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 4: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileE.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 5: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileF.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 6: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileG.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 7: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileH.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 8: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileI.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 9: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileJ.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 10: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileK.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 11: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileL.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 12: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileM.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 13: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileN.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 14: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileO.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 15: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileP.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 16: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileQ.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 17: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileR.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 18: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileS.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                case 19: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileT.GetComponentInChildren<SpriteRenderer>().sprite; break;;
+                                default: break;
                             }
 
                             foreach (GameObject item in finalList)
@@ -119,7 +139,6 @@ public class PCG_Tiles : MonoBehaviour
                                 }
                             }
                         }
-
                 }
 
                 GameObject[] allTexturesMyFriend = GameObject.FindGameObjectsWithTag("FinalTextures");
@@ -133,6 +152,30 @@ public class PCG_Tiles : MonoBehaviour
                 }
             }
         }
+    }
+
+    int RandomNosRangeToExactValues(int pos)
+    {
+        if ((rand.tempRndNosRock1[pos] < 0.10f) && (rand.tempRndNosRock1[pos] > 0.05f)) return 1;
+        if ((rand.tempRndNosRock1[pos] < 0.15f) && (rand.tempRndNosRock1[pos] > 0.10f)) return 2;
+        if ((rand.tempRndNosRock1[pos] < 0.20f) && (rand.tempRndNosRock1[pos] > 0.15f)) return 3;
+        if ((rand.tempRndNosRock1[pos] < 0.25f) && (rand.tempRndNosRock1[pos] > 0.20f)) return 4;
+        if ((rand.tempRndNosRock1[pos] < 0.30f) && (rand.tempRndNosRock1[pos] > 0.25f)) return 5;
+        if ((rand.tempRndNosRock1[pos] < 0.35f) && (rand.tempRndNosRock1[pos] > 0.30f)) return 6;
+        if ((rand.tempRndNosRock1[pos] < 0.40f) && (rand.tempRndNosRock1[pos] > 0.35f)) return 7;
+        if ((rand.tempRndNosRock1[pos] < 0.45f) && (rand.tempRndNosRock1[pos] > 0.40f)) return 8;
+        if ((rand.tempRndNosRock1[pos] < 0.50f) && (rand.tempRndNosRock1[pos] > 0.45f)) return 9;
+        if ((rand.tempRndNosRock1[pos] < 0.55f) && (rand.tempRndNosRock1[pos] > 0.50f)) return 10;
+        if ((rand.tempRndNosRock1[pos] < 0.60f) && (rand.tempRndNosRock1[pos] > 0.55f)) return 11;
+        if ((rand.tempRndNosRock1[pos] < 0.65f) && (rand.tempRndNosRock1[pos] > 0.60f)) return 12;
+        if ((rand.tempRndNosRock1[pos] < 0.70f) && (rand.tempRndNosRock1[pos] > 0.65f)) return 13;
+        if ((rand.tempRndNosRock1[pos] < 0.75f) && (rand.tempRndNosRock1[pos] > 0.70f)) return 14;
+        if ((rand.tempRndNosRock1[pos] < 0.80f) && (rand.tempRndNosRock1[pos] > 0.75f)) return 15;
+        if ((rand.tempRndNosRock1[pos] < 0.85f) && (rand.tempRndNosRock1[pos] > 0.80f)) return 16;
+        if ((rand.tempRndNosRock1[pos] < 0.90f) && (rand.tempRndNosRock1[pos] > 0.85f)) return 17;
+        if ((rand.tempRndNosRock1[pos] < 0.95f) && (rand.tempRndNosRock1[pos] > 0.90f)) return 18;
+        if ((rand.tempRndNosRock1[pos] < 0.100f) && (rand.tempRndNosRock1[pos] > 0.95f)) return 19;
+        return 0;
     }
 
     private void RepositionTriggers()
@@ -214,7 +257,7 @@ public class PCG_Tiles : MonoBehaviour
         trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
         trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
         trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
-        pcg_rocks = FindObjectOfType(typeof(PCG_rocks)) as PCG_rocks;
+        pcg_rocks = FindObjectOfType(typeof(PCG_Rocks)) as PCG_Rocks;
         RndNosGeneration();	
 
         GameObject mainPlayer = GameObject.Find("MainPlayer");
