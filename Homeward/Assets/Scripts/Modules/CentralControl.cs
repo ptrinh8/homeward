@@ -62,7 +62,6 @@ public class CentralControl : MonoBehaviour {
 
         if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
             Invoke("InitializeRefineryModule", Time.deltaTime);
-        GameObject.FindWithTag("ModuleBuilding").SendMessage("Register", gameObject, SendMessageOptions.RequireReceiver);
 	}
 
     void InitializeRefineryModule()
