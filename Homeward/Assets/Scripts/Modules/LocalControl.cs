@@ -106,6 +106,9 @@ public class LocalControl : MonoBehaviour {
 
 		DurabilityLoss();
         DisplayText();
+
+        if (isEnter)
+            Debug.Log(powerLevel / minimumPowerLevel);
 	}
 
 	void DoorWayTriggered (bool isDoorway) {
@@ -298,6 +301,7 @@ public class LocalControl : MonoBehaviour {
     {
         if (isEnter)
         {
+            //Debug.Log();
             if (moduleStatusText.enabled == false)
             {
                 moduleStatusText.enabled = true;

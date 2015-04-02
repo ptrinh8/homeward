@@ -114,6 +114,11 @@ public class CentralControl : MonoBehaviour {
 
 		DurabilityLoss();
         DisplayText();
+
+        if (Input.GetKeyDown(KeyCode.F10))
+        {
+            CheckPowerSupply();
+        }
 	}
 
 	void ShowInside () {
@@ -186,12 +191,16 @@ public class CentralControl : MonoBehaviour {
 			int front = (int)Q.Peek();
 			Q.Dequeue();
 			foreach (GameObject connection in locals[front].GetComponent<LocalControl>().connections) {
-				if (connection.tag == "HabitatModule") {
-					if (!isBroken)
-						powerInGeneral += 2;
-				} else if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
-//					Debug.Log(connection);
-
+                if (connection.tag == "HabitatModule")
+                {
+                    Debug.Log(locals[front]);
+                    if (!isBroken)
+                    {
+                        powerInGeneral += 1;
+                    }
+                }
+                else 
+                    if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
                     /*** Takahide Added From Here***/
                     if (connection.tag == "HealthStaminaModule")
                     {
@@ -206,9 +215,13 @@ public class CentralControl : MonoBehaviour {
                         radarModuleExists = true;
                     }
                     /*** Takahide code end ***/
+
 					Q.Enqueue(connection.GetComponent<LocalControl>().moduleID);
+
 					visited[connection.GetComponent<LocalControl>().moduleID] = true;
+
 					justVisited[connection.GetComponent<LocalControl>().moduleID] = true;
+
 					if (connection.GetComponent<LocalControl>().powerConsumption > 0)
 						powerConsumptionInGeneral += connection.GetComponent<LocalControl>().powerConsumption;
 					else 
@@ -219,8 +232,10 @@ public class CentralControl : MonoBehaviour {
 		for (int i = 0; i < locals.Count; i++) {
 			if (justVisited[i])
 				locals[i].GetComponent<LocalControl>().powerLevel = powerInGeneral / powerConsumptionInGeneral;
-			if (!visited[i] && locals[i].GetComponent<LocalControl>().isOn && isWholeMap)
+            if (!visited[i] && locals[i].GetComponent<LocalControl>().isOn && isWholeMap)
+            {
 				BFS(i, false);
+            }
 		}
 	}
 
