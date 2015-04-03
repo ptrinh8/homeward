@@ -51,6 +51,9 @@ public class PlayerController : MonoBehaviour
     public float staminaLostPerSecond;
     public float healthLostPerSecond;
     public float healthLostPerSecondNight;
+	private bool hasEaten;
+	private float eatingTimer;
+	private float eatingTime;
 
 	private float oxygen;
 	private float oxygenDEC = 1F;
@@ -277,6 +280,7 @@ public class PlayerController : MonoBehaviour
 		oxygenLossAmount = oxygen / (dayLength + nightLength) * 2;
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
         healthLostPerSecondNight = 5f;
+		eatingTime = dayLength / 4f;
 
         currentHealth = maxHealth;
         currentStamina = maxStamina;
@@ -625,7 +629,17 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
-                if (staminaTimer > 1f)
+				if (hasEaten == true)
+				{
+					eatingTimer += Time.deltaTime;
+					if (eatingTimer >= eatingTime)
+					{
+						hasEaten = false;
+						eatingTimer = 0;
+					}
+				}
+
+                if (staminaTimer > 1f && hasEaten == false)
                 {
                     if (currentStamina > 0)
                     {
@@ -1080,6 +1094,12 @@ public class PlayerController : MonoBehaviour
             allCentralControl[i].durability -= ((int)sleepTimePassed / (int)allCentralControl[i].durabilityLossTime) / 2;
         }
     }
+
+	public void FoodEaten()
+	{
+		eatingTimer = 0;
+		hasEaten = true;
+	}
 
     IEnumerator CoolDownDamage()
     {
