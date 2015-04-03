@@ -185,6 +185,8 @@ public class PlayerController : MonoBehaviour
     private GameObject UIClock;
     private GameObject RadarCamera;
     private GameObject ToolBoxObject;
+    
+    private Camera mainCamera;
 
     //Taylor
     private bool environmentAir;
@@ -293,6 +295,8 @@ public class PlayerController : MonoBehaviour
         currentStamina = maxStamina;
         onCoolDown = false;
 
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
@@ -350,7 +354,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        zoomInWhenIndoor();
+        if (mainCamera.enabled)
+        {
+            zoomInWhenIndoor();
+        }
         EndDemo();
         ManageOxygenLevels();
 
@@ -699,6 +706,11 @@ public class PlayerController : MonoBehaviour
                 {
                     x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
                     y = Input.GetAxisRaw("Vertical");
+                }
+
+                if (ModuleControl.ShowModuleControl)
+                {
+                    x = y = 0.0f;
                 }
 
                 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2

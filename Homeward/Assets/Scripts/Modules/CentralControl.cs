@@ -15,6 +15,12 @@ public class CentralControl : MonoBehaviour {
 	private int moduleID;
 	private static bool[] visited;
 	private List <GameObject> locals; // List of all the modules within the outpost
+
+    public List<GameObject> Locals
+    {
+        get { return locals; }
+    }
+
 	public int durability;
 	private DayNightController dayNightController;
 	private float durabilityTimer;
@@ -62,6 +68,10 @@ public class CentralControl : MonoBehaviour {
 
         if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
             Invoke("InitializeRefineryModule", Time.deltaTime);
+
+        player.SendMessage("OutpostGenerated", gameObject); // takahide added 04/02
+        GameObject moduleControl = Instantiate(Resources.Load("ModuleControl/ModuleControl")) as GameObject;
+        moduleControl.SendMessage("OutpostGenerated", gameObject);
 	}
 
     void InitializeRefineryModule()
@@ -112,7 +122,7 @@ public class CentralControl : MonoBehaviour {
 			ShowOutside();
 
 		DurabilityLoss();
-        DisplayText();
+        DisplayText(ModuleControl.ShowModuleControl);
 
         if (Input.GetKeyDown(KeyCode.F10))
         {
@@ -306,20 +316,27 @@ public class CentralControl : MonoBehaviour {
         repairingFlag = true;
     }
 
-    void DisplayText()
+    void DisplayText(bool flag)
     {
-        if (isEnter)
+        if (flag)
         {
-            if (moduleStatusText.enabled == false)
-            {
-                moduleStatusText.enabled = true;
-            }
+            moduleStatusText.enabled = true;
         }
         else
         {
-            if (moduleStatusText.enabled == true)
+            if (isEnter)
             {
-                moduleStatusText.enabled = false;
+                if (moduleStatusText.enabled == false)
+                {
+                    moduleStatusText.enabled = true;
+                }
+            }
+            else
+            {
+                if (moduleStatusText.enabled == true)
+                {
+                    moduleStatusText.enabled = false;
+                }
             }
         }
     }
