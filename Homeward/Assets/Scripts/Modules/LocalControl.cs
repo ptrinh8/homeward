@@ -102,6 +102,8 @@ public class LocalControl : MonoBehaviour {
 		player = GameObject.FindWithTag("Player");
         repairingFlag = true;
         repairActionTime = 5f;
+
+        player.SendMessage("LocalModuleGenerated", gameObject);
 	}
 	
 	// Update is called once per frame

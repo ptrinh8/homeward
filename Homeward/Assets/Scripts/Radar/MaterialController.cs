@@ -12,7 +12,7 @@ public class MaterialController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        float intensity = Mathf.Sin(Time.time);
+        float intensity = Mathf.Abs(Mathf.Sin(Time.time));
 
         this.material.SetFloat("_RimPower", intensity);
 	}
