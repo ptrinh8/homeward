@@ -32,6 +32,8 @@ public class UIInventory : MonoBehaviour
 
     private static List<GameObject> allSlots;
 
+	private PlayerController player;
+
 	public Sprite miningToolEquippedSprite;
 	public Sprite repairingToolEquippedSprite;
 	public Sprite buildingToolEquippedSprite;
@@ -56,7 +58,7 @@ public class UIInventory : MonoBehaviour
         playerInventoryRows = playerInventory.GetComponent<Inventory>().rows;
         playerInventorySlots = playerInventory.GetComponent<Inventory>().slots;
         selectionBoxSize = playerInventory.GetComponent<Inventory>().slotSize + 3.0f;
-
+		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 
     }
 
@@ -333,6 +335,10 @@ public class UIInventory : MonoBehaviour
 						else if (item.itemName != ItemName.BuildingTool && item.itemName != ItemName.RepairingTool && item.itemName != ItemName.MiningTool)
 						{
 							Item nonItemTool = GetSlot(slot).GetItem();
+							if (nonItemTool.itemName == ItemName.Food1)
+							{
+								player.FoodEaten();
+							}
 						}
 
 
@@ -348,25 +354,6 @@ public class UIInventory : MonoBehaviour
                             }
                         }
                         
-
-                        //if (from != null)
-                        {
-                            //Taylor
-                            if (item.itemName == ItemName.Food1)
-                            {
-                                PlayerController playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-                                if (playerController.CurrentStamina + 10 < 100)
-                                {
-                                    playerController.CurrentStamina += 10;
-                                }
-                                else 
-                                {
-                                    playerController.CurrentStamina = 101;
-                                }
-                            }
-                            //Taylor End
-
-                        }
                     }
 					else
 					{

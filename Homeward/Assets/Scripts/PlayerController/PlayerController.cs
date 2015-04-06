@@ -51,6 +51,9 @@ public class PlayerController : MonoBehaviour
     public float staminaLostPerSecond;
     public float healthLostPerSecond;
     public float healthLostPerSecondNight;
+	private bool hasEaten;
+	private float eatingTimer;
+	private float eatingTime;
 
 	private float oxygen;
 	private float oxygenDEC = 1F;
@@ -181,7 +184,10 @@ public class PlayerController : MonoBehaviour
     private GameObject UIOxygenBar;
     private GameObject UIClock;
     private GameObject RadarCamera;
+    private GameObject enhancedRadarCamera;
     private GameObject ToolBoxObject;
+    
+    private Camera mainCamera;
 
     //Taylor
     private bool environmentAir;
@@ -277,10 +283,14 @@ public class PlayerController : MonoBehaviour
 		oxygenLossAmount = oxygen / (dayLength + nightLength) * 2;
         healthLostPerSecond = health / ((dayLength + nightLength) * 4 / 5);
         healthLostPerSecondNight = 5f;
+		eatingTime = dayLength / 4f;
 
         currentHealth = maxHealth;
         currentStamina = maxStamina;
         onCoolDown = false;
+
+        mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        enhancedRadarCamera = GameObject.Find("EnhancedRadarCamera");
 
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
@@ -339,7 +349,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        zoomInWhenIndoor();
+        if (mainCamera.enabled)
+        {
+            zoomInWhenIndoor();
+        }
         EndDemo();
         ManageOxygenLevels();
 
@@ -625,7 +638,17 @@ public class PlayerController : MonoBehaviour
                     }
                 }
 
-                if (staminaTimer > 1f)
+				if (hasEaten == true)
+				{
+					eatingTimer += Time.deltaTime;
+					if (eatingTimer >= eatingTime)
+					{
+						hasEaten = false;
+						eatingTimer = 0;
+					}
+				}
+
+                if (staminaTimer > 1f && hasEaten == false)
                 {
                     if (currentStamina > 0)
                     {
@@ -678,6 +701,17 @@ public class PlayerController : MonoBehaviour
                 {
                     x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
                     y = Input.GetAxisRaw("Vertical");
+                }
+
+                if (ModuleControl.ShowModuleControl)
+                {
+                    x = y = 0.0f;
+                }
+
+                if (EnhancedRadar.showEnhancedRadar)
+                {
+                    x = y = 0.0f;
+                    enhancedRadarCamera.GetComponent<Camera>().fieldOfView = Mathf.Abs(Input.GetAxis("Horizontal")) * 28 + 148.0f; // 179 = max value of field view
                 }
 
                 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
@@ -1080,6 +1114,12 @@ public class PlayerController : MonoBehaviour
             allCentralControl[i].durability -= ((int)sleepTimePassed / (int)allCentralControl[i].durabilityLossTime) / 2;
         }
     }
+
+	public void FoodEaten()
+	{
+		eatingTimer = 0;
+		hasEaten = true;
+	}
 
     IEnumerator CoolDownDamage()
     {

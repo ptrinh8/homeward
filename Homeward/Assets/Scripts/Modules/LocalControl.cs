@@ -37,12 +37,26 @@ public class LocalControl : MonoBehaviour {
 	public float durabilityLossSpeed;
 	private bool isBroken, flag;
 	private Text moduleStatusText;
+
+    public Text ModuleStatusText
+    {
+        get { return moduleStatusText; }
+        set { value = moduleStatusText; }
+    }
+
 	private int pos; 
 	private KeyCode repairKey = KeyCode.F;
 
 	private GameObject player;
     private float repairActionTime;
     private bool repairingFlag;
+    private bool showTextFlag;
+
+    public bool ShowTextFlag
+    {
+        get { return showTextFlag; }
+        set { value = showTextFlag; }
+    }
 
 	public bool IsEnter 
 	{
@@ -88,6 +102,8 @@ public class LocalControl : MonoBehaviour {
 		player = GameObject.FindWithTag("Player");
         repairingFlag = true;
         repairActionTime = 5f;
+
+        player.SendMessage("LocalModuleGenerated", gameObject);
 	}
 	
 	// Update is called once per frame
@@ -105,7 +121,7 @@ public class LocalControl : MonoBehaviour {
         }
 
 		DurabilityLoss();
-        DisplayText();
+        DisplayText(ModuleControl.ShowModuleControl);
 
         if (isEnter)
             Debug.Log(powerLevel / minimumPowerLevel);
@@ -297,22 +313,30 @@ public class LocalControl : MonoBehaviour {
         repairingFlag = true;
     }
 
-    void DisplayText()
+    void DisplayText(bool flag)
     {
-        if (isEnter)
+        if (flag)
         {
-            //Debug.Log();
-            if (moduleStatusText.enabled == false)
-            {
-                moduleStatusText.enabled = true;
-            }
+            moduleStatusText.enabled = true;
         }
         else
         {
-            if (moduleStatusText.enabled == true)
+            if (isEnter)
             {
-                moduleStatusText.enabled = false;
+                //Debug.Log();
+                if (moduleStatusText.enabled == false)
+                {
+                    moduleStatusText.enabled = true;
+                }
+            }
+            else
+            {
+                if (moduleStatusText.enabled == true)
+                {
+                    moduleStatusText.enabled = false;
+                }
             }
         }
     }
+
 }
