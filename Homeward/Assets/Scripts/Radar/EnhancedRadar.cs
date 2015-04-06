@@ -95,11 +95,11 @@ public class EnhancedRadar : MonoBehaviour {
         radarPrefab_airlock = Instantiate(Resources.Load("Radar/AirlockPositionOnEnhancedRadar")) as GameObject;
         radarPrefab_power = Instantiate(Resources.Load("Radar/PowerPositionOnEnhancedRadar")) as GameObject;
 	}
-	
+
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             showEnhancedRadar = !showEnhancedRadar;
             
