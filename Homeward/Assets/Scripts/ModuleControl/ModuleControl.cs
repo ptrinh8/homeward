@@ -11,7 +11,11 @@ public class ModuleControl : MonoBehaviour {
 
     private Camera mainCamera;
 
+    private Camera radarCamera;
+
     private static bool showModuleControl;
+
+    private float cameraSpeed;
 
     public static bool ShowModuleControl
     {
@@ -22,9 +26,12 @@ public class ModuleControl : MonoBehaviour {
     {
         outpostNumber++;
 
+        cameraSpeed = 5.0f;
+
         GameObject controlObject = Instantiate(Resources.Load("ModuleControl/ControlObject")) as GameObject;
         controlObject.transform.parent = habitatModule.transform;
-        controlObject.GetComponent<Camera>().camera.enabled = false;
+        radarCamera = controlObject.GetComponent<Camera>();
+        radarCamera.camera.enabled = false;
         controlObject.transform.position = controlObject.transform.parent.position;
         controlObject.transform.localPosition = new Vector3(0.0f, 0.0f, -10.0f);
         
@@ -66,6 +73,10 @@ public class ModuleControl : MonoBehaviour {
             {
                 mainCamera.enabled = false;
                 habitatModules[outpostNumber].GetComponentInChildren<Camera>().camera.enabled = true;
+
+                /*** camera movement ***/
+                Vector3 move = new Vector3(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+                radarCamera.transform.position += move * cameraSpeed * Time.deltaTime;
             }
             else
             {
@@ -73,5 +84,6 @@ public class ModuleControl : MonoBehaviour {
                 habitatModules[outpostNumber].GetComponentInChildren<Camera>().camera.enabled = false;
             }
         }
+        
     }
 }

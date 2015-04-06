@@ -181,6 +181,7 @@ public class PlayerController : MonoBehaviour
     private GameObject UIOxygenBar;
     private GameObject UIClock;
     private GameObject RadarCamera;
+    private GameObject enhancedRadarCamera;
     private GameObject ToolBoxObject;
     
     private Camera mainCamera;
@@ -285,6 +286,7 @@ public class PlayerController : MonoBehaviour
         onCoolDown = false;
 
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
+        enhancedRadarCamera = GameObject.Find("EnhancedRadarCamera");
 
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
@@ -690,6 +692,12 @@ public class PlayerController : MonoBehaviour
                 if (ModuleControl.ShowModuleControl)
                 {
                     x = y = 0.0f;
+                }
+
+                if (EnhancedRadar.showEnhancedRadar)
+                {
+                    x = y = 0.0f;
+                    enhancedRadarCamera.GetComponent<Camera>().fieldOfView = Mathf.Abs(Input.GetAxis("Horizontal")) * 28 + 148.0f; // 179 = max value of field view
                 }
 
                 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
