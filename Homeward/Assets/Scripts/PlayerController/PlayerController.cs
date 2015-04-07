@@ -221,7 +221,14 @@ public class PlayerController : MonoBehaviour
 	private void ManageOxygenLevels()
 	{
 		oxygenTimer += Time.deltaTime;
-		if (CentralControl.isInside) { /* What happens to oxygen when the player is inside the base? */ }
+		if (CentralControl.isInside) { 
+		
+			if (oxygen <= 100)
+			{
+				oxygen += .01;
+			}
+		
+		}
 		else if (oxygenTimer >= oxygenLossTime){ 
 
 			oxygen -= oxygenLossAmount; 
