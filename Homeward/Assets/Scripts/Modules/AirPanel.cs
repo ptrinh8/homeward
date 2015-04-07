@@ -15,6 +15,7 @@ public class AirPanel : MonoBehaviour {
                 gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
             }
         }
+		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
     }
 
     //void OnTriggerStay2D(Collider2D other)

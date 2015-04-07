@@ -118,14 +118,43 @@ public class LocalControl : MonoBehaviour {
             {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
             }
-        }
+		}
+
+		/**
+		if (CentralControl.isInside) {
+			if (spriteRenderer.material != GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material){
+				center.SendMessage("ChangeMaterialToDefault", true, SendMessageOptions.RequireReceiver);
+			}
+		} else {
+			if (spriteRenderer.material != GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material){
+				center.SendMessage("ChangeMaterialToDefault", false, SendMessageOptions.RequireReceiver);
+			}
+		}
+		**/
 
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
-        if (isEnter)
-            Debug.Log(powerLevel / minimumPowerLevel);
 	}
+
+	/**
+	void ChangeMaterialToDefault(bool toDefault) {
+		Debug.Log(toDefault);
+		if (toDefault){
+			spriteRenderer.material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
+			foreach (Transform child in transform){
+				if (child.gameObject.GetComponent<SpriteRenderer>() != null)
+					child.gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
+			}
+		} else {
+			spriteRenderer.material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
+			foreach (Transform child in transform){
+				if (child.gameObject.GetComponent<SpriteRenderer>() != null)
+					child.gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
+			}
+		}
+	}
+	**/
 
 	void DoorWayTriggered (bool isDoorway) {
 		if (isDoorway)

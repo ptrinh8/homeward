@@ -135,6 +135,10 @@ public class Refining : MonoBehaviour
 
     void Update()
     {
+		// Taylor
+		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
+		// Taylor
+
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
 		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
 		//Debug.Log (mineralCount);

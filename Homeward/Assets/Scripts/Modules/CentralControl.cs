@@ -72,6 +72,7 @@ public class CentralControl : MonoBehaviour {
         player.SendMessage("OutpostGenerated", gameObject); // takahide added 04/02
         GameObject moduleControl = Instantiate(Resources.Load("ModuleControl/ModuleControl")) as GameObject;
         moduleControl.SendMessage("OutpostGenerated", gameObject);
+		gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
 	}
 
     void InitializeRefineryModule()
@@ -115,19 +116,12 @@ public class CentralControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (isEnterOutpost) {
-			if (spriteRenderer.sprite != indoorSprite)
 				ShowInside();
 		}
-		else if (spriteRenderer.sprite != outdoorSprite)
-			ShowOutside();
+		else ShowOutside();
 
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
-
-        if (Input.GetKeyDown(KeyCode.F10))
-        {
-            CheckPowerSupply();
-        }
 	}
 
 	void ShowInside () {
@@ -135,15 +129,21 @@ public class CentralControl : MonoBehaviour {
 		spriteRenderer.sprite = indoorSprite;
 		spriteRenderer.sortingOrder = -3;
 		// Show inside sprite of all other modules within the outpost
-		foreach (GameObject local in locals)
+		foreach (GameObject local in locals) {
 			local.SendMessage("ShowInside");
+			spriteRenderer.material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
+			local.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
+		}
 	}
 
 	void ShowOutside () {
 		spriteRenderer.sprite = outdoorSprite;
 		spriteRenderer.sortingOrder = -1;
-		foreach (GameObject local in locals)
+		foreach (GameObject local in locals) {
 			local.SendMessage("ShowOutside");
+			spriteRenderer.material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
+			local.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
+		}
 	}
 
 	void DoorWayTriggered () {
