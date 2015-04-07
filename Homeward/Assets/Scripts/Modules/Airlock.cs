@@ -65,6 +65,8 @@ public class Airlock : MonoBehaviour {
         {
             AirlockTriggered(true);
         }
+
+		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
 	}
 
 	void OnTriggerStay2D (Collider2D other) 

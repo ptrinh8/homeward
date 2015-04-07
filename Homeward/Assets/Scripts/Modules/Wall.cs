@@ -15,6 +15,8 @@ public class Wall : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
+
         if (Building.isDeploying) 
         {
             if (spriteRenderer.color != deployingColor)
