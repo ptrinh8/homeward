@@ -35,6 +35,8 @@ public class Refining : MonoBehaviour
     public Sprite noPowerSupplyTexture;
     private GameObject refineryModule;
 
+	private int mineralCount;
+
     public bool showPlayerAndModuleInventory; // takahide made it public to use this outside
     public GameObject moduleInventory;
     private GameObject mainPlayer;
@@ -58,14 +60,15 @@ public class Refining : MonoBehaviour
 
     private void MineralsValidations()
     {
+		/*
         if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 0)
         {
-            stopMineralsIntake = true;
+           stopMineralsIntake = true;
         }
         else if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) > 0)
         {
             stopMineralsIntake = false;
-        }
+        }*/
     }
 
     private void RefiningProcess(SpriteRenderer refineryModuleSpriteRenderer)
@@ -133,6 +136,8 @@ public class Refining : MonoBehaviour
     void Update()
     {
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
+		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
+		//Debug.Log (mineralCount);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
@@ -158,14 +163,14 @@ public class Refining : MonoBehaviour
             stopMineralsIntake = true;
         }
 
-        int _mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
+        
 
-        if (_mineralCount >= 2)
+        if (mineralCount >= 2)
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (_mineralCount >= 2)
+		if (mineralCount >= 2)
 		{
 			if (refineryStarted == false)
 			{

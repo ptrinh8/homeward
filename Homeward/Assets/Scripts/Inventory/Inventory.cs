@@ -43,6 +43,8 @@ public class Inventory : MonoBehaviour {
 
     private int emptySlots;
 
+	private bool isEmpty;
+
     public int EmptySlots
     {
         get { return emptySlots; }
@@ -51,7 +53,7 @@ public class Inventory : MonoBehaviour {
 
     public bool IsEmpty
     {
-        get { return emptySlots == slots; }
+        get { return isEmpty; }
     }
 
     public bool IsFull
@@ -118,6 +120,15 @@ public class Inventory : MonoBehaviour {
     /*****************************************************************************************************************/
 	void Update () 
     {
+		foreach (GameObject slot in allSlots)
+		{
+			Slot tmp = slot.GetComponent<Slot>();
+			
+			if (!tmp.IsEmpty)
+			{
+				isEmpty = false;
+			}
+		}
 	}
     /*******************************************************************************************************************/
 
@@ -334,9 +345,9 @@ public class Inventory : MonoBehaviour {
     public int CountItems(ItemName itemName)
     {
 		int itemCount = 0;
-        if (IsEmpty)
+        if (isEmpty == true)
         {
-            //Debug.Log("This Inventory is Empty");
+            Debug.Log("This Inventory is Empty");
             return 0;
         }
         else

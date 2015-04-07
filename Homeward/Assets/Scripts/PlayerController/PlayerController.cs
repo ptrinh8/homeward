@@ -349,6 +349,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+		//Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
         if (mainCamera.enabled)
         {
             zoomInWhenIndoor();

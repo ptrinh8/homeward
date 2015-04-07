@@ -58,6 +58,7 @@ public class FoodModule : MonoBehaviour
 
     private void MineralsValidations()
     {
+		/*
         if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) == 0)
         {
             stopMineralsIntake = true;
@@ -65,7 +66,7 @@ public class FoodModule : MonoBehaviour
         else if (mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
         {
             stopMineralsIntake = false;
-        }
+        }*/
     }
 
     private void RefiningProcess(SpriteRenderer refineryModuleSpriteRenderer)
