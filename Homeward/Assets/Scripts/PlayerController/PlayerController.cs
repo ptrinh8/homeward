@@ -225,7 +225,7 @@ public class PlayerController : MonoBehaviour
 		
 			if (oxygen <= 100)
 			{
-				oxygen += .01;
+				oxygen += .01f;
 			}
 		
 		}
