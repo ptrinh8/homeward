@@ -11,7 +11,7 @@ public class Deployable : MonoBehaviour {
 	private Detector[] detector;	// Scripts in children gameobject that handle the "snap" or trigger
 	[HideInInspector]
 	public bool isDeploying;	// Whether this module is deploying
-	public float maxLength;		// Max stretch length 
+	private float maxLength;		// Max stretch length 
 	public GameObject moduleUnfinished;	// Detached blueprint(prefabs)
 	private int matchedPoint;	// record which detector is "matched"
 	private Color color;
@@ -25,6 +25,8 @@ public class Deployable : MonoBehaviour {
 		color = new Color (0.5f, 0, 0, 0.7f);	// record the original sprite color
 		spriteRenderer.color = color;
 		detector = gameObject.GetComponentsInChildren<Detector>();
+
+		maxLength = 1.2f;
 
 		deployable = true;
 		isDeploying = true;

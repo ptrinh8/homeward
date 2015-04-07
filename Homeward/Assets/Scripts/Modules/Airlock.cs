@@ -57,7 +57,7 @@ public class Airlock : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Vector2.Distance(mainPlayer.transform.position, transform.position) < 0.35f)
+        if (Vector2.Distance(mainPlayer.transform.position, transform.position) < transform.root.localScale.x * 0.35f)
         {
             AirCheck();
         }
