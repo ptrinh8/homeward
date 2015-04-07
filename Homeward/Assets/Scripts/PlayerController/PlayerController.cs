@@ -239,6 +239,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
         spaceship = FindObjectOfType(typeof(Spaceship)) as Spaceship;
         endgame = FindObjectOfType(typeof(EndGame)) as EndGame;
@@ -298,7 +299,6 @@ public class PlayerController : MonoBehaviour
         playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
-        playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
         playerInventory.AddComponent<UIInventory>();
 
@@ -473,7 +473,6 @@ public class PlayerController : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                 {
                     showPlayerInventory = !showPlayerInventory;
-                    playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
                 }
 
 				if (miningTimer >= miningCooldown)
@@ -497,9 +496,8 @@ public class PlayerController : MonoBehaviour
                 if (showPlayerInventory) // player is able to control inventory only when inventory is visible
                 {
                     keyCode_B_Works = false;
-                    playerInventory.SetActive(true);
+                    playerInventory.GetComponent<CanvasGroup>().alpha = 1;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
-                    playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
                     ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
 
                     if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
@@ -548,8 +546,7 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                     keyCode_B_Works = true;
-                    playerInventory.SetActive(true);
-                    playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
+                    playerInventory.GetComponent<CanvasGroup>().alpha = 0;
                     playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
                     ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
                 }
