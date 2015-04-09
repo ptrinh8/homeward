@@ -727,11 +727,6 @@ public class PlayerController : MonoBehaviour
 				//rigidbody2D.AddForce(direction * speed);
                 //rigidbody2D.velocity = direction * speed;   // speed is changable by us
 				rigidbody2D.AddForce(direction * 8f);
-				if (rigidbody2D.velocity.magnitude > 1.0f)
-				{
-					//rigidbody2D.AddForce((-1) * direction * speed);
-					rigidbody2D.velocity *= .99f;
-				}
 
 				if (rigidbody2D.velocity.magnitude < .01f)
 				{
@@ -743,22 +738,44 @@ public class PlayerController : MonoBehaviour
 
 
                 //using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-                if ((rigidbody2D.velocity.y > 0 || (rigidbody2D.velocity.y > 0 && (rigidbody2D.velocity.x >= 0.5f || rigidbody2D.velocity.x <= 0.5f))) && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
+                if (rigidbody2D.velocity.y > 0.01f && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
                 {
-                    AnimateFrames(1);
+					if (rigidbody2D.velocity.x > 0.5f)
+					{
+						AnimateFrames(3);
+					}
+					else if (rigidbody2D.velocity.x < -0.5f)
+					{
+						AnimateFrames(2);
+					}
+					else
+					{
+                    	AnimateFrames(1);
+					}
                     this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
                 }
-				else if ((rigidbody2D.velocity.y < 0 || (rigidbody2D.velocity.y < 0 && (rigidbody2D.velocity.x >= 0.5f || rigidbody2D.velocity.x <= 0.5f))) && rigidbody2D.velocity.magnitude > 0.01f)	// y < 0
+				else if (rigidbody2D.velocity.y < -.01f && rigidbody2D.velocity.magnitude > 0.01f)	// y < 0
                 {
-                    AnimateFrames(0);
+					if (rigidbody2D.velocity.x > 0.5f)
+					{
+						AnimateFrames(3);
+					}
+					else if (rigidbody2D.velocity.x < -0.5f)
+					{
+						AnimateFrames(2);
+					}
+					else
+					{
+                    	AnimateFrames(0);
+					}
                     this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
                 }
-				else if ((rigidbody2D.velocity.x > 0 || (rigidbody2D.velocity.x > 0 && (rigidbody2D.velocity.y >= 0.5f || rigidbody2D.velocity.y <= 0.5f))) && rigidbody2D.velocity.magnitude > 0.01f)	// x > 0
+				else if (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x > 0
 				{
                     AnimateFrames(3);
                     this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
                 }
-				else if ((rigidbody2D.velocity.x < 0 || (rigidbody2D.velocity.x > 0 && (rigidbody2D.velocity.y >= 0.5f || rigidbody2D.velocity.y <= 0.5f))) && rigidbody2D.velocity.magnitude > 0.01f)	// x < 0
+				else if (rigidbody2D.velocity.x < 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x < 0
 				{
                     AnimateFrames(2);
                     this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
