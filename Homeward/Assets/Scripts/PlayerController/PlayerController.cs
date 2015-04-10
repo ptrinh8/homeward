@@ -692,24 +692,49 @@ public class PlayerController : MonoBehaviour
                     if (Input.GetKey(KeyCode.A))
                     {
                         x = -1.0f;
+						y = 0f;
                     }
                     else if (Input.GetKey(KeyCode.D))
                     {
                         x = 1.0f;
+						y = 0f;
                     }
                     if (Input.GetKey(KeyCode.W))
                     {
                         y = 1.0f;
+						x = 0f;
                     }
                     else if (Input.GetKey(KeyCode.S))
                     {
                         y = -1.0f;
+						x = 0f;
                     }
                 }
                 else
                 {
+					if (Input.GetKey(KeyCode.A))
+					{
+						x = -1.0f;
+						y = 0f;
+					}
+					else if (Input.GetKey(KeyCode.D))
+					{
+						x = 1.0f;
+						y = 0f;
+					}
+					if (Input.GetKey(KeyCode.W))
+					{
+						y = 1.0f;
+						x = 0f;
+					}
+					else if (Input.GetKey(KeyCode.S))
+					{
+						y = -1.0f;
+						x = 0f;
+					}
+					/*
                     x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-                    y = Input.GetAxisRaw("Vertical");
+                    y = Input.GetAxisRaw("Vertical");*/
                 }
 
                 if (ModuleControl.ShowModuleControl)
