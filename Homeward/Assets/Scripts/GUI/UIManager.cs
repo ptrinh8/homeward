@@ -12,4 +12,19 @@ public class UIManager : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void Contintue()
+    {
+        PlayerController.pauseFlag = false;
+    }
+
+    public void StartGame()
+    {
+
+    }
 }

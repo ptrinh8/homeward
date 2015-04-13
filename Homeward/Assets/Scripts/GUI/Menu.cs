@@ -12,22 +12,11 @@ using System.Collections;
 
 public class Menu : MonoBehaviour
 {
-    public bool isQuit = false;
+    public bool isQuit;
 
-    void Awake()
-    {
+    public bool isStartGame;
 
-    }
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
+    public bool isContinue;
 
     void OnMouseEnter()
     {
@@ -41,11 +30,11 @@ public class Menu : MonoBehaviour
 
     void OnMouseUp()
     {
-        if (isQuit == true)
+        if (isQuit)
         {
             Application.Quit();
         }
-        else
+        else if (isStartGame)
         {
             LevelLoader.Instance.LoadLevel("Planet", 3.0F);
         }

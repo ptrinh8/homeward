@@ -72,7 +72,6 @@ public class UIInventory : MonoBehaviour
                 if (firstTimeFlag)
                 {
                     //playerInventory.GetComponent<Inventory>().DebugShowInventory();
-                    Debug.Log("oioioioi");
                     ResetUIInventory();
                     slots = playerInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
@@ -84,7 +83,6 @@ public class UIInventory : MonoBehaviour
             {
                 if (firstTimeFlag)
                 {
-                    Debug.Log("uiuiuii");
                     ResetUIInventory();
                     slots = playerInventory.GetComponent<Inventory>().slots + moduleInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
@@ -138,7 +136,7 @@ public class UIInventory : MonoBehaviour
     {
         if (newBox != null)
         {
-            newBox.SetActive(show);
+            newBox.SetActive(show); // red box
         }
     }
 

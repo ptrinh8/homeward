@@ -67,6 +67,11 @@ public class Inventory : MonoBehaviour {
         eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
 
         createLayout();
+
+        foreach (GameObject slot in allSlots)
+        {
+            slot.AddComponent<CanvasGroup>();
+        }
 	}
 
     void createLayout()
@@ -203,11 +208,21 @@ public class Inventory : MonoBehaviour {
 
     public void SetSlotsActive(bool show)
     {
+        int i;
+        if (show)
+        {
+            i = 1;
+        }
+        else
+        {
+            i = 0;
+        }
+
         if (allSlots != null)
         {
             foreach (GameObject slot in allSlots)
             {
-                slot.SetActive(show);
+                slot.GetComponent<CanvasGroup>().alpha = i;
             }
         }
     }

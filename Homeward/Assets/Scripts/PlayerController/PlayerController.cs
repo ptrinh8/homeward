@@ -189,6 +189,8 @@ public class PlayerController : MonoBehaviour
     
     private Camera mainCamera;
 
+    public static bool pauseFlag;
+
     //Taylor
     private bool environmentAir;
 
@@ -204,6 +206,8 @@ public class PlayerController : MonoBehaviour
         }
     }
     // Taylor End 
+
+    private GameObject pauseMenu;
 
     private void EndDemo()
     {
@@ -246,6 +250,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        pauseFlag = false;
+
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
         spaceship = FindObjectOfType(typeof(Spaceship)) as Spaceship;
         endgame = FindObjectOfType(typeof(EndGame)) as EndGame;
@@ -279,6 +285,16 @@ public class PlayerController : MonoBehaviour
         ToolBoxObject = GameObject.Find("ToolBoxImage");
         ToolBoxObject.AddComponent<CanvasGroup>();
 
+        pauseMenu = Instantiate(Resources.Load("Menu/PauseMenu")) as GameObject;
+        pauseMenu.transform.SetParent(GameObject.Find("Canvas").transform);
+        pauseMenu.AddComponent<CanvasGroup>();
+        pauseMenu.GetComponent<CanvasGroup>().alpha = 0.7f;
+        RectTransform pauseMenuRect = pauseMenu.GetComponent<RectTransform>();
+        pauseMenuRect.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
+        pauseMenuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 400.0f);
+        pauseMenuRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200.0f);
+        pauseMenu.SetActive(false);
+
         canSleep = false;
 
         Camera.main.orthographic = true;
@@ -305,7 +321,6 @@ public class PlayerController : MonoBehaviour
         playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
-        playerInventory.SetActive(showPlayerInventory);
         playerInventory.AddComponent<CanvasGroup>();
         playerInventory.AddComponent<UIInventory>();
 
@@ -356,282 +371,260 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-		//Debug.Log (playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral));
-        if (mainCamera.enabled)
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            zoomInWhenIndoor();
+            pauseFlag = !pauseFlag;
         }
-        EndDemo();
-        ManageOxygenLevels();
 
-        if (CentralControl.healthStaminaModuleExists)
+        if (pauseFlag)
         {
-            UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
-            UIClock.GetComponent<CanvasGroup>().alpha = 1;
-            RadarCamera.camera.cullingMask |= (1<<LayerMask.NameToLayer("Radar"));
+            Time.timeScale = 0.0f;
+            pauseMenu.SetActive(true);
         }
         else
         {
-            UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-            UIClock.GetComponent<CanvasGroup>().alpha = 0;
-            RadarCamera.camera.cullingMask &= ~(1<<LayerMask.NameToLayer("Radar"));
-        }
-
-		holdingBuildingToolCheck = holdingBuildingTool;
-		holdingRepairToolCheck = holdingRepairTool;
-		holdingMiningToolCheck = holdingMiningTool;
-
-        if (holdingRepairTool)
-        {
-            toolBoxUIImage.sprite = repairToolSprite;
-        }
-        else if (holdingMiningTool)
-        {
-            toolBoxUIImage.sprite = miningToolSprite;
-        }
-        else if (holdingBuildingTool)
-        {
-            toolBoxUIImage.sprite = buildingToolSprite;
-        }
-        else
-        {
-            toolBoxUIImage.sprite = defaultSprite;
-        }
-
-        if (Input.GetKeyDown(consumeFoodKey) == true)
-        {
-            if (isKeyEnabled)
+            Time.timeScale = 1.0f;
+            pauseMenu.SetActive(false);
+         
+            
+            if (mainCamera.enabled)
             {
+                zoomInWhenIndoor();
             }
-        }
+            EndDemo();
+            ManageOxygenLevels();
 
-        if (isSongQueued == true)
-        {
-            songSilenceTimer += Time.deltaTime;
-            if (songSilenceTimer > songSilenceLength)
+            if (CentralControl.healthStaminaModuleExists)
             {
-                //Debug.Log("silence over");
-                if (isSongPlaying == false)
+                UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
+                UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
+                UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
+                UIClock.GetComponent<CanvasGroup>().alpha = 1;
+                RadarCamera.camera.cullingMask |= (1 << LayerMask.NameToLayer("Radar"));
+            }
+            else
+            {
+                UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
+                UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
+                UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
+                UIClock.GetComponent<CanvasGroup>().alpha = 0;
+                RadarCamera.camera.cullingMask &= ~(1 << LayerMask.NameToLayer("Radar"));
+            }
+
+            holdingBuildingToolCheck = holdingBuildingTool;
+            holdingRepairToolCheck = holdingRepairTool;
+            holdingMiningToolCheck = holdingMiningTool;
+
+            if (holdingRepairTool)
+            {
+                toolBoxUIImage.sprite = repairToolSprite;
+            }
+            else if (holdingMiningTool)
+            {
+                toolBoxUIImage.sprite = miningToolSprite;
+            }
+            else if (holdingBuildingTool)
+            {
+                toolBoxUIImage.sprite = buildingToolSprite;
+            }
+            else
+            {
+                toolBoxUIImage.sprite = defaultSprite;
+            }
+
+            if (Input.GetKeyDown(consumeFoodKey) == true)
+            {
+                if (isKeyEnabled)
                 {
-                    audioController.MusicControl(1, songSelected);
-                    isSongPlaying = true;
-                }
-            }
-        }
-        else if (isSongQueued == false)
-        {
-            // Debug.Log ("starting coroutine");
-            StartCoroutine(MusicTrigger());
-        }
-
-        if (isSongPlaying == true)
-        {
-            songTimer += Time.deltaTime;
-            if (songTimer > songLength)
-            {
-                audioController.MusicControl(2, songSelected);
-                songTimer = 0;
-                songSilenceTimer = 0;
-                isSongPlaying = false;
-                isSongQueued = false;
-            }
-        }
-
-        /*** if inside in a module turn the flag on ***/
-        if (CentralControl.isInside)
-        {
-            //			if (hold repair tool)
-            {
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    isRepairing = true;
                 }
             }
-        }
 
-        if (currentHealth <= 0)
-        {
-            isDead = true;
-        }
-
-        
-
-        if (currentHealth > 0 && isDead == false)
-        {
-            if (isSleeping == false)
+            if (isSongQueued == true)
             {
-                staminaTimer += Time.deltaTime;
-				miningTimer += Time.deltaTime;
-
-                if (Input.GetKeyDown(KeyCode.Tab))
+                songSilenceTimer += Time.deltaTime;
+                if (songSilenceTimer > songSilenceLength)
                 {
-                    //TODO
-                }
-
-                if (Input.GetKeyDown(KeyCode.B) && keyCode_B_Works)
-                {
-                    showModuleSelection = !showModuleSelection;
-                    moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
-                }
-
-                if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
-                {
-                    showPlayerInventory = !showPlayerInventory;
-                    playerInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerInventory);
-                }
-
-				if (miningTimer >= miningCooldown)
-				{
-					if (Input.GetKeyDown(KeyCode.F))
-					{
-						if (holdingMiningTool == true)
-						{
-							if (nearestMineral != null)
-							{
-								nearestMineral.Mine();
-								miningTimer = 0;
-							}
-						}
-					}
-				}
-
-                /****************************************************************
-                 * Inventory: This is how you add items to playerInventory
-                 * **************************************************************/
-                if (showPlayerInventory) // player is able to control inventory only when inventory is visible
-                {
-                    keyCode_B_Works = false;
-                    playerInventory.SetActive(true);
-                    playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
-                    playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 1;
-                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
-
-                    if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
+                    //Debug.Log("silence over");
+                    if (isSongPlaying == false)
                     {
-                        Item item = GameObject.Find("Mineral").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                        item = GameObject.Find("Material").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                        item = GameObject.Find("Food1").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                        playerInventory.GetComponent<Inventory>().DebugShowInventory();
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
-                    {
-                        Item item = GameObject.Find("BuildingTool").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                        item = GameObject.Find("MiningTool").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                        item = GameObject.Find("RepairingTool").GetComponent<Item>();
-                        playerInventory.GetComponent<Inventory>().AddItem(item);
-                    }
-
-                    if (Input.GetKeyDown(KeyCode.Y))
-                    {
-                        if (holdingBuildingTool == true)
-                        {
-                            Item item = GameObject.Find("BuildingTool").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                        }
-                        else if (holdingMiningTool == true)
-                        {
-                            Item item = GameObject.Find("MiningTool").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                        }
-                        else if (holdingRepairTool == true)
-                        {
-                            Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                        }
-                        holdingBuildingTool = false;
-                        holdingMiningTool = false;
-                        holdingRepairTool = false;
+                        audioController.MusicControl(1, songSelected);
+                        isSongPlaying = true;
                     }
                 }
-                else
-                {
-                    keyCode_B_Works = true;
-                    playerInventory.SetActive(true);
-                    playerInventory.GetComponent<Inventory>().GetComponent<CanvasGroup>().alpha = 0;
-                    playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
-                    ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
-                }
-                /*******************************************************************
-                 * Inventory END
-                 * *****************************************************************/
+            }
+            else if (isSongQueued == false)
+            {
+                // Debug.Log ("starting coroutine");
+                StartCoroutine(MusicTrigger());
+            }
 
-                /****************************************************************
-                * ModuleSelection
-                * **************************************************************/
-                if (showModuleSelection)
+            if (isSongPlaying == true)
+            {
+                songTimer += Time.deltaTime;
+                if (songTimer > songLength)
                 {
-                    keyCode_I_Works = false;
-                    moduleSelection.GetComponent<CanvasGroup>().alpha = 1;
-                    moduleDescription.GetComponent<CanvasGroup>().alpha = 1;
+                    audioController.MusicControl(2, songSelected);
+                    songTimer = 0;
+                    songSilenceTimer = 0;
+                    isSongPlaying = false;
+                    isSongQueued = false;
                 }
-                else
-                {
-                    keyCode_I_Works = true;
-                    moduleSelection.GetComponent<CanvasGroup>().alpha = 0;
-                    moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
-                }
-                /****************************************************************
-                 * ModuleSelection END
-                 * **************************************************************/
+            }
 
-                if (CentralControl.isInside)
+            /*** if inside in a module turn the flag on ***/
+            if (CentralControl.isInside)
+            {
+                //			if (hold repair tool)
                 {
-                    if (holdingRepairTool)
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        isRepairing = true;
+                    }
+                }
+            }
+
+            if (currentHealth <= 0)
+            {
+                isDead = true;
+            }
+
+
+
+            if (currentHealth > 0 && isDead == false)
+            {
+                if (isSleeping == false)
+                {
+                    staminaTimer += Time.deltaTime;
+                    miningTimer += Time.deltaTime;
+
+                    if (Input.GetKeyDown(KeyCode.Tab))
+                    {
+                        //TODO
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.B) && keyCode_B_Works)
+                    {
+                        showModuleSelection = !showModuleSelection;
+                        moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
+                    {
+                        showPlayerInventory = !showPlayerInventory;
+                    }
+
+                    if (miningTimer >= miningCooldown)
                     {
                         if (Input.GetKeyDown(KeyCode.F))
                         {
-                            isRepairing = true;
+                            if (holdingMiningTool == true)
+                            {
+                                if (nearestMineral != null)
+                                {
+                                    nearestMineral.Mine();
+                                    miningTimer = 0;
+                                }
+                            }
                         }
                     }
 
-
-                }
-
-                if (currentStamina <= 50)
-                {
-                    healthTimer += Time.deltaTime;
-                    if (healthTimer > 1f)
+                    /****************************************************************
+                     * Inventory: This is how you add items to playerInventory
+                     * **************************************************************/
+                    if (showPlayerInventory) // player is able to control inventory only when inventory is visible
                     {
-                        if (currentHealth > 0)
+                        keyCode_B_Works = false;
+                        playerInventory.GetComponent<CanvasGroup>().alpha = 1;
+                        playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
+                        ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
+
+                        if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
                         {
-                            StartCoroutine(CoolDownDamage());
-                            currentHealth -= healthLostPerSecond;
-                            manageHealth();
+                            Item item = GameObject.Find("Mineral").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                            item = GameObject.Find("Material").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                            item = GameObject.Find("Food1").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                            playerInventory.GetComponent<Inventory>().DebugShowInventory();
                         }
-                        health -= healthLostPerSecond;
-                        healthTimer = 0;
+
+                        if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
+                        {
+                            Item item = GameObject.Find("BuildingTool").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                            item = GameObject.Find("MiningTool").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                            item = GameObject.Find("RepairingTool").GetComponent<Item>();
+                            playerInventory.GetComponent<Inventory>().AddItem(item);
+                        }
+
+                        if (Input.GetKeyDown(KeyCode.Y))
+                        {
+                            if (holdingBuildingTool == true)
+                            {
+                                Item item = GameObject.Find("BuildingTool").GetComponent<Item>();
+                                playerInventory.GetComponent<Inventory>().AddItem(item);
+                            }
+                            else if (holdingMiningTool == true)
+                            {
+                                Item item = GameObject.Find("MiningTool").GetComponent<Item>();
+                                playerInventory.GetComponent<Inventory>().AddItem(item);
+                            }
+                            else if (holdingRepairTool == true)
+                            {
+                                Item item = GameObject.Find("RepairingTool").GetComponent<Item>();
+                                playerInventory.GetComponent<Inventory>().AddItem(item);
+                            }
+                            holdingBuildingTool = false;
+                            holdingMiningTool = false;
+                            holdingRepairTool = false;
+                        }
                     }
-                }
+                    else
+                    {
+                        keyCode_B_Works = true;
+                        playerInventory.GetComponent<CanvasGroup>().alpha = 0;
+                        playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
+                        ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
+                    }
+                    /*******************************************************************
+                     * Inventory END
+                     * *****************************************************************/
 
-				if (oxygen <= 50)
-				{
-					oxygenHealthTimer += Time.deltaTime;
-					if (oxygenHealthTimer > 1f)
-					{
-						if (currentHealth > 0)
-						{
-							StartCoroutine(CoolDownDamage());
-							currentHealth -= oxygenHealthLossAmount;
-							manageHealth();
-						} 
-						oxygenHealthTimer = 0;
-					}
-				}
+                    /****************************************************************
+                    * ModuleSelection
+                    * **************************************************************/
+                    if (showModuleSelection)
+                    {
+                        keyCode_I_Works = false;
+                        moduleSelection.GetComponent<CanvasGroup>().alpha = 1;
+                        moduleDescription.GetComponent<CanvasGroup>().alpha = 1;
+                    }
+                    else
+                    {
+                        keyCode_I_Works = true;
+                        moduleSelection.GetComponent<CanvasGroup>().alpha = 0;
+                        moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
+                    }
+                    /****************************************************************
+                     * ModuleSelection END
+                     * **************************************************************/
 
-                if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
-                {
-                    if (CentralControl.isInside == false)
+                    if (CentralControl.isInside)
+                    {
+                        if (holdingRepairTool)
+                        {
+                            if (Input.GetKeyDown(KeyCode.F))
+                            {
+                                isRepairing = true;
+                            }
+                        }
+
+
+                    }
+
+                    if (currentStamina <= 50)
                     {
                         healthTimer += Time.deltaTime;
                         if (healthTimer > 1f)
@@ -639,222 +632,232 @@ public class PlayerController : MonoBehaviour
                             if (currentHealth > 0)
                             {
                                 StartCoroutine(CoolDownDamage());
-                                currentHealth -= healthLostPerSecondNight;
+                                currentHealth -= healthLostPerSecond;
                                 manageHealth();
                             }
+                            health -= healthLostPerSecond;
                             healthTimer = 0;
                         }
                     }
-                }
 
-				if (hasEaten == true)
-				{
-					eatingTimer += Time.deltaTime;
-					if (eatingTimer >= eatingTime)
-					{
-						hasEaten = false;
-						eatingTimer = 0;
-					}
-				}
-
-                if (staminaTimer > 1f && hasEaten == false)
-                {
-                    if (currentStamina > 0)
+                    if (oxygen <= 50)
                     {
-                        StartCoroutine(CoolDownDamage());
-                        currentStamina -= staminaLostPerSecond;
-                        manageStamina();
-                    }
-
-                    stamina -= staminaLostPerSecond;
-                    staminaTimer = 0;
-                }
-
-                /*        // Mining control
-                        if ((isMining) && (miningTimer < miningSpeed))
+                        oxygenHealthTimer += Time.deltaTime;
+                        if (oxygenHealthTimer > 1f)
                         {
-                            if (playerStatus.maxMineralsHaveReached == false)
-                            miningTimer += Time.deltaTime;
+                            if (currentHealth > 0)
+                            {
+                                StartCoroutine(CoolDownDamage());
+                                currentHealth -= oxygenHealthLossAmount;
+                                manageHealth();
+                            }
+                            oxygenHealthTimer = 0;
                         }
-                        else if (miningTimer > miningSpeed)
+                    }
+
+                    if (dayNightController.currentPhase == DayNightController.DayPhase.Night)
+                    {
+                        if (CentralControl.isInside == false)
                         {
-                            miningNow = true;
-                            miningTimer = 0;
-                            isMining = false;
+                            healthTimer += Time.deltaTime;
+                            if (healthTimer > 1f)
+                            {
+                                if (currentHealth > 0)
+                                {
+                                    StartCoroutine(CoolDownDamage());
+                                    currentHealth -= healthLostPerSecondNight;
+                                    manageHealth();
+                                }
+                                healthTimer = 0;
+                            }
                         }
-                        */
-                x = y = 0.0f;
-                Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+                    }
 
+                    if (hasEaten == true)
+                    {
+                        eatingTimer += Time.deltaTime;
+                        if (eatingTimer >= eatingTime)
+                        {
+                            hasEaten = false;
+                            eatingTimer = 0;
+                        }
+                    }
 
-                if (showPlayerInventory || showModuleSelection)
-                {
-                    if (Input.GetKey(KeyCode.A))
+                    if (staminaTimer > 1f && hasEaten == false)
                     {
-                        x = -1.0f;
-						y = 0f;
-                    }
-                    else if (Input.GetKey(KeyCode.D))
-                    {
-                        x = 1.0f;
-						y = 0f;
-                    }
-                    if (Input.GetKey(KeyCode.W))
-                    {
-                        y = 1.0f;
-						x = 0f;
-                    }
-                    else if (Input.GetKey(KeyCode.S))
-                    {
-                        y = -1.0f;
-						x = 0f;
-                    }
-                }
-                else
-                {
-					if (Input.GetKey(KeyCode.A))
-					{
-						x = -1.0f;
-						y = 0f;
-					}
-					else if (Input.GetKey(KeyCode.D))
-					{
-						x = 1.0f;
-						y = 0f;
-					}
-					if (Input.GetKey(KeyCode.W))
-					{
-						y = 1.0f;
-						x = 0f;
-					}
-					else if (Input.GetKey(KeyCode.S))
-					{
-						y = -1.0f;
-						x = 0f;
-					}
-					/*
-                    x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-                    y = Input.GetAxisRaw("Vertical");*/
-                }
+                        if (currentStamina > 0)
+                        {
+                            StartCoroutine(CoolDownDamage());
+                            currentStamina -= staminaLostPerSecond;
+                            manageStamina();
+                        }
 
-                if (ModuleControl.ShowModuleControl)
-                {
+                        stamina -= staminaLostPerSecond;
+                        staminaTimer = 0;
+                    }
+
+                    /*        // Mining control
+                            if ((isMining) && (miningTimer < miningSpeed))
+                            {
+                                if (playerStatus.maxMineralsHaveReached == false)
+                                miningTimer += Time.deltaTime;
+                            }
+                            else if (miningTimer > miningSpeed)
+                            {
+                                miningNow = true;
+                                miningTimer = 0;
+                                isMining = false;
+                            }
+                            */
                     x = y = 0.0f;
-                }
-
-                if (EnhancedRadar.showEnhancedRadar)
-                {
-                    x = y = 0.0f;
-                    enhancedRadarCamera.GetComponent<Camera>().fieldOfView = Mathf.Abs(Input.GetAxis("Horizontal")) * 28 + 148.0f; // 179 = max value of field view
-                }
-
-                direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-				//rigidbody2D.AddForce(direction * speed);
-                //rigidbody2D.velocity = direction * speed;   // speed is changable by us
-				rigidbody2D.AddForce(direction * 8f);
-
-				if (rigidbody2D.velocity.magnitude < .01f)
-				{
-					rigidbody2D.velocity = Vector2.zero;
-				}
-				Debug.Log (rigidbody2D.velocity);
-				Debug.Log (rigidbody2D.velocity.magnitude);
+                    Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 
 
+                    if (showPlayerInventory || showModuleSelection)
+                    {
+                        if (Input.GetKey(KeyCode.A))
+                        {
+                            x = -1.0f;
+							y = 0;
+                        }
+                        else if (Input.GetKey(KeyCode.D))
+                        {
+                            x = 1.0f;
+							y = 0;
+                        }
+                        if (Input.GetKey(KeyCode.W))
+                        {
+                            y = 1.0f;
+                        }
+                        else if (Input.GetKey(KeyCode.S))
+                        {
+                            y = -1.0f;
+                        }
+                    }
+                    else
+                    {
+                        x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+                        y = Input.GetAxisRaw("Vertical");
+                    }
 
-                //using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-                if (rigidbody2D.velocity.y > 0.01f && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
-                {
-					if (rigidbody2D.velocity.x > 0.5f)
+                    if (ModuleControl.ShowModuleControl)
+                    {
+                        x = y = 0.0f;
+                    }
+
+                    if (EnhancedRadar.showEnhancedRadar)
+                    {
+                        x = y = 0.0f;
+                        enhancedRadarCamera.GetComponent<Camera>().fieldOfView = Mathf.Abs(Input.GetAxis("Horizontal")) * 28 + 148.0f; // 179 = max value of field view
+                    }
+
+					direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+					//rigidbody2D.AddForce(direction * speed);
+					//rigidbody2D.velocity = direction * speed;   // speed is changable by us
+					rigidbody2D.AddForce(direction * 8f);
+					
+					if (rigidbody2D.velocity.magnitude < .01f)
+					{
+						rigidbody2D.velocity = Vector2.zero;
+					}
+					Debug.Log (rigidbody2D.velocity);
+					Debug.Log (rigidbody2D.velocity.magnitude);
+					
+					
+					
+					//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
+					if (rigidbody2D.velocity.y > 0.01f && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
+					{
+						if (rigidbody2D.velocity.x > 0.5f)
+						{
+							AnimateFrames(3);
+						}
+						else if (rigidbody2D.velocity.x < -0.5f)
+						{
+							AnimateFrames(2);
+						}
+						else
+						{
+							AnimateFrames(1);
+						}
+						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
+					}
+					else if (rigidbody2D.velocity.y < -.01f && rigidbody2D.velocity.magnitude > 0.01f)	// y < 0
+					{
+						if (rigidbody2D.velocity.x > 0.5f)
+						{
+							AnimateFrames(3);
+						}
+						else if (rigidbody2D.velocity.x < -0.5f)
+						{
+							AnimateFrames(2);
+						}
+						else
+						{
+							AnimateFrames(0);
+						}
+						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+					}
+					else if (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x > 0
 					{
 						AnimateFrames(3);
+						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
 					}
-					else if (rigidbody2D.velocity.x < -0.5f)
+					else if (rigidbody2D.velocity.x < 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x < 0
 					{
 						AnimateFrames(2);
+						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
 					}
-					else
-					{
-                    	AnimateFrames(1);
-					}
-                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
                 }
-				else if (rigidbody2D.velocity.y < -.01f && rigidbody2D.velocity.magnitude > 0.01f)	// y < 0
+
+                if (canSleep == true)
                 {
-					if (rigidbody2D.velocity.x > 0.5f)
-					{
-						AnimateFrames(3);
-					}
-					else if (rigidbody2D.velocity.x < -0.5f)
-					{
-						AnimateFrames(2);
-					}
-					else
-					{
-                    	AnimateFrames(0);
-					}
-                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        isSleeping = true;
+                        sleepTexture.enabled = true;
+                    }
                 }
-				else if (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x > 0
-				{
-                    AnimateFrames(3);
-                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+
+                if (isSleeping == true && slept == false)
+                {
+                    sleepTimer += Time.deltaTime;
+                    if (sleepTimer > sleepFadeOutLength)
+                    {
+                        Sleep();
+                        slept = true;
+                    }
+                    tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
+                    sleepTexture.color = tempColor;
                 }
-				else if (rigidbody2D.velocity.x < 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x < 0
-				{
-                    AnimateFrames(2);
-                    this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
+                else if (isSleeping == true && slept == true)
+                {
+                    sleepTimer -= Time.deltaTime;
+                    if (sleepTimer < 0f)
+                    {
+                        isSleeping = false;
+                        slept = false;
+                    }
+                    tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
+                    sleepTexture.color = tempColor;
+                }
+                else if (isSleeping == false)
+                {
+                    sleepTexture.enabled = false;
+                    sleepTexture.color = originalColor;
                 }
             }
 
-
-            if (canSleep == true)
+            if (isDead == true)
             {
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    isSleeping = true;
-                    sleepTexture.enabled = true;
-                }
-            }
-
-            if (isSleeping == true && slept == false)
-            {
-                sleepTimer += Time.deltaTime;
-                if (sleepTimer > sleepFadeOutLength)
-                {
-                    Sleep();
-                    slept = true;
-                }
-                tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
+                sleepTexture.enabled = true;
+                deadTimer += Time.deltaTime;
+                tempColor = Color.Lerp(Color.clear, Color.black, deadTimer);
                 sleepTexture.color = tempColor;
-            }
-            else if (isSleeping == true && slept == true)
-            {
-                sleepTimer -= Time.deltaTime;
-                if (sleepTimer < 0f)
+                if (deadTimer > deadLength)
                 {
-                    isSleeping = false;
-                    slept = false;
+                    Application.LoadLevel(0);
                 }
-                tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
-                sleepTexture.color = tempColor;
-            }
-            else if (isSleeping == false)
-            {
-                sleepTexture.enabled = false;
-                sleepTexture.color = originalColor;
-            }
-        }
-
-        if (isDead == true)
-        {
-            sleepTexture.enabled = true;
-            deadTimer += Time.deltaTime;
-            tempColor = Color.Lerp(Color.clear, Color.black, deadTimer);
-            sleepTexture.color = tempColor;
-            if (deadTimer > deadLength)
-            {
-                Application.LoadLevel(0);
             }
         }
     }
@@ -1216,5 +1219,15 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(3f);
         }
         yield return new WaitForSeconds(30f);
+    }
+
+    void Quit()
+    {
+        Application.Quit();
+    }
+
+    void Continue()
+    {
+        pauseFlag = false;
     }
 }
