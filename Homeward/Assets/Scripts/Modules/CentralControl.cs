@@ -202,7 +202,7 @@ public class CentralControl : MonoBehaviour {
 			foreach (GameObject connection in locals[front].GetComponent<LocalControl>().connections) {
                 if (connection.tag == "HabitatModule")
                 {
-                    Debug.Log(locals[front]);
+                    //Debug.Log(locals[front]);
                     if (!isBroken)
                     {
                         powerInGeneral += 1;

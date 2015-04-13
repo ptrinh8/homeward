@@ -1,9 +1,13 @@
-﻿using UnityEngine;
+﻿// ==================================================================================
+// <file="TriggerC.cs" product="Homeward">
+// <date>02-12-2014</date>
+// ==================================================================================
+
+using UnityEngine;
 using System.Collections;
 
 public class PCG_TriggerC : MonoBehaviour 
 {
-
     [HideInInspector]
     public bool playerInsideCircleTriggerA2 = false;
     [HideInInspector]
@@ -11,16 +15,7 @@ public class PCG_TriggerC : MonoBehaviour
 
     private bool doOnce = false;
 
-    void Start()
-    {
-
-        playerInsideCircleTriggerA2 = false;
-    }
-
-    void Update()
-    {
-
-    }
+    void Start() { playerInsideCircleTriggerA2 = false; }
 
     void OnTriggerEnter2D(Collider2D other)
     {
