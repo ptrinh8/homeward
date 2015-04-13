@@ -311,7 +311,7 @@ public class Inventory : MonoBehaviour {
 
     public void ClearSlot(ItemName itemName)
     {
-		Debug.Log (itemName);
+		//Debug.Log (itemName);
         if (IsEmpty)
         {
             Debug.Log("This Inventory is Empty");

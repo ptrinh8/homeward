@@ -18,7 +18,7 @@ public class Bed : MonoBehaviour {
 	{
 		if (collision.gameObject.name == "MainPlayer")
 		{
-			Debug.Log ("playerhere");
+			//Debug.Log ("playerhere");
 			player = collision.gameObject.GetComponent<PlayerController>();
 			player.canSleep = true;
 		}
@@ -28,7 +28,7 @@ public class Bed : MonoBehaviour {
 	{
 		if (collision.gameObject.name == "MainPlayer")
 		{
-			Debug.Log ("playerleft");
+			//Debug.Log ("playerleft");
 			player = collision.gameObject.GetComponent<PlayerController>();
 			player.canSleep = false;
 		}
