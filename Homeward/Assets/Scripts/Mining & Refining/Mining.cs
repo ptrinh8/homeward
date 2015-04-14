@@ -228,34 +228,36 @@ public class Mining : MonoBehaviour
     {
         if (goingUp)
         {
-            if (0.25f < GetNormalizedPosition() && GetNormalizedPosition() <= 0.5f)
+            if (GetNormalizedPosition() <= 0.5f)
             {
+				accel += 0.01f;
                 addition += accel;
             }
-            else if (0.5f < GetNormalizedPosition() && GetNormalizedPosition() < 0.75f)
+            else if (0.5f < GetNormalizedPosition())
             {
-                if (addition > accel) { addition -= accel; }
-            }
-            else
-            {
-                addition = 1.0f;
+                if (addition > accel) 
+				{ 
+					accel -= 0.01f;
+					addition -= accel; 
+				}
             }
 
             miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
         }
         else
         {
-            if (0.25f < GetNormalizedPosition() && GetNormalizedPosition() <= 0.5f)
+            if (GetNormalizedPosition() <= 0.5f)
             {
-                if (addition > accel) { addition -= accel; }
+                if (addition > accel) 
+				{ 
+					accel -= 0.01f;
+					addition -= accel; 
+				}
             }
-            else if (0.5f < GetNormalizedPosition() && GetNormalizedPosition() < 0.75f)
+            else if (0.5f < GetNormalizedPosition())
             {
+				accel += 0.01f;
                 addition += accel;
-            }
-            else
-            {
-                addition = 1.0f;
             }
 
             miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
@@ -264,10 +266,14 @@ public class Mining : MonoBehaviour
         if (GetNormalizedPosition() < 0)
         {
             goingUp = true;
+			addition = 1.0f;
+			accel = 0.2f;
         }
         else if (GetNormalizedPosition() > 1)
         {
             goingUp = false;
+			addition = 1.0f;
+			accel = 0.2f;
         }
     }
 }

@@ -760,8 +760,8 @@ public class PlayerController : MonoBehaviour
 					{
 						rigidbody2D.velocity = Vector2.zero;
 					}
-					Debug.Log (rigidbody2D.velocity);
-					Debug.Log (rigidbody2D.velocity.magnitude);
+					//Debug.Log (rigidbody2D.velocity);
+					//Debug.Log (rigidbody2D.velocity.magnitude);
 					
 					
 					
