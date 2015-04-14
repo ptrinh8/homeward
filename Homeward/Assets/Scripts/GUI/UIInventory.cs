@@ -337,6 +337,10 @@ public class UIInventory : MonoBehaviour
 							{
 								player.FoodEaten();
 							}
+							else if (nonItemTool.itemName == ItemName.Oxygen)
+							{
+								player.OxygenTaken();
+							}
 						}
 
 

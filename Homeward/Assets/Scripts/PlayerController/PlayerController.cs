@@ -546,6 +546,8 @@ public class PlayerController : MonoBehaviour
                             playerInventory.GetComponent<Inventory>().AddItem(item);
                             item = GameObject.Find("Food1").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Oxygen").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
                             playerInventory.GetComponent<Inventory>().DebugShowInventory();
                         }
 
@@ -1189,6 +1191,11 @@ public class PlayerController : MonoBehaviour
 	{
 		eatingTimer = 0;
 		hasEaten = true;
+	}
+
+	public void OxygenTaken()
+	{
+		oxygen += 10f;
 	}
 
     IEnumerator CoolDownDamage()
