@@ -11,41 +11,63 @@ using System.Collections;
 
 #endregion
 
-[System.Serializable]
-public class Item 
+public enum ItemName
 {
-	public enum ItemType 
-    {
-		Consumable,
-		Mineral
-	}
+    MiningTool,
+    RepairingTool,
+    BuildingTool,
+    Mineral,
+    Water,
+    Food1,
+    Food2,
+    Food3,
+    Material,
+    Oxygen,
+	MiningToolEquipped,
+	BuildingToolEquipped,
+	RepairingToolEquipped
+}
 
+[System.Serializable]
+public class Item : MonoBehaviour
+{
     // Attributes
-	public string itemName;
-	public int itemID;
-	public string itemDescription;
-	public ItemType itemType;
-	public Texture2D itemIcon;
-	public GameObject itemObject;
-	
-	public Item(string itemName, int itemID, string itemDescription, ItemType itemType, Texture2D itemIcon, GameObject itemObject)
-	{
-		this.itemName = itemName;
-		this.itemID = itemID;
-		this.itemDescription = itemDescription;
-		this.itemType = itemType;
-		this.itemIcon = itemIcon;
-		this.itemObject = itemObject;
-	}
+    public ItemName itemName;
+    public string itemDescription;
+    public Sprite spriteNeutral;
+    public Sprite spriteHighLighted;
+    public int maxSize;
 
-	public Item()
-	{
-		this.itemID = 0;
-	}
-
-	public Item(ItemType itemType)
-	{
-		this.itemID = 0;
-		this.itemType = itemType;
-	}
+    public void Use()
+    {
+        switch (itemName)
+        {
+            case ItemName.Food1:
+                break;
+            case ItemName.Food2:
+                break;
+            case ItemName.Food3:
+                break;
+            case ItemName.Water:
+                break;
+            case ItemName.Mineral:
+                break;
+            case ItemName.MiningTool:
+                break;
+            case ItemName.BuildingTool:
+                break;
+            case ItemName.Material:
+                break;
+            case ItemName.RepairingTool:
+                //PlayerController.holdingRepairTool = true;
+                //Debug.Log("RepairingTool Equiped");
+                break;
+			case ItemName.BuildingToolEquipped:
+				break;
+			case ItemName.RepairingToolEquipped:
+				break;
+			case ItemName.MiningToolEquipped:
+				break;
+        }
+    }
 }

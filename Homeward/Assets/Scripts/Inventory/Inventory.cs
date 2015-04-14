@@ -1,245 +1,406 @@
-﻿// ==================================================================================
-// <file="Inventory.cs" product="Homeward">
-// <date>2014-11-11</date>
-// <summary>Contains a base, abstract class for Inventory Management</summary>
-// ==================================================================================
+﻿/****
+ * it is dangerous to use emptySlots if you are accessing directly to slot in Slot.cs
+ * */
 
-#region Header Files
 
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-#endregion
+public class Inventory : MonoBehaviour {
+    
+    private KeyCode invKey = KeyCode.I;
 
-public class Inventory : MonoBehaviour 
-{
-	[HideInInspector]
-	public bool showInventory; 
-	private KeyCode invKey = KeyCode.I; 
-	private int itemsSlotsSize = 50; 
-	private int itemsSlotsPadding = 12; 
-	private int backpackRowsCount = 3; 
-	private int backpackColsCount = 3; 
-	private Rect inventorySize = new Rect(100, 100, 0, 0); // Used to add bground to backpack, in consideration with values of rows & cols.
+    public RectTransform inventoryRect;
 
-	public GUISkin GUIskin; 
-	private List<Item> inventory = new List<Item>(); // Holds player's items
-	private ItemDatabase database; // Stores items in DB
-	private bool showInventoryItemDetails; // Each item information
-	private string inventoryItemDetailsText; // Item information text
-	private bool isItemBeingDragged; 
-	private Item thisItemIsBeingDragged; 
+    private float inventoryWidth, inventoryHeight;
 
-	// Coordinate of the click to be able to draw the sprite at the correct off-set to the mouse
-    private Vector2 mouseDragCoordinates;
-	
-	void Start () 
+    public int slots; // set in inspector
+
+    public int rows;
+
+	[HideInInspector] public int columns;
+
+    public float slotPaddingLeft, slotPaddingTop;
+
+    public float slotSize;
+
+    public GameObject slotPrefab;
+
+    public List<GameObject> allSlots;
+
+    public GameObject iconPrefab; // icon to follow the cursor
+
+    private static GameObject hoverObject;
+
+    private Canvas canvas;
+
+    private float hoverYOffset;
+
+    private EventSystem eventSystem;
+
+    private int emptySlots;
+
+	private bool isEmpty;
+
+    public int EmptySlots
     {
-		// Loop to add an inventory slot for each slot based on the result of XxY
-        for (int i = 0; i < (backpackRowsCount * backpackColsCount); i++)
-        {
-            inventory.Add(new Item());
-        }
-
-        GUIskin = Resources.Load<GUISkin>("InvGUIskin");
-		showInventory = false;
-
-        // Set DB instance = DB.component
-		database = GameObject.Find("Item Database").GetComponent<ItemDatabase>();
-
-		// Add items with following IDs
-		AddItem (0);
-		AddItem (1);
-		AddItem (2);
-        AddItem (3);
-     //   AddItem (4);
-	}
-
-	void Update()
-	{
-		if (Input.GetKeyDown(invKey))
-			showInventory = !showInventory;
-
-     //   Debug.Log("YAYYYYY! intValue = "  + intValue);
-	}
-
-	void OnGUI()
-	{
-		GUI.skin = GUIskin;
-
-		// Set item information as blank
-		inventoryItemDetailsText = "";
-
-        // is inventory visible?
-		if (showInventory)
-		{
-			DrawInventory();
-            
-            // is mouse on item?, which makes showInventoryItemDetails = true
-			if (showInventoryItemDetails)
-				DrawItemDetails();
-            
-            // is item being dragged? make icon follow mouse
-			if (isItemBeingDragged)
-				GUI.DrawTexture(new Rect(Event.current.mousePosition.x - mouseDragCoordinates.x, Event.current.mousePosition.y 
-                - mouseDragCoordinates.y, itemsSlotsSize, itemsSlotsSize), thisItemIsBeingDragged.itemIcon);
-		}
-
-		else if (isItemBeingDragged)
-		{
-			isItemBeingDragged = false;
-			thisItemIsBeingDragged = null;
-		}
-	}
-
-	void DrawInventory()
-	{
-		int i = 0;
-
-		// Calculate size of inventory window
-        inventorySize.width = (itemsSlotsSize + itemsSlotsPadding) * backpackColsCount + itemsSlotsPadding;
-        inventorySize.height = (itemsSlotsSize + itemsSlotsPadding) * backpackRowsCount + itemsSlotsPadding;
-
-		// Draw background
-		GUI.Box(inventorySize, "", GUIskin.GetStyle("Inventory Background"));
-
-		// Current GUI input event stored in an Event variable
-		Event currentGUIevent = Event.current;
-
-		// Position and size of each item slot saved in a temp variable used for drawing the slots
-        Rect slotRect = new Rect(inventorySize.x, inventorySize.y, itemsSlotsSize, itemsSlotsSize);
-		
-        for (int y = 0; y < backpackRowsCount; y++)
-		{
-            for (int x = 0; x < backpackColsCount; x++)
-			{
-				// Modify slotRect based on the position of the inventory window and the current item the loop is on
-				slotRect.x = itemsSlotsPadding + inventorySize.x + x * (itemsSlotsSize + itemsSlotsPadding); // column position
-				slotRect.y = itemsSlotsPadding + inventorySize.y + y * (itemsSlotsSize + itemsSlotsPadding); // row position
-
-				Item item = inventory[i];
-
-				GUI.Box(slotRect, "", GUIskin.GetStyle("Box"));
-                
-                // Does slot have a name in it?
-				if (item.itemName != null)
-				{
-					// Yes, draw the icon
-                    if (item.itemIcon != null)
-                    {
-                        GUI.DrawTexture(slotRect, item.itemIcon);
-                    }
-
-					// Is mouse position within the slot?
-					if (slotRect.Contains(Event.current.mousePosition))
-					{
-                        // Is left-click pressed? also, is item not being dragged?
-                        if (currentGUIevent.isMouse && currentGUIevent.button == 0 && currentGUIevent.type == EventType.mouseDown && !isItemBeingDragged)
-						{
-                            // Start dragging
-                            mouseDragCoordinates = GetIconCoordDifference(currentGUIevent.mousePosition, slotRect);
-							isItemBeingDragged = true;
-							thisItemIsBeingDragged = item;
-							inventory[i] = new Item();
-						}
-
-                        // Is no button pressed while item being dragged?
-                        if (currentGUIevent.isMouse && currentGUIevent.type == EventType.mouseUp && isItemBeingDragged)
-						{
-                            // Replace items
-							Item tempItem = item;
-							inventory[i] = thisItemIsBeingDragged;
-							thisItemIsBeingDragged = tempItem;
-						}
-
-                        // Is item being dragged?
-						if (!isItemBeingDragged)
-						{
-                            // No. Show item information
-							inventoryItemDetailsText = CreateItemDetails(item);
-							showInventoryItemDetails = true;
-						}
-					} 
-					// If item information text = "", show nothing
-					if (inventoryItemDetailsText == "")
-						showInventoryItemDetails = false;
-				}
-
-				else 
-				{
-                    // Is no button pressed while item being dragged?
-                    if (currentGUIevent.isMouse && currentGUIevent.type == EventType.mouseUp && isItemBeingDragged)
-					{
-						// If on top of a slot
-                        if (slotRect.Contains(currentGUIevent.mousePosition))
-						{
-							inventory[i] = thisItemIsBeingDragged;
-							isItemBeingDragged = false;
-							thisItemIsBeingDragged = null;
-						}
-					}
-				}
-
-				i++;
-			}
-		}
-
-		// Discard Item
-		Rect trashcan = new Rect(inventorySize.x + inventorySize.width - 170, inventorySize.y + inventorySize.height - 4, 140, 30);
-		GUI.Box (trashcan,"Discard Item", GUIskin.GetStyle("Inventory Empty Slot"));
-        if (isItemBeingDragged && currentGUIevent.type == EventType.mouseUp && trashcan.Contains(currentGUIevent.mousePosition)) 
-		{
-			thisItemIsBeingDragged = null;
-			isItemBeingDragged = false;
-		}
-
-        Rect inventoryHeader = new Rect(inventorySize.x + inventorySize.width - 209, inventorySize.y + inventorySize.height - 233, 220, 40);
-        GUI.Label(inventoryHeader, "Astronaut's Backpack ", GUIskin.GetStyle("Inventory Empty Slot"));
-	}
-
-	protected Vector2 GetIconCoordDifference(Vector2 m, Rect s)
-	{
-		Vector2 diff = new Vector2 (m.x - s.x, m.y - s.y);
-		return diff;
-	}
-
-	private void DrawItemDetails()
-	{
-		float tooltipHeight = GUIskin.GetStyle("Inventory Tooltip").CalcHeight(new GUIContent(inventoryItemDetailsText), 200);
-		GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 200, tooltipHeight), inventoryItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
-	}
-
-    private string CreateItemDetails(Item item)
-    {
-        inventoryItemDetailsText = "";
-        inventoryItemDetailsText += "<color=#b8c7ff><b>" + item.itemName + "</b></color>\n\n" + item.itemDescription + "";
-
-        return inventoryItemDetailsText;
+        get { return emptySlots; }
+        set { emptySlots = value; }
     }
 
-	// Add items from DB to player's inventory
-    public void AddItem(int itemID)
+    public bool IsEmpty
     {
-        for (int i = 0; i < database.items.Count; i++)
+        get { return isEmpty; }
+    }
+
+    public bool IsFull
+    {
+        get { return emptySlots == 0; }
+    }
+
+	void Start () 
+    {
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        eventSystem = GameObject.Find("EventSystem").GetComponent<EventSystem>();
+
+        createLayout();
+
+        foreach (GameObject slot in allSlots)
         {
-            if (itemID == database.items[i].itemID)
+            slot.AddComponent<CanvasGroup>();
+        }
+	}
+
+    void createLayout()
+    {
+        allSlots = new List<GameObject>();
+
+        hoverYOffset = slotSize * 0.01f;
+
+        emptySlots = slots;
+
+        inventoryWidth = (slots / rows) * (slotSize + slotPaddingLeft) + slotPaddingLeft;
+        inventoryHeight = rows * (slotSize + slotPaddingTop) + slotPaddingTop;
+
+        inventoryRect = GetComponent<RectTransform>();
+        inventoryRect.localScale = new Vector3(1, 1, 1);
+        inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, inventoryWidth);
+        inventoryRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, inventoryHeight);
+
+        columns = slots / rows;
+
+        
+
+        for (int y = 0; y < rows; y++)
+        {
+            for (int x = 0; x < columns; x++)
             {
-                for (int j = 0; j < inventory.Count; j++)
+                GameObject newSlot = Instantiate(slotPrefab) as GameObject;
+
+                RectTransform slotRect = newSlot.GetComponent<RectTransform>();
+
+                newSlot.name = "Slot";
+                newSlot.transform.SetParent(this.transform.parent);
+                newSlot.transform.localScale = new Vector3(1, 1, 1);
+
+                slotRect.localPosition = inventoryRect.localPosition + new Vector3(slotPaddingLeft * (x + 1) + (slotSize * x), -slotPaddingTop * (y + 1) - (slotSize * y));
+                slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotSize);
+                slotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotSize);
+
+                allSlots.Add(newSlot);
+            }
+        }
+    }
+
+    
+
+    
+    
+    
+    
+    
+    /*****************************************************************************************************************/
+	void Update () 
+    {
+		if (CheckIfEmpty() == true)
+		{
+			isEmpty = true;
+		}
+		else
+		{
+			isEmpty = false;
+		}
+	}
+    /*******************************************************************************************************************/
+
+
+
+
+
+
+   
+    public bool AddItem(Item item)
+    {
+        if (item.maxSize == 1)
+        {
+            PlaceEmpty(item);
+            return true;
+        }
+        else
+        {
+            if (allSlots == null)
+            {
+                return false;
+            }
+
+            foreach (GameObject slot in allSlots)
+			{
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty)
                 {
-                    if (inventory[j].itemName == null)
+                    if (tmp.CurrentItem.itemName == item.itemName && tmp.IsAvailable)
                     {
-                        inventory[j] = database.items[i];
-                        break;
+                        tmp.AddItem(item);
+                        return true;
                     }
+                    //else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
+                    //{
+                    //    return false;
+                    //}
+                }
+            }
+
+            if (emptySlots > 0)
+            {
+                PlaceEmpty(item);
+				return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool PlaceEmpty(Item item)
+    {
+        if (emptySlots > 0)
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (tmp.IsEmpty)
+                {
+                    tmp.AddItem(item);
+                    emptySlots--;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    
+
+    public void SetSlotsActive(bool show)
+    {
+        int i;
+        if (show)
+        {
+            i = 1;
+        }
+        else
+        {
+            i = 0;
+        }
+
+        if (allSlots != null)
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                slot.GetComponent<CanvasGroup>().alpha = i;
+            }
+        }
+    }
+
+
+    /*******************************************************************************************
+     * Take care of the condition where this function returns empty item
+     * *****************************************************************************************/
+    public Item GetItem(ItemName itemName)
+    {
+        if (allSlots == null)
+        {
+            Debug.LogError("Inventory.cs: allSlots is null");
+            return null;
+        }
+        else if (allSlots.Count == 0)
+        {
+            Debug.Log("Inventory.cs: there is no slot in this inventory");
+        }
+        else 
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty)
+                {
+                    if (tmp.CurrentItem.itemName == itemName)
+                    {
+                        Item item = tmp.GetItem();
+
+                        if (tmp.IsEmpty)
+                        {
+                            emptySlots++;
+                        }
+
+                        return item;
+                    }
+                    
+                }
+            }
+        }
+
+        Debug.LogError("Inventory.cs: Underflow - GetItem() is called when there is nothing to return.");
+        return null;
+    }
+
+	public Item CheckItem(ItemName itemName)
+	{
+		if (allSlots == null)
+		{
+			Debug.LogError("Inventory.cs: allSlots is null");
+			return null;
+		}
+		else if (allSlots.Count == 0)
+		{
+			Debug.Log("Inventory.cs: there is no slot in this inventory");
+		}
+		else 
+		{
+			foreach (GameObject slot in allSlots)
+			{
+				Slot tmp = slot.GetComponent<Slot>();
+				
+				if (!tmp.IsEmpty)
+				{
+					if (tmp.CurrentItem.itemName == itemName)
+					{
+						Item item = tmp.CheckItem();
+						
+						if (tmp.IsEmpty)
+						{
+							emptySlots++;
+						}
+						
+						return item;
+					}
+					
+				}
+			}
+		}
+		
+		Debug.LogError("Inventory.cs: Underflow - GetItem() is called when there is nothing to return.");
+		return null;
+	}
+
+    /******************************************************************************************
+     * Debug
+     * ***************************************************************************************/
+    public void DebugShowInventory()
+    {
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+        }
+        else
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Debug.Log("Num occupied slots = " + (slots - emptySlots));
+
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if(!tmp.IsEmpty)
+                {
+					Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
                 }
             }
         }
     }
 
-    public void changeIntValue(int intValue)
+    public void ClearSlot(ItemName itemName)
     {
-        intValue = 10;
-    }
-}
+		//Debug.Log (itemName);
+        if (IsEmpty)
+        {
+            Debug.Log("This Inventory is Empty");
+        }
+        else
+        {
 
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (!tmp.IsEmpty && itemName == tmp.CurrentItem.itemName)
+                {
+                    tmp.ClearSlot();
+                }
+            }
+        }
+    }
+
+    public int CountItems(ItemName itemName)
+    {
+		int itemCount = 0;
+        if (isEmpty == true)
+        {
+            Debug.Log("This Inventory is Empty");
+            return 0;
+        }
+        else
+        {
+            foreach (GameObject slot in allSlots)
+            {
+                Slot tmp = slot.GetComponent<Slot>();
+
+                if (tmp != null)
+                {
+                    if (!tmp.IsEmpty && itemName == tmp.GetCurrentItem().itemName)
+                    {
+                        //Debug.Log(tmp.CurrentItem.itemName + ": " + tmp.Items.Count);
+                        //return tmp.Items.Count;
+						itemCount += tmp.Items.Count;
+                    }
+                }
+            }
+			return itemCount;
+        }
+    }
+
+	private bool CheckIfEmpty()
+	{
+		foreach (GameObject slot in allSlots)
+		{
+			Slot tmp = slot.GetComponent<Slot>();
+			
+			if (!tmp.IsEmpty)
+			{
+				return false;
+				//isEmpty = false;
+			}
+		}
+		return true;
+	}
+
+
+
+
+
+}
