@@ -247,9 +247,12 @@ public class PlayerController : MonoBehaviour
 		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
 	}
 
+    GameObject miningProbe;
 
     void Start()
     {
+        miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
+
         pauseFlag = false;
 
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
