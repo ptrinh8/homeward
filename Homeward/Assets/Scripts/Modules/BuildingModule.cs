@@ -91,10 +91,15 @@ public class BuildingModule : MonoBehaviour
                 if (!addRefinedMineralOnce)
                 {
                     addRefinedMineralOnce = true;
-                    Item item = GameObject.Find("Oxygen").GetComponent<Item>();
+                    Item item = GameObject.Find("Wire").GetComponent<Item>();
                     moduleInventory.GetComponent<Inventory>().AddItem(item);
+					item = GameObject.Find("Metal").GetComponent<Item>();
+					moduleInventory.GetComponent<Inventory>().AddItem(item);
+					item = GameObject.Find("Screw").GetComponent<Item>();
+					moduleInventory.GetComponent<Inventory>().AddItem(item);
                     moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                     moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
                     timerReached = false;
                 }
             }
@@ -169,12 +174,12 @@ public class BuildingModule : MonoBehaviour
 
         
 
-        if (mineralCount >= 2)
+        if (mineralCount >= 3)
         {
             RefiningProcess(refineryModuleSpriteRenderer);
         }
 
-		if (mineralCount >= 2)
+		if (mineralCount >= 3)
 		{
 			if (refineryStarted == false)
 			{
@@ -195,7 +200,12 @@ public class BuildingModule : MonoBehaviour
         if (!addRefinedMineralOnce)
         {
             addRefinedMineralOnce = true;
-            Item item = GameObject.Find("Oxygen").GetComponent<Item>();
+			Item item = GameObject.Find("Wire").GetComponent<Item>();
+			moduleInventory.GetComponent<Inventory>().AddItem(item);
+			item = GameObject.Find("Metal").GetComponent<Item>();
+			moduleInventory.GetComponent<Inventory>().AddItem(item);
+			item = GameObject.Find("Screw").GetComponent<Item>();
+			moduleInventory.GetComponent<Inventory>().AddItem(item);
             moduleInventory.GetComponent<Inventory>().AddItem(item);
             //mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
             moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
@@ -247,9 +257,14 @@ public class BuildingModule : MonoBehaviour
                 {
                     if ( moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
                     {
-                    Item item = GameObject.Find("Oxygen").GetComponent<Item>();
-                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-                    other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+						Item item = GameObject.Find("Wire").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Metal").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Screw").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+	                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+	                    other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
                     }
 
                 }

@@ -542,13 +542,6 @@ public class PlayerController : MonoBehaviour
                         {
                             Item item = GameObject.Find("Mineral").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
-                            item = GameObject.Find("Material").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                            item = GameObject.Find("Food1").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-							item = GameObject.Find("Oxygen").GetComponent<Item>();
-							playerInventory.GetComponent<Inventory>().AddItem(item);
-                            playerInventory.GetComponent<Inventory>().DebugShowInventory();
                         }
 
                         if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
@@ -560,6 +553,22 @@ public class PlayerController : MonoBehaviour
                             item = GameObject.Find("RepairingTool").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
                         }
+
+						if (Input.GetKeyDown(KeyCode.L))
+						{
+							Item item = GameObject.Find("Material").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						if (Input.GetKeyDown(KeyCode.K))
+						{
+							Item item = GameObject.Find("Food1").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						if (Input.GetKeyDown(KeyCode.J))
+						{
+							Item item = GameObject.Find("Oxygen").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
 
                         if (Input.GetKeyDown(KeyCode.Y))
                         {
@@ -1196,6 +1205,33 @@ public class PlayerController : MonoBehaviour
 	public void OxygenTaken()
 	{
 		oxygen += 10f;
+	}
+
+	public bool MiningToolCheck()
+	{
+		if (holdingMiningTool == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public bool BuildingToolCheck()
+	{
+		if (holdingBuildingTool == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public bool RepairingToolCheck()
+	{
+		if (holdingRepairTool == true)
+		{
+			return true;
+		}
+		return false;
 	}
 
     IEnumerator CoolDownDamage()

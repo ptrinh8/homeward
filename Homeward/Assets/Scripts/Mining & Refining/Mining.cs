@@ -162,7 +162,7 @@ public class Mining : MonoBehaviour
             MineSupportFunction(2);
             randomMineralsQuantity -= 2;
         }
-        else if ((0.3f < GetNormalizedPosition() && miningBarImage.fillAmount < 0.4999f) || (0.5001f < GetNormalizedPosition() && GetNormalizedPosition() < 0.7f))
+        else if ((0.3f < GetNormalizedPosition() && GetNormalizedPosition() < 0.4999f) || (0.5001f < GetNormalizedPosition() && GetNormalizedPosition() < 0.7f))
         {
             Debug.Log("Nice!");
             MineSupportFunction(1);
@@ -188,9 +188,17 @@ public class Mining : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            miningBarBackground.SetActive(true);
-            miningCircle.SetActive(true);
-            miningBarAimingSpot.SetActive(true);
+			/*
+			if (Input.GetKeyDown(miningKey) && playerController.MiningToolCheck() == true)
+			{
+            	miningBarBackground.SetActive(true);
+            	miningCircle.SetActive(true);
+            	miningBarAimingSpot.SetActive(true);
+			}*/
+			/*
+			miningBarBackground.SetActive(true);
+			miningCircle.SetActive(true);
+			miningBarAimingSpot.SetActive(true);*/
         }
 
         timer = 0.0f;
@@ -202,6 +210,12 @@ public class Mining : MonoBehaviour
 
         if (other.gameObject.tag == "Player") 
 		{
+			if (Input.GetKeyDown(miningKey) && playerController.MiningToolCheck() == true)
+			{
+				miningBarBackground.SetActive(true);
+				miningCircle.SetActive(true);
+				miningBarAimingSpot.SetActive(true);
+			}
 			playerController.nearestMineral = this;
 			playerInMiningPosition = true;
             AnimateMiningBar();
