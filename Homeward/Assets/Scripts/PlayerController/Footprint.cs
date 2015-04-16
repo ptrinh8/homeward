@@ -7,7 +7,10 @@ public class Footprint : MonoBehaviour {
 	private float despawnTime;
 	private SpriteRenderer renderer;
 
+	private float alphaValue;
+
 	private Color tileColor;
+	private Color footstepColor;
 
 	// Use this for initialization
 	void Start () {
@@ -37,7 +40,12 @@ public class Footprint : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+
+		timer += Time.deltaTime;
+
+		alphaValue = Mathf.Lerp (1f, 0f, timer / despawnTime);
+		footstepColor = new Color(tileColor.r, tileColor.g, tileColor.b, alphaValue);
+		renderer.color = footstepColor;
 	}
 
 
