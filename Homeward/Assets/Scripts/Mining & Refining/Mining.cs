@@ -156,13 +156,13 @@ public class Mining : MonoBehaviour
 	{
 		audioController.PlayMiningSound();
 
-        if (0.499f < GetNormalizedPosition() && GetNormalizedPosition() < 0.501f)
+        if (0.45f < GetNormalizedPosition() && GetNormalizedPosition() < 0.55f)
         {
             Debug.Log("Great!");
             MineSupportFunction(2);
             randomMineralsQuantity -= 2;
         }
-        else if ((0.3f < GetNormalizedPosition() && GetNormalizedPosition() < 0.4999f) || (0.5001f < GetNormalizedPosition() && GetNormalizedPosition() < 0.7f))
+        else if ((0.4f < GetNormalizedPosition() && GetNormalizedPosition() < 0.45f) || (0.55f < GetNormalizedPosition() && GetNormalizedPosition() < 0.6f))
         {
             Debug.Log("Nice!");
             MineSupportFunction(1);
