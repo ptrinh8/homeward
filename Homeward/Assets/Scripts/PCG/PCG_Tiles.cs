@@ -25,6 +25,9 @@ public class PCG_Tiles : MonoBehaviour
     _tileP, _tileQ, _tileR, _tileS,
     _tileT;
 
+    [HideInInspector]
+    public int[] extractableValue = new int[11071];
+
     float[] _x = new float[11071];
     float[] _y = new float[11071];
     bool addRemoveTiles = false;
@@ -46,6 +49,12 @@ public class PCG_Tiles : MonoBehaviour
 
     GameObject[] tiles = new GameObject[11071];
     float distBWplayerTiles;
+
+    public int[] ExtractableValues
+    {
+        get { return extractableValue; }
+        set { extractableValue = value; }
+    }
 
     public void RndNosGeneration()
     {
@@ -99,6 +108,8 @@ public class PCG_Tiles : MonoBehaviour
                         tiles[i] = Instantiate(_tile, new Vector3(_x[i], _y[i], 0), transform.rotation) as GameObject;
                         tiles[i].tag = "FinalTextures";
                         tiles[i].name = "FinalTextures " + i;
+                        extractableValue[i] = Random.Range(0, 10);
+                        Debug.Log(tiles[i].name + " = " + extractableValue[i]);
 
                         if (tiles[i].name == "FinalTextures 90") { tiles[i].GetComponentInChildren<SpriteRenderer>().enabled = false; }
 
