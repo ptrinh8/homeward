@@ -64,6 +64,11 @@ public class PlayerController : MonoBehaviour
 	private float oxygenHealthLossTime = 1f;
 	private float oxygenHealthLossAmount = .5f;
 
+	public Object leftFootprint;
+	public Object rightFootprint;
+
+	public Color tileColor;
+
 
     public bool canSleep;
     [HideInInspector]
@@ -895,10 +900,18 @@ public class PlayerController : MonoBehaviour
                     if (leftRightFootstep == 0)
                     {
                         audioController.PlayFootstep(0);
+						if (rightFootprint != null)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
+						}
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -935,11 +948,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -976,11 +997,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 90));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 90));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -1017,11 +1046,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 270));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 270));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -1232,6 +1269,16 @@ public class PlayerController : MonoBehaviour
 			return true;
 		}
 		return false;
+	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "FinalTextures")
+		{
+			Debug.Log ("working");
+			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
+			tileColor = tile.color;
+		}
 	}
 
     IEnumerator CoolDownDamage()
