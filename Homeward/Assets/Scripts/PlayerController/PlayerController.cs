@@ -900,7 +900,7 @@ public class PlayerController : MonoBehaviour
                     if (leftRightFootstep == 0)
                     {
                         audioController.PlayFootstep(0);
-						if (rightFootprint != null)
+						if (rightFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
 						}
@@ -908,7 +908,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-						if (leftFootprint != null)
+						if (leftFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
 						}
@@ -948,7 +948,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
-						if (rightFootprint != null)
+						if (rightFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
 						}
@@ -957,7 +957,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-						if (leftFootprint != null)
+						if (leftFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
 						}
@@ -997,7 +997,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
-						if (rightFootprint != null)
+						if (rightFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 90));
 						}
@@ -1006,7 +1006,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-						if (leftFootprint != null)
+						if (leftFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 90));
 						}
@@ -1046,7 +1046,7 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
-						if (rightFootprint != null)
+						if (rightFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 270));
 						}
@@ -1055,7 +1055,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-						if (leftFootprint != null)
+						if (leftFootprint != null && CentralControl.isInside == false)
 						{
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 270));
 						}
