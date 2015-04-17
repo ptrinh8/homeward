@@ -38,6 +38,7 @@ public class CentralControl : MonoBehaviour {
     public static bool healthStaminaModuleExists;
     public static bool moduleControlModuleExists;
     public static bool radarModuleExists;
+	public static bool oxygenModuleExists;
 	private KeyCode repairKey = KeyCode.F;
 
     private GameObject player;
@@ -211,7 +212,7 @@ public class CentralControl : MonoBehaviour {
                 else 
                     if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
                     /*** Takahide Added From Here***/
-                    if (connection.tag == "HealthStaminaModule")
+                    if (connection.tag == "FoodModule")
                     {
                         healthStaminaModuleExists = true;
                     }
@@ -223,6 +224,10 @@ public class CentralControl : MonoBehaviour {
                     {
                         radarModuleExists = true;
                     }
+					if (connection.tag == "OxygenModule")
+					{
+						oxygenModuleExists = true;
+					}
                     /*** Takahide code end ***/
 
 					Q.Enqueue(connection.GetComponent<LocalControl>().moduleID);

@@ -148,6 +148,8 @@ public class PlayerController : MonoBehaviour
     public float coolDown;
     private bool onCoolDown;
 
+	private ParticleSystem playerParticleSystem;
+
     [HideInInspector]
     public float x, y;
 
@@ -491,6 +493,10 @@ public class PlayerController : MonoBehaviour
 
 		SetMiningBar();
 		miningBarActive = false;
+
+		playerParticleSystem = GameObject.Find ("Particle System").GetComponent<ParticleSystem>();
+		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+		playerParticleSystem.loop = false;
     }
 
     void Update()
@@ -514,8 +520,20 @@ public class PlayerController : MonoBehaviour
         {
             Time.timeScale = 1.0f;
             pauseMenu.SetActive(false);
-         
+			if ((tileColor.r > tileColor.g) && (tileColor.r > tileColor.b))
+			{
+				playerParticleSystem.startColor = new Color(tileColor.r, tileColor.g + .3f, tileColor.b + .3f);
+			}
+			else if ((tileColor.g > tileColor.r) && (tileColor.g > tileColor.b))
+			{
+				playerParticleSystem.startColor = new Color(tileColor.r + .3f, tileColor.g, tileColor.b + .3f);
+			}
+			else if ((tileColor.b > tileColor.r) && (tileColor.b > tileColor.g))
+			{
+				playerParticleSystem.startColor = new Color(tileColor.r + .3f, tileColor.g + .3f, tileColor.b);
+			}
             
+
             if (mainCamera.enabled)
             {
                 zoomInWhenIndoor();
@@ -527,18 +545,30 @@ public class PlayerController : MonoBehaviour
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
-                UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
-                UIClock.GetComponent<CanvasGroup>().alpha = 1;
-                RadarCamera.camera.cullingMask |= (1 << LayerMask.NameToLayer("Radar"));
             }
             else
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
-                UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-                UIClock.GetComponent<CanvasGroup>().alpha = 0;
-                RadarCamera.camera.cullingMask &= ~(1 << LayerMask.NameToLayer("Radar"));
             }
+
+			if (CentralControl.oxygenModuleExists)
+			{
+				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
+			}
+			else
+			{
+				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
+			}
+
+			if (CentralControl.radarModuleExists)
+			{
+				RadarCamera.camera.cullingMask |= (1 << LayerMask.NameToLayer("Radar"));
+			}
+			else
+			{
+				RadarCamera.camera.cullingMask &= ~(1 << LayerMask.NameToLayer("Radar"));
+			}
 
             holdingBuildingToolCheck = holdingBuildingTool;
             holdingRepairToolCheck = holdingRepairTool;
@@ -647,14 +677,7 @@ public class PlayerController : MonoBehaviour
                     {
                         if (holdingMiningTool == true)
                         {
-                            if (nearestMineral != null && miningBarActive == false)
-                            {
-								Debug.Log ("Animating");
-								nearestMineral.SetMiningBarVisible();
-								//AnimateMiningBar();
-								miningBarActive = true;
-                            }
-							else if (miningBarActive == true)
+							if (miningBarActive == true)
 							{
 								if (0.45f < GetNormalizedPosition() && GetNormalizedPosition() < 0.55f)
 								{
@@ -668,8 +691,16 @@ public class PlayerController : MonoBehaviour
 								}
 								else
 								{
+									nearestMineral.Mine (0);
 									Debug.Log("No good");
 								}
+							}
+							else if (nearestMineral != null && miningBarActive == false)
+							{
+								Debug.Log ("Animating");
+								nearestMineral.SetMiningBarVisible();
+								//AnimateMiningBar();
+								miningBarActive = true;
 							}
                         }
                     }
@@ -912,7 +943,7 @@ public class PlayerController : MonoBehaviour
 					direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 					//rigidbody2D.AddForce(direction * speed);
 					//rigidbody2D.velocity = direction * speed;   // speed is changable by us
-					rigidbody2D.AddForce(direction * 8f);
+					rigidbody2D.AddForce(direction * 5f);
 					
 					if (rigidbody2D.velocity.magnitude < .01f)
 					{
@@ -1044,6 +1075,7 @@ public class PlayerController : MonoBehaviour
                         audioController.PlayFootstep(0);
 						if (rightFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
 						}
                         leftRightFootstep = 1;
@@ -1052,6 +1084,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (leftFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
 						}
                         audioController.PlayFootstep(1);
@@ -1092,6 +1125,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (rightFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
 						}
                         audioController.PlayFootstep(0);
@@ -1101,6 +1135,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (leftFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
 						}
                         audioController.PlayFootstep(1);
@@ -1141,6 +1176,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (rightFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 90));
 						}
                         audioController.PlayFootstep(0);
@@ -1150,6 +1186,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (leftFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 90));
 						}
                         audioController.PlayFootstep(1);
@@ -1190,6 +1227,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (rightFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 270));
 						}
                         audioController.PlayFootstep(0);
@@ -1199,6 +1237,7 @@ public class PlayerController : MonoBehaviour
                     {
 						if (leftFootprint != null && CentralControl.isInside == false)
 						{
+							playerParticleSystem.Emit(5);
 							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 270));
 						}
                         audioController.PlayFootstep(1);

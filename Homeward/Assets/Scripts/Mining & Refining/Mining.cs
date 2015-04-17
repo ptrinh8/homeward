@@ -117,8 +117,8 @@ public class Mining : MonoBehaviour
     public void Mine(int numberOfMinerals)
 	{
 		audioController.PlayMiningSound();
-
 		MineSupportFunction(numberOfMinerals);
+		SetMiningBarInvisible();
 	}
 
     IEnumerator DestroyMine()
