@@ -93,46 +93,7 @@ public class Mining : MonoBehaviour
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
         time = 2500.0F * Time.deltaTime;
 
-        SetMiningBar();
-    }
-
-    void SetMiningBar()
-    {
-        miningBarBackground = Instantiate(Resources.Load("Mining/Mining Bar Background")) as GameObject;
-        miningBarBackground.transform.parent = GameObject.Find("Canvas").transform;
-        miningBarBackgroundRect = miningBarBackground.GetComponent<RectTransform>();
-        miningBarBackgroundRect.localScale = new Vector3(1, 1, 1);
-        miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150.0f);
-        miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20.0f);
-        miningBarBackgroundRect.position = mainPlayer.transform.position + new Vector3(80.0f, 90.0f);
-
-        miningCircle = Instantiate(Resources.Load("Mining/MiningCircle")) as GameObject;
-        miningCircle.transform.parent = GameObject.Find("Canvas").transform;
-        RectTransform miningCircleRect = miningCircle.GetComponent<RectTransform>();
-        miningCircleRect.localScale = new Vector3(1, 1, 1);
-        miningCircleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 15.0f);
-        miningCircleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 15.0f);
-        miningCircleRect.position = miningBarBackgroundRect.position;
-        miningCircleInitialPosition = mainPlayer.transform.position.x + 80.0f;
-        miningCircle.SetActive(false);
-
-        miningBar = GameObject.Find("Mining Bar");
-        RectTransform miningBarRect = miningBar.GetComponent<RectTransform>();
-        miningBarRect.localScale = new Vector3(1, 1, 1);
-        miningBarRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, miningBarBackgroundRect.sizeDelta.x - 5.0f);
-        miningBarRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, miningBarBackgroundRect.sizeDelta.y - 5.0f);
-
-        miningBarAimingSpot = GameObject.Find("Aiming Spot");
-        RectTransform miningBarAimingSpotRect = miningBarAimingSpot.GetComponent<RectTransform>();
-        miningBarAimingSpotRect.localScale = new Vector3(1, 1, 1);
-        miningBarAimingSpotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, miningBarBackgroundRect.sizeDelta.x * 0.3f);
-        miningBarAimingSpotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, miningBarBackgroundRect.sizeDelta.y);
-        miningBarAimingSpotRect.position = miningBarBackgroundRect.position;
-        miningBarAimingSpot.SetActive(false);
-
-        miningBarBackground.SetActive(false);
-        
-        miningBarImage = miningBar.GetComponent<Image>();
+        //SetMiningBar();
     }
 
     void Update()
@@ -145,6 +106,7 @@ public class Mining : MonoBehaviour
     void MineSupportFunction(int mineralsCount)
     {
         Item item = GameObject.Find("Mineral").GetComponent<Item>();
+		randomMineralsQuantity -= mineralsCount;
 
         for (int i = 0; i < mineralsCount; i++)
         {
@@ -152,36 +114,20 @@ public class Mining : MonoBehaviour
         }
     }
 
-    public void Mine()
+    public void Mine(int numberOfMinerals)
 	{
 		audioController.PlayMiningSound();
 
-        if (0.45f < GetNormalizedPosition() && GetNormalizedPosition() < 0.55f)
-        {
-            Debug.Log("Great!");
-            MineSupportFunction(2);
-            randomMineralsQuantity -= 2;
-        }
-        else if ((0.4f < GetNormalizedPosition() && GetNormalizedPosition() < 0.45f) || (0.55f < GetNormalizedPosition() && GetNormalizedPosition() < 0.6f))
-        {
-            Debug.Log("Nice!");
-            MineSupportFunction(1);
-            randomMineralsQuantity--;
-        }
-        else
-        {
-            Debug.Log("No good");
-        }
+		MineSupportFunction(numberOfMinerals);
 	}
 
     IEnumerator DestroyMine()
     {
         animation.Play();
+		SetMiningBarInvisible();
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
-        Destroy(miningBar);
-        Destroy(miningBarBackground);
-        Destroy(miningCircle);
+        
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -204,21 +150,30 @@ public class Mining : MonoBehaviour
         timer = 0.0f;
     }
 
+	public void SetMiningBarVisible()
+	{
+		playerController.miningBarBackground.SetActive(true);
+		playerController.miningCircle.SetActive(true);
+		playerController.miningBarAimingSpot.SetActive(true);
+		playerController.AnimateMiningBar();
+	}
+
+	public void SetMiningBarInvisible()
+	{
+		playerController.miningBarActive = false;
+		playerController.miningBarBackground.SetActive(false);
+		playerController.miningCircle.SetActive(false);
+	}
+
     void OnTriggerStay2D(Collider2D other)
     {
         timer = Time.time;
 
         if (other.gameObject.tag == "Player") 
 		{
-			if (Input.GetKeyDown(miningKey) && playerController.MiningToolCheck() == true)
-			{
-				miningBarBackground.SetActive(true);
-				miningCircle.SetActive(true);
-				miningBarAimingSpot.SetActive(true);
-			}
 			playerController.nearestMineral = this;
 			playerInMiningPosition = true;
-            AnimateMiningBar();
+            //AnimateMiningBar();
 		}
     }
 
@@ -228,66 +183,7 @@ public class Mining : MonoBehaviour
 		{ 
 			playerController.nearestMineral = null;
 			playerInMiningPosition = false;
-            miningBarBackground.SetActive(false);
-            miningCircle.SetActive(false);
 		}
     }
 
-    float GetNormalizedPosition()
-    {
-        return (miningCircle.transform.position.x - (miningBarBackgroundRect.transform.position.x - miningBarBackgroundRect.sizeDelta.x / 2)) / miningBarBackgroundRect.sizeDelta.x; 
-    }
-
-    void AnimateMiningBar()
-    {
-        if (goingUp)
-        {
-            if (GetNormalizedPosition() <= 0.5f)
-            {
-				accel += 0.01f;
-                addition += accel;
-            }
-            else if (0.5f < GetNormalizedPosition())
-            {
-                if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
-				}
-            }
-
-            miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
-        }
-        else
-        {
-            if (GetNormalizedPosition() <= 0.5f)
-            {
-                if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
-				}
-            }
-            else if (0.5f < GetNormalizedPosition())
-            {
-				accel += 0.01f;
-                addition += accel;
-            }
-
-            miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
-        }
-
-        if (GetNormalizedPosition() < 0)
-        {
-            goingUp = true;
-			addition = 1.0f;
-			accel = 0.2f;
-        }
-        else if (GetNormalizedPosition() > 1)
-        {
-            goingUp = false;
-			addition = 1.0f;
-			accel = 0.2f;
-        }
-    }
 }
