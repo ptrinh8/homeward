@@ -64,6 +64,11 @@ public class PlayerController : MonoBehaviour
 	private float oxygenHealthLossTime = 1f;
 	private float oxygenHealthLossAmount = .5f;
 
+	public Object leftFootprint;
+	public Object rightFootprint;
+
+	public Color tileColor;
+
 
     public bool canSleep;
     [HideInInspector]
@@ -72,6 +77,20 @@ public class PlayerController : MonoBehaviour
 
     public Canvas canvas;
     private float currentHealth, currentStamina;
+
+	/** mining bar **/
+	public GameObject miningBarBackground;
+	private RectTransform miningBarBackgroundRect;
+	private GameObject miningBar;
+	public GameObject miningBarAimingSpot;
+	public GameObject miningCircle;
+	private float timer;
+	private Image miningBarImage;
+	private bool goingUp;
+	private float addition;
+	private float accel;
+	private float miningCircleInitialPosition;
+	public bool miningBarActive;
 
     // Taylor
     public float CurrentStamina
@@ -248,6 +267,105 @@ public class PlayerController : MonoBehaviour
 	}
 
     GameObject miningProbe;
+	void SetMiningBar()
+	{
+		miningBarBackground = Instantiate(Resources.Load("Mining/Mining Bar Background")) as GameObject;
+		miningBarBackground.transform.parent = GameObject.Find("Canvas").transform;
+		miningBarBackgroundRect = miningBarBackground.GetComponent<RectTransform>();
+		miningBarBackgroundRect.localScale = new Vector3(1, 1, 1);
+		miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150.0f);
+		miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20.0f);
+		miningBarBackgroundRect.position = GameObject.Find ("Canvas").transform.position + new Vector3(0f, 20.0f);
+		
+		miningCircle = Instantiate(Resources.Load("Mining/MiningCircle")) as GameObject;
+		miningCircle.transform.parent = GameObject.Find("Canvas").transform;
+		RectTransform miningCircleRect = miningCircle.GetComponent<RectTransform>();
+		miningCircleRect.localScale = new Vector3(1, 1, 1);
+		miningCircleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 15.0f);
+		miningCircleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 15.0f);
+		miningCircleRect.position = miningBarBackgroundRect.position;
+		miningCircleInitialPosition = GameObject.Find ("Canvas").transform.position.x + 10.0f;
+		miningCircle.SetActive(false);
+		
+		miningBar = GameObject.Find("Mining Bar");
+		RectTransform miningBarRect = miningBar.GetComponent<RectTransform>();
+		miningBarRect.localScale = new Vector3(1, 1, 1);
+		miningBarRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, miningBarBackgroundRect.sizeDelta.x - 5.0f);
+		miningBarRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, miningBarBackgroundRect.sizeDelta.y - 5.0f);
+		
+		miningBarAimingSpot = GameObject.Find("Aiming Spot");
+		RectTransform miningBarAimingSpotRect = miningBarAimingSpot.GetComponent<RectTransform>();
+		miningBarAimingSpotRect.localScale = new Vector3(1, 1, 1);
+		miningBarAimingSpotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, miningBarBackgroundRect.sizeDelta.x * 0.3f);
+		miningBarAimingSpotRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, miningBarBackgroundRect.sizeDelta.y);
+		miningBarAimingSpotRect.position = miningBarBackgroundRect.position;
+		miningBarAimingSpot.SetActive(false);
+		
+		miningBarBackground.SetActive(false);
+		
+		miningBarImage = miningBar.GetComponent<Image>();
+		addition = 4.0f;
+		accel = 0.2f;
+	}
+
+	float GetNormalizedPosition()
+	{
+		return (miningCircle.transform.position.x - (miningBarBackgroundRect.transform.position.x - miningBarBackgroundRect.sizeDelta.x / 2)) / miningBarBackgroundRect.sizeDelta.x; 
+	}
+	
+	public void AnimateMiningBar()
+	{
+		Debug.Log (GetNormalizedPosition());
+		if (goingUp)
+		{
+			if (GetNormalizedPosition() <= 0.5f)
+			{
+				accel += 0.01f;
+				addition += accel;
+			}
+			else if (0.5f < GetNormalizedPosition())
+			{
+				if (addition > accel) 
+				{ 
+					accel -= 0.01f;
+					addition -= accel; 
+				}
+			}
+			
+			miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
+		}
+		else
+		{
+			if (GetNormalizedPosition() <= 0.5f)
+			{
+				if (addition > accel) 
+				{ 
+					accel -= 0.01f;
+					addition -= accel; 
+				}
+			}
+			else if (0.5f < GetNormalizedPosition())
+			{
+				accel += 0.01f;
+				addition += accel;
+			}
+			
+			miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
+		}
+		
+		if (GetNormalizedPosition() < 0)
+		{
+			goingUp = true;
+			addition = 1.0f;
+			accel = 0.2f;
+		}
+		else if (GetNormalizedPosition() > 1)
+		{
+			goingUp = false;
+			addition = 1.0f;
+			accel = 0.2f;
+		}
+	}
 
     void Start()
     {
@@ -370,10 +488,18 @@ public class PlayerController : MonoBehaviour
 
         // Taylor
         environmentAir = true;
+
+		SetMiningBar();
+		miningBarActive = false;
     }
 
     void Update()
     {
+		if (miningBarActive == true)
+		{
+			AnimateMiningBar();
+		}
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             pauseFlag = !pauseFlag;
@@ -516,20 +642,38 @@ public class PlayerController : MonoBehaviour
                         showPlayerInventory = !showPlayerInventory;
                     }
 
-                    if (miningTimer >= miningCooldown)
+
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
-                        if (Input.GetKeyDown(KeyCode.F))
+                        if (holdingMiningTool == true)
                         {
-                            if (holdingMiningTool == true)
+                            if (nearestMineral != null && miningBarActive == false)
                             {
-                                if (nearestMineral != null)
-                                {
-                                    nearestMineral.Mine();
-                                    miningTimer = 0;
-                                }
+								Debug.Log ("Animating");
+								nearestMineral.SetMiningBarVisible();
+								//AnimateMiningBar();
+								miningBarActive = true;
                             }
+							else if (miningBarActive == true)
+							{
+								if (0.45f < GetNormalizedPosition() && GetNormalizedPosition() < 0.55f)
+								{
+									Debug.Log("Great!");
+									nearestMineral.Mine (2);
+								}
+								else if ((0.4f < GetNormalizedPosition() && GetNormalizedPosition() < 0.45f) || (0.55f < GetNormalizedPosition() && GetNormalizedPosition() < 0.6f))
+								{
+									Debug.Log("Nice!");
+									nearestMineral.Mine (1);
+								}
+								else
+								{
+									Debug.Log("No good");
+								}
+							}
                         }
                     }
+                    
 
                     /****************************************************************
                      * Inventory: This is how you add items to playerInventory
@@ -545,11 +689,6 @@ public class PlayerController : MonoBehaviour
                         {
                             Item item = GameObject.Find("Mineral").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
-                            item = GameObject.Find("Material").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                            item = GameObject.Find("Food1").GetComponent<Item>();
-                            playerInventory.GetComponent<Inventory>().AddItem(item);
-                            playerInventory.GetComponent<Inventory>().DebugShowInventory();
                         }
 
                         if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
@@ -561,6 +700,22 @@ public class PlayerController : MonoBehaviour
                             item = GameObject.Find("RepairingTool").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
                         }
+
+						if (Input.GetKeyDown(KeyCode.L))
+						{
+							Item item = GameObject.Find("Material").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						if (Input.GetKeyDown(KeyCode.K))
+						{
+							Item item = GameObject.Find("Food1").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
+						if (Input.GetKeyDown(KeyCode.J))
+						{
+							Item item = GameObject.Find("Oxygen").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
 
                         if (Input.GetKeyDown(KeyCode.Y))
                         {
@@ -763,8 +918,8 @@ public class PlayerController : MonoBehaviour
 					{
 						rigidbody2D.velocity = Vector2.zero;
 					}
-					Debug.Log (rigidbody2D.velocity);
-					Debug.Log (rigidbody2D.velocity.magnitude);
+					//Debug.Log (rigidbody2D.velocity);
+					//Debug.Log (rigidbody2D.velocity.magnitude);
 					
 					
 					
@@ -887,10 +1042,18 @@ public class PlayerController : MonoBehaviour
                     if (leftRightFootstep == 0)
                     {
                         audioController.PlayFootstep(0);
+						if (rightFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
+						}
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -927,11 +1090,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -968,11 +1139,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 90));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 90));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -1009,11 +1188,19 @@ public class PlayerController : MonoBehaviour
                 {
                     if (leftRightFootstep == 0)
                     {
+						if (rightFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 270));
+						}
                         audioController.PlayFootstep(0);
                         leftRightFootstep = 1;
                     }
                     else
                     {
+						if (leftFootprint != null && CentralControl.isInside == false)
+						{
+							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 270));
+						}
                         audioController.PlayFootstep(1);
                         leftRightFootstep = 0;
                     }
@@ -1192,6 +1379,48 @@ public class PlayerController : MonoBehaviour
 	{
 		eatingTimer = 0;
 		hasEaten = true;
+	}
+
+	public void OxygenTaken()
+	{
+		oxygen += 10f;
+	}
+
+	public bool MiningToolCheck()
+	{
+		if (holdingMiningTool == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public bool BuildingToolCheck()
+	{
+		if (holdingBuildingTool == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	public bool RepairingToolCheck()
+	{
+		if (holdingRepairTool == true)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	void OnTriggerEnter2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "FinalTextures")
+		{
+			Debug.Log ("working");
+			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
+			tileColor = tile.color;
+		}
 	}
 
     IEnumerator CoolDownDamage()

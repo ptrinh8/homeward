@@ -20,6 +20,7 @@ public class Building : MonoBehaviour
     private GameObject airlockModuleDeploying;
     private GameObject oxygenModuleDeploying;
     private GameObject UIModuleDeploying;
+	private GameObject buildingModuleDeploying;
 
     private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
     private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
@@ -34,6 +35,7 @@ public class Building : MonoBehaviour
     private Deployable airlockModuleDeployable;
     private Deployable oxygenModuleDeployable;
     private Deployable UIModuleDeployable;
+	private Deployable buildingModuleDeployable;
 
     private KeyCode habitatModuleKey = KeyCode.Alpha1;
     private KeyCode connectorModuleKey = KeyCode.Alpha2;
@@ -48,6 +50,7 @@ public class Building : MonoBehaviour
     private KeyCode airlockModuleKey = KeyCode.F1;
     private KeyCode oxygenModuleKey = KeyCode.F2;
     private KeyCode UIModuleKey = KeyCode.F3;
+	private KeyCode buildingModuleKey = KeyCode.F4;
 
     private Dictionary<string, bool> moduleDictionary;
 
@@ -66,6 +69,7 @@ public class Building : MonoBehaviour
 	public static bool spawnStorageModuleFlag;
 	public static bool spawnAirlockModuleFlag;
     public static bool spawnOxygenModuleFlag;
+	public static bool spawnBuildingModuleFlag;
 
     public List<GameObject> initialModules = new List<GameObject>();
     private int i = 0;  // initialize in order
@@ -109,6 +113,8 @@ public class Building : MonoBehaviour
         oxygenModuleDeploying.SetActive(false);
         UIModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Oxygen Module/Oxygen Module Deploying")) as GameObject;
         UIModuleDeploying.SetActive(false);
+		buildingModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Building Module/Building Module Deploying")) as GameObject;
+		buildingModuleDeploying.SetActive(false);
 
         habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
         connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
@@ -123,6 +129,7 @@ public class Building : MonoBehaviour
         airlockModuleDeployable = airlockModuleDeploying.GetComponent<Deployable>();
         oxygenModuleDeployable = oxygenModuleDeploying.GetComponent<Deployable>();
         UIModuleDeployable = UIModuleDeploying.GetComponent<Deployable>();
+		buildingModuleDeployable = buildingModuleDeploying.GetComponent<Deployable>();
 
         moduleDictionary = new Dictionary<string, bool>();
         moduleDictionary.Add("HabitatModule", true);
@@ -138,6 +145,7 @@ public class Building : MonoBehaviour
         moduleDictionary.Add("AirlockModule", true);
         moduleDictionary.Add("OxygenModule", true);
         moduleDictionary.Add("UIModule", true);
+		moduleDictionary.Add("BuildingModule", true);
         isDeploying = false;
 
         spawnHabitatModuleFlag = false;
@@ -152,6 +160,7 @@ public class Building : MonoBehaviour
         spawnStorageModuleFlag = false;
         spawnAirlockModuleFlag = false;
         spawnOxygenModuleFlag = false;
+		spawnBuildingModuleFlag = false;
 
         newGameFlag = true;
     }
@@ -227,6 +236,11 @@ public class Building : MonoBehaviour
             UIModuleDeployable.isDeploying = !UIModuleDeployable.isDeploying;
             UIModuleDeploying.SetActive(UIModuleDeployable.isDeploying);
         }
+		if (buildingModuleDeployable.isDeploying && moduleDictionary["BuildingModule"])
+		{
+			buildingModuleDeployable.isDeploying = !buildingModuleDeployable.isDeploying;
+			buildingModuleDeploying.SetActive(buildingModuleDeployable.isDeploying);
+		}
 	}
 	
 	// Update is called once per frame
@@ -350,6 +364,14 @@ public class Building : MonoBehaviour
                 isDeploying = UIModuleDeployable.isDeploying;
             }
 
+			if (Input.GetKeyDown(buildingModuleKey))
+			{
+				NowBuilding("BuildingModule");
+				buildingModuleDeployable.isDeploying = !buildingModuleDeployable.isDeploying;
+				buildingModuleDeploying.SetActive(buildingModuleDeployable.isDeploying);
+				isDeploying = buildingModuleDeployable.isDeploying;
+			}
+
             spawnHabitatModuleFlag = false;
             spawnConnectorModuleFlag = false;
             spawnFoodModuleFlag = false;
@@ -362,6 +384,7 @@ public class Building : MonoBehaviour
             spawnStorageModuleFlag = false;
             spawnAirlockModuleFlag = false;
             spawnOxygenModuleFlag = false;
+			spawnBuildingModuleFlag = false;
         }
     }
 }

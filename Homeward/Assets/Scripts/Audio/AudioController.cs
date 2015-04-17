@@ -72,6 +72,7 @@ public class AudioController : MonoBehaviour {
 	public float airlockDuration;
 	public float audioTimer;
 	public bool airlockActivated;
+	public bool airlockSoundStarted;
 	public bool playerLeft;
 	// Use this for initialization
 	void Start () {
@@ -106,6 +107,7 @@ public class AudioController : MonoBehaviour {
 		airlockSound.getParameter("AirlockPressure", out airlockPressure);
 		airlockSound.getParameter("AirlockTransition", out airlockTransition);
 		playerLeft = false;
+		airlockSoundStarted = false;
 		audioPressureTimer = 0f;
 	}
 	// Update is called once per frame
@@ -212,11 +214,12 @@ public class AudioController : MonoBehaviour {
 			}
 		}
 
-		if (airlockActivated == true)
+		if (airlockActivated == true && airlockSoundStarted == false)
 		{
 			if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
 			{
 				airlockSound.start();
+				airlockSoundStarted = true;
 			}
 		}
 

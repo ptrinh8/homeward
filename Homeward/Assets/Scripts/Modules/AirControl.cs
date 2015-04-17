@@ -171,6 +171,7 @@ public class AirControl : MonoBehaviour {
 					doorTimer = 0;
 					airlockActivated = false;
 					audioController.airlockActivated = false;
+					audioController.airlockSoundStarted = false;
 				}
 			}
 			else if (audioController.playerLeft == true)
@@ -181,6 +182,7 @@ public class AirControl : MonoBehaviour {
 					doorTimer = 0;
 					airlockActivated = false;
 					audioController.airlockActivated = false;
+					audioController.airlockSoundStarted = false;
 				}
 			}
 		}
