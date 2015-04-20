@@ -212,6 +212,7 @@ public class PlayerController : MonoBehaviour
 
     //Taylor
     private bool environmentAir;
+	public static bool showRepairArrows;
 
     public bool EnvironmentalAir
     {
@@ -370,7 +371,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
-
+		showRepairArrows = false;// Taylor
         pauseFlag = false;
 
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
@@ -871,26 +872,40 @@ public class PlayerController : MonoBehaviour
                     Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 
 
-                    if (showPlayerInventory || showModuleSelection)
+					if (showPlayerInventory || showModuleSelection || showRepairArrows)
                     {
-                        if (Input.GetKey(KeyCode.A))
-                        {
-                            x = -1.0f;
-							y = 0;
-                        }
-                        else if (Input.GetKey(KeyCode.D))
-                        {
-                            x = 1.0f;
-							y = 0;
-                        }
-                        if (Input.GetKey(KeyCode.W))
-                        {
-                            y = 1.0f;
-                        }
-                        else if (Input.GetKey(KeyCode.S))
-                        {
-                            y = -1.0f;
-                        }
+						if (showRepairArrows)
+						{
+							if (Input.GetKey(KeyCode.A))
+							{ x = 0; y = 0;}
+							else if (Input.GetKey(KeyCode.D))
+							{ x = 0; y = 0;}
+							if (Input.GetKey(KeyCode.W))
+							{ x = 0; y = 0;}
+							else if (Input.GetKey(KeyCode.S))
+							{ x = 0; y = 0;}
+						}
+						else
+						{
+							if (Input.GetKey(KeyCode.A))
+							{
+								x = -1.0f;
+								y = 0;
+							}
+							else if (Input.GetKey(KeyCode.D))
+							{
+								x = 1.0f;
+								y = 0;
+							}
+							if (Input.GetKey(KeyCode.W))
+							{
+								y = 1.0f;
+							}
+							else if (Input.GetKey(KeyCode.S))
+							{
+								y = -1.0f;
+							}
+						}
                     }
                     else
                     {

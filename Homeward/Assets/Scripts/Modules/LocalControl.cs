@@ -51,6 +51,9 @@ public class LocalControl : MonoBehaviour {
     private float repairActionTime;
     private bool repairingFlag;
     private bool showTextFlag;
+	private bool repairArrowQueueFlag;
+
+	private GameObject repairArrowQueue;
 
     public bool ShowTextFlag
     {
@@ -84,6 +87,8 @@ public class LocalControl : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		repairArrowQueueFlag = false;
+
 		connections = new List<GameObject>();
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = indoorSprite;
@@ -101,9 +106,11 @@ public class LocalControl : MonoBehaviour {
 
 		player = GameObject.FindWithTag("Player");
         repairingFlag = true;
-        repairActionTime = 5f;
+        repairActionTime = 1f;
 
         player.SendMessage("LocalModuleGenerated", gameObject);
+
+		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -119,7 +126,6 @@ public class LocalControl : MonoBehaviour {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
             }
 		}
-
 		/**
 		if (CentralControl.isInside) {
 			if (spriteRenderer.material != GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material){
@@ -291,22 +297,34 @@ public class LocalControl : MonoBehaviour {
 			}
 		}
 
-		if (isEnter) {
-            if (Input.GetKeyDown(repairKey))
-            {
-                if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
-                {
-                    if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
-                    {
-                        if (repairingFlag)
-                        {
-                            repairingFlag = false;
-                            RepairAction();
-                            Invoke("TimeWait", repairActionTime);
-                        }
-                    }
-                }
-            }
+		if (isEnter) 
+		{
+	        if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
+	        {
+	        	if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
+	            {
+	            	if (repairingFlag)
+	                {
+						if (Input.GetKeyDown(repairKey))
+						{
+							repairArrowQueueFlag = !repairArrowQueueFlag;
+							PlayerController.showRepairArrows = repairArrowQueueFlag;
+							repairArrowQueue.SendMessage("Reset");
+							repairArrowQueue.SetActive(repairArrowQueueFlag);
+						}
+						if (repairArrowQueue.GetComponent<ArrowQueueControl>().CorrectInput)
+						{
+							repairArrowQueue.GetComponent<ArrowQueueControl>().CorrectInput = false;
+							repairingFlag = false;
+							Invoke("TimeWait", repairActionTime);
+						}
+	                }
+	            }
+	        }
+		}
+		else
+		{
+			//repairArrowQueue.SetActive(false);
 		}
 
 		if (durability > 0) {
@@ -325,7 +343,14 @@ public class LocalControl : MonoBehaviour {
             {
                 durability += 10;
             }
-            else durability = 100;
+            else 
+			{
+				durability = 100;
+				repairArrowQueueFlag = false;
+				PlayerController.showRepairArrows = false;
+				repairArrowQueue.SendMessage("Reset");
+				repairArrowQueue.SetActive(false);
+			}
         }
         else
         {
@@ -333,6 +358,8 @@ public class LocalControl : MonoBehaviour {
             isBroken = false;
             SwitchTriggered(true);
             flag = true;
+			// arrow reset
+			repairArrowQueue.SendMessage("Reset");
         }
         player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
     }
@@ -340,6 +367,7 @@ public class LocalControl : MonoBehaviour {
     void TimeWait()
     {
         repairingFlag = true;
+		RepairAction();
     }
 
     void DisplayText(bool flag)
