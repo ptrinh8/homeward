@@ -47,6 +47,8 @@ public class Mining : MonoBehaviour
     private float accel;
     private float miningCircleInitialPosition;
 
+	private ParticleSystem rockParticleSystem;
+
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -93,6 +95,11 @@ public class Mining : MonoBehaviour
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
         time = 2500.0F * Time.deltaTime;
 
+		rockParticleSystem = this.gameObject.GetComponentInChildren<ParticleSystem>();
+		rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+		rockParticleSystem.renderer.sortingOrder = 1;
+		rockParticleSystem.loop = false;
+
         //SetMiningBar();
     }
 
@@ -116,6 +123,18 @@ public class Mining : MonoBehaviour
 
     public void Mine(int numberOfMinerals)
 	{
+		if (numberOfMinerals == 0)
+		{
+			rockParticleSystem.Emit (3);
+		}
+		else if (numberOfMinerals == 1)
+		{
+			rockParticleSystem.Emit (6);
+		}
+		else if (numberOfMinerals == 2)
+		{
+			rockParticleSystem.Emit (10);
+		}
 		audioController.PlayMiningSound();
 		MineSupportFunction(numberOfMinerals);
 		SetMiningBarInvisible();

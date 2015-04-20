@@ -747,7 +747,11 @@ public class PlayerController : MonoBehaviour
 							Item item = GameObject.Find("Oxygen").GetComponent<Item>();
 							playerInventory.GetComponent<Inventory>().AddItem(item);
 						}
-
+						if (Input.GetKeyDown(KeyCode.N))
+						{
+							Item item = GameObject.Find("MiningProbe").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+						}
                         if (Input.GetKeyDown(KeyCode.Y))
                         {
                             if (holdingBuildingTool == true)
