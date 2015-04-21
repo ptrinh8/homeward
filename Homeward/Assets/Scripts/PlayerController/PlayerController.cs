@@ -210,6 +210,17 @@ public class PlayerController : MonoBehaviour
     
     private Camera mainCamera;
 
+	private float miningBarFlashTimer;
+	private float miningBarFlashTime;
+	private int miningBarFlashNumber;
+	private int miningBarFlashCount;
+	private Color miningBarDefaultColor;
+	private Color miningBarSucceedColor;
+	private Color miningBarFailColor;
+	private bool miningBarAlternate;
+	private bool miningBarSuccess;
+	private bool miningBarFlashing;
+
     public static bool pauseFlag;
 
     //Taylor
@@ -318,55 +329,58 @@ public class PlayerController : MonoBehaviour
 	
 	public void AnimateMiningBar()
 	{
-		Debug.Log (GetNormalizedPosition());
-		if (goingUp)
+		//Debug.Log (GetNormalizedPosition());
+		if (miningBarFlashing == false)
 		{
-			if (GetNormalizedPosition() <= 0.5f)
+			if (goingUp)
 			{
-				accel += 0.01f;
-				addition += accel;
-			}
-			else if (0.5f < GetNormalizedPosition())
-			{
-				if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
+				if (GetNormalizedPosition() <= 0.5f)
+				{
+					accel += 0.01f;
+					addition += accel;
 				}
+				else if (0.5f < GetNormalizedPosition())
+				{
+					if (addition > accel) 
+					{ 
+						accel -= 0.01f;
+						addition -= accel; 
+					}
+				}
+				
+				miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
+			}
+			else
+			{
+				if (GetNormalizedPosition() <= 0.5f)
+				{
+					if (addition > accel) 
+					{ 
+						accel -= 0.01f;
+						addition -= accel; 
+					}
+				}
+				else if (0.5f < GetNormalizedPosition())
+				{
+					accel += 0.01f;
+					addition += accel;
+				}
+				
+				miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
 			}
 			
-			miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
-		}
-		else
-		{
-			if (GetNormalizedPosition() <= 0.5f)
+			if (GetNormalizedPosition() < 0)
 			{
-				if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
-				}
+				goingUp = true;
+				addition = 1.0f;
+				accel = 0.2f;
 			}
-			else if (0.5f < GetNormalizedPosition())
+			else if (GetNormalizedPosition() > 1)
 			{
-				accel += 0.01f;
-				addition += accel;
+				goingUp = false;
+				addition = 1.0f;
+				accel = 0.2f;
 			}
-			
-			miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
-		}
-		
-		if (GetNormalizedPosition() < 0)
-		{
-			goingUp = true;
-			addition = 1.0f;
-			accel = 0.2f;
-		}
-		else if (GetNormalizedPosition() > 1)
-		{
-			goingUp = false;
-			addition = 1.0f;
-			accel = 0.2f;
 		}
 	}
 
@@ -494,6 +508,14 @@ public class PlayerController : MonoBehaviour
 
 		SetMiningBar();
 		miningBarActive = false;
+		miningBarFlashTime = .1f;
+		miningBarFlashNumber = 3;
+		miningBarDefaultColor = new Color(1f, 1f, 1f, 1f);
+		miningBarSucceedColor = new Color(0f, 1f, 0f, 1f);
+		miningBarFailColor = new Color(1f, 0f, 0f, 1f);
+		miningBarAlternate = false;
+		miningBarFlashCount = 0;
+
 
 		playerParticleSystem = GameObject.Find ("Particle System").GetComponent<ParticleSystem>();
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
@@ -502,6 +524,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+		if (miningBarFlashing == true)
+		{
+			miningBarFlashTimer += Time.deltaTime;
+			StartCoroutine(FlashMiningBar());
+		}
 		if (miningBarActive == true)
 		{
 			AnimateMiningBar();
@@ -682,16 +709,25 @@ public class PlayerController : MonoBehaviour
 							{
 								if (0.45f < GetNormalizedPosition() && GetNormalizedPosition() < 0.55f)
 								{
+									miningBarFlashNumber = 5;
+									miningBarSuccess = true;
+									miningBarFlashing = true;
 									Debug.Log("Great!");
 									nearestMineral.Mine (2);
 								}
 								else if ((0.4f < GetNormalizedPosition() && GetNormalizedPosition() < 0.45f) || (0.55f < GetNormalizedPosition() && GetNormalizedPosition() < 0.6f))
 								{
+									miningBarFlashNumber = 3;
+									miningBarSuccess = true;
+									miningBarFlashing = true;
 									Debug.Log("Nice!");
 									nearestMineral.Mine (1);
 								}
 								else
 								{
+									miningBarFlashNumber = 3;
+									miningBarSuccess = false;
+									miningBarFlashing = true;
 									nearestMineral.Mine (0);
 									Debug.Log("No good");
 								}
@@ -1510,6 +1546,60 @@ public class PlayerController : MonoBehaviour
         }
         yield return new WaitForSeconds(30f);
     }
+
+	IEnumerator FlashMiningBar()
+	{
+		Debug.Log ("flashing");
+		if (miningBarFlashCount < miningBarFlashNumber)
+		{
+			if (miningBarFlashTimer > miningBarFlashTime)
+			{
+				Debug.Log ("timer");
+				if (miningBarSuccess == true)
+				{
+					Debug.Log ("success");
+					if (miningBarAlternate == false)
+					{
+						miningBar.GetComponent<Image>().color = miningBarSucceedColor;
+						miningBarAlternate = true;
+					}
+					else if (miningBarAlternate == true)
+					{
+						miningBar.GetComponent<Image>().color = miningBarDefaultColor;
+						miningBarAlternate = false;
+					}
+				}
+				else
+				{
+					Debug.Log ("failure");
+					if (miningBarAlternate == false)
+					{
+						miningBar.GetComponent<Image>().color = miningBarFailColor;
+						miningBarAlternate = true;
+					}
+					else if (miningBarAlternate == true)
+					{
+						miningBar.GetComponent<Image>().color = miningBarDefaultColor;
+						miningBarAlternate = false;
+					}
+				}
+				miningBarFlashCount++;
+				miningBarFlashTimer = 0f;
+			}
+		}
+		else
+		{
+			miningBar.GetComponent<Image>().color = miningBarDefaultColor;
+			miningBarFlashCount = 0;
+			miningBarFlashTimer = 0f;
+			miningBarFlashing = false;
+			if (nearestMineral != null)
+			{
+				nearestMineral.SetMiningBarInvisible();
+			}
+		}
+		yield return null;
+	}
 
     void Quit()
     {
