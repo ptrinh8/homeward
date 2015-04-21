@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// this class is for the disableable wall in some modules
 public class Wall : MonoBehaviour {
 
     private SpriteRenderer spriteRenderer;
@@ -20,9 +21,13 @@ public class Wall : MonoBehaviour {
         if (Building.isDeploying) 
         {
             if (spriteRenderer.color != deployingColor)
+			{
                 spriteRenderer.color = deployingColor;
+			}
         } 
         else if (spriteRenderer.color != originalColor)
+		{
             spriteRenderer.color = originalColor;
+		}
 	}
 }

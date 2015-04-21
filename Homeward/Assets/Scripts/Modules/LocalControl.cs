@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+// attached to each module
+// handle the module itself
 public class LocalControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
@@ -63,26 +65,17 @@ public class LocalControl : MonoBehaviour {
 
 	public bool IsEnter 
 	{
-		get {
-			return isEnter;
-		}
-		set {
-			this.isEnter = value;
-		}
+		get { return isEnter;}
+		set { this.isEnter = value;}
 	}
 	public bool IsPowered 
 	{
-		get {
-			return isPowered;
-		}
+		get { return isPowered;}
 	}
 
     public bool IsBroken
     {
-        get
-        {
-            return isBroken;
-        }
+        get { return isBroken;}
     }
 
 	// Use this for initialization
@@ -100,8 +93,7 @@ public class LocalControl : MonoBehaviour {
 		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
 		flag = true;
-        if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
-            isEnter = true;
+        if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag) isEnter = true;
         else isEnter = false;
 
 		player = GameObject.FindWithTag("Player");
@@ -126,41 +118,10 @@ public class LocalControl : MonoBehaviour {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
             }
 		}
-		/**
-		if (CentralControl.isInside) {
-			if (spriteRenderer.material != GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material){
-				center.SendMessage("ChangeMaterialToDefault", true, SendMessageOptions.RequireReceiver);
-			}
-		} else {
-			if (spriteRenderer.material != GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material){
-				center.SendMessage("ChangeMaterialToDefault", false, SendMessageOptions.RequireReceiver);
-			}
-		}
-		**/
-
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
 	}
-
-	/**
-	void ChangeMaterialToDefault(bool toDefault) {
-		Debug.Log(toDefault);
-		if (toDefault){
-			spriteRenderer.material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
-			foreach (Transform child in transform){
-				if (child.gameObject.GetComponent<SpriteRenderer>() != null)
-					child.gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
-			}
-		} else {
-			spriteRenderer.material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
-			foreach (Transform child in transform){
-				if (child.gameObject.GetComponent<SpriteRenderer>() != null)
-					child.gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DayNightReactingMaterial").GetComponent<SpriteRenderer>().material;
-			}
-		}
-	}
-	**/
 
 	void DoorWayTriggered (bool isDoorway) {
 		if (isDoorway)
@@ -211,16 +172,8 @@ public class LocalControl : MonoBehaviour {
 				moduleStatusText.text = "Off";
 			else if (powerLevel >= minimumPowerLevel) {
 				isPowered = true;
-                //foreach (Transform child in transform) 
-                //if (child.gameObject.tag == "Machine") {
-                //    child.gameObject.SetActive(true);
-                //}
 			} else {
 				isPowered = false;
-                //foreach (Transform child in transform) {
-                //    if (child.gameObject.tag == "Machine")
-                //        child.gameObject.SetActive(false);
-                //}
 			}
 		}
 		if (powerConsumption != 0 && !isBroken)
@@ -232,18 +185,9 @@ public class LocalControl : MonoBehaviour {
 		isOn = flag;
 		center.SendMessage("CheckPowerSupply");
 		if (!isOn) {
-            //foreach (Transform child in transform) 
-            //    if (child.gameObject.tag == "Machine") {
-            //        child.gameObject.SetActive(false);
-            //    }
 			if (center.GetComponent<CentralControl>().isEnterOutpost)
 				spriteRenderer.sprite = turnedOffSprite;
 		} else if (isPowered){
-            //foreach (Transform child in transform)
-            //    if (child.gameObject.tag == "Machine")
-            //    {
-            //        child.gameObject.SetActive(true);
-            //    }
 			spriteRenderer.sprite = indoorSprite;
 		} else spriteRenderer.sprite = noPowerSprite;
 		spriteRenderer.sortingOrder = -3;
@@ -252,7 +196,6 @@ public class LocalControl : MonoBehaviour {
 	void OnTriggerStay2D(Collider2D other)
     {
 		if (other.gameObject.tag == "Player"){
-			//Debug.Log("Press T to turn on/off module");
 			if (Input.GetKeyDown(turnKey) && !isBroken) {
 				SwitchTriggered(!isOn);
 			}
@@ -309,7 +252,7 @@ public class LocalControl : MonoBehaviour {
 						{
 							repairArrowQueueFlag = !repairArrowQueueFlag;
 							PlayerController.showRepairArrows = repairArrowQueueFlag;
-							repairArrowQueue.SendMessage("Reset");
+							repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
 							repairArrowQueue.SetActive(repairArrowQueueFlag);
 						}
 						if (repairArrowQueue.GetComponent<ArrowQueueControl>().CorrectInput)
@@ -321,10 +264,6 @@ public class LocalControl : MonoBehaviour {
 	                }
 	            }
 	        }
-		}
-		else
-		{
-			//repairArrowQueue.SetActive(false);
 		}
 
 		if (durability > 0) {
@@ -346,10 +285,6 @@ public class LocalControl : MonoBehaviour {
             else 
 			{
 				durability = 100;
-				repairArrowQueueFlag = false;
-				PlayerController.showRepairArrows = false;
-				repairArrowQueue.SendMessage("Reset");
-				repairArrowQueue.SetActive(false);
 			}
         }
         else
@@ -359,8 +294,11 @@ public class LocalControl : MonoBehaviour {
             SwitchTriggered(true);
             flag = true;
 			// arrow reset
-			repairArrowQueue.SendMessage("Reset");
         }
+		repairArrowQueueFlag = false;
+		PlayerController.showRepairArrows = false;
+		repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
+		repairArrowQueue.SetActive(false);
         player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
     }
 
@@ -380,7 +318,6 @@ public class LocalControl : MonoBehaviour {
         {
             if (isEnter)
             {
-                //Debug.Log();
                 if (moduleStatusText.enabled == false)
                 {
                     moduleStatusText.enabled = true;

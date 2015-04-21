@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// This script is attached to doorway(gameobject in any finished module) to detect whether the player is in
+// This script is attached to doorway(gameobject in any finished module) to detect whether the player is entered
 public class Enterable : MonoBehaviour {
 
 	public bool xEnter;	// whether the doorway open for x axis
@@ -38,18 +38,32 @@ public class Enterable : MonoBehaviour {
 	void OnTriggerExit2D (Collider2D other) {
 		if (other.gameObject.tag == "Player") {
 			// should not show indoor if player enters and exits the trigger in a "z" route
-			if (xEnter) {
+			if (xEnter) 
+			{
 				// should not show indoor if player enters and exits the trigger in same direction
 				if (playerController.x == x)
+				{
 					if (gameObject.transform.root.gameObject.tag == "HabitatModule")
+					{
 						gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+					}
 					else 
+					{
 						gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-			} else if (playerController.y == y)
+					}
+				}
+			} 
+			else if (playerController.y == y)
+			{
 				if (gameObject.transform.root.gameObject.tag == "HabitatModule")
+				{
 					gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+				}
 				else 
+				{
 					gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+				}
+			}
 		}
 	}	
 }

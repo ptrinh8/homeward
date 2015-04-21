@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+// attach to Repair Arrow Queue gameobject
+// handle the arrow queue when repairing
 public class ArrowQueueControl : MonoBehaviour {
 
 	public GameObject arrow;
@@ -14,14 +16,15 @@ public class ArrowQueueControl : MonoBehaviour {
 
 	public bool CorrectInput
 	{
-		get {return this.correctInput;}
-		set {this.correctInput = value;}
+		get { return this.correctInput;}
+		set { this.correctInput = value;}
 	}
 
 	void Awake () {
 		alphaPointFive = Color.white;
 		alphaPointFive.a = 0.5f;
 	}
+
 	// Use this for initialization
 	void Start () {
 		Reset();
@@ -29,7 +32,6 @@ public class ArrowQueueControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//transform.position = GameObject.Find("MainPlayer").transform.position + new Vector3(10, 0, 0);
 		if (Input.GetKeyDown(KeyCode.UpArrow))
 		{
 			currentInput = 1;
