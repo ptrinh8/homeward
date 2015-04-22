@@ -15,6 +15,8 @@ public class Buildable : MonoBehaviour
 	private KeyCode cancelKey = KeyCode.E;
 	private Color color;
 
+	private bool building;
+
     private GameObject player;
     private float buildActionTime;
     private bool buildingFlag;
@@ -47,6 +49,7 @@ public class Buildable : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         buildingFlag = true;
         buildActionTime = 0f;
+		building = false;
 
 		// building bar
 		buildingBarBackground = GameObject.Find("Canvas").transform.FindChild("Building Bar Background").gameObject;
@@ -61,34 +64,10 @@ public class Buildable : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-		if (buildingBarBackgroundFlashing == true)
+		if (buildingBarBackgroundFlashing == true && building == false)
 		{
 			buildingBarBackgroundFlashTimer += Time.deltaTime;
-
-			if (buildingBarBackgroundFlashCount < buildingBarBackgroundFlashNumber)
-			{
-				if (buildingBarBackgroundFlashTimer > buildingBarBackgroundFlashTime)
-				{
-					if (buildingBarBackgroundFlashAlternate == true)
-					{
-						buildingBarBackground.GetComponent<Image>().color = Color.white;
-						buildingBarBackgroundFlashAlternate = false;
-					}
-					else if (buildingBarBackgroundFlashAlternate == false)
-					{
-						buildingBarBackground.GetComponent<Image>().color = Color.black;
-						buildingBarBackgroundFlashAlternate = true;
-					}
-					buildingBarBackgroundFlashTimer = 0f;
-					buildingBarBackgroundFlashCount++;
-				}
-			}
-			else
-			{
-				buildingBarBackgroundFlashTimer = 0f;
-				buildingBarBackgroundFlashCount = 0;
-				buildingBarBackgroundFlashing = false;
-			}
+			StartCoroutine(FlashBuildingBar());
 		}
 
 		if (buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>() != null)
@@ -118,6 +97,56 @@ public class Buildable : MonoBehaviour
 			// else fail?
 		}
 
+		if (building == true)
+		{
+			if (!buildingBarBackground.activeSelf)
+			{
+				if (buildingFlag)
+				{
+					buildingBarBackground.SetActive(true);
+					buildingBarBackground.GetComponent<Image>().color = Color.gray;
+					buildingBarBackground.transform.position = GameObject.Find("Canvas").transform.position + new Vector3(8, -10, 0);
+					buildingBarFillAmount = 0;
+				}
+			}
+			else
+			{
+				buildingBarBackground.transform.position = GameObject.Find("Canvas").transform.position + new Vector3(8, -10, 0);
+				if (buildingBarFillAmount <= 1)
+				{
+					buildingBarFillAmount +=  fillspeed;
+				}
+				else
+				{
+					buildingBarBackground.SetActive(false);
+				}
+			}
+		}
+		else
+		{
+			if (buildingFlag) 
+			{
+				buildingBarBackgroundFlashing = true;
+				buildingFlag = false;
+				if (buildingBarFillAmount >= 0 && buildingBarFillAmount <= 0.85f)
+				{
+					progress = 0;
+				}
+				else if (buildingBarFillAmount > 0.85f && buildingBarFillAmount <= 0.93f)
+				{
+					progress = 1;
+				}
+				else if (buildingBarFillAmount > 0.93f && buildingBarFillAmount <= 0.98f)
+				{
+					progress = 2;
+				}
+				else if (buildingBarFillAmount > 0.98f && buildingBarFillAmount <= 1f)
+				{
+					progress = 3;
+				}
+			}
+		}
+
 		if (buildingProgress == materialsRequired) 
         {
 			Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
@@ -135,52 +164,11 @@ public class Buildable : MonoBehaviour
 				{
 					if (Input.GetKey(buildKey))
 					{
-						if (!buildingBarBackground.activeSelf)
-						{
-							if (buildingFlag)
-							{
-								buildingBarBackground.SetActive(true);
-								buildingBarBackground.GetComponent<Image>().color = Color.gray;
-								buildingBarBackground.transform.position = GameObject.Find("Canvas").transform.position + new Vector3(8, -10, 0);
-								buildingBarFillAmount = 0;
-							}
-						}
-						else
-						{
-							buildingBarBackground.transform.position = GameObject.Find("Canvas").transform.position + new Vector3(8, -10, 0);
-							if (buildingBarFillAmount <= 1)
-							{
-								buildingBarFillAmount +=  fillspeed;
-							}
-							else
-							{
-								buildingBarBackground.SetActive(false);
-							}
-						}
+						building = true;
 					}
 					else
 					{
-						if (buildingFlag) 
-						{
-							buildingBarBackgroundFlashing = true;
-							buildingFlag = false;
-							if (buildingBarFillAmount >= 0 && buildingBarFillAmount <= 0.85f)
-							{
-								progress = 0;
-							}
-							else if (buildingBarFillAmount > 0.85f && buildingBarFillAmount <= 0.93f)
-							{
-								progress = 1;
-							}
-							else if (buildingBarFillAmount > 0.93f && buildingBarFillAmount <= 0.98f)
-							{
-								progress = 2;
-							}
-							else if (buildingBarFillAmount > 0.98f && buildingBarFillAmount <= 1f)
-							{
-								progress = 3;
-							}
-						}
+						building = false;
 					}
 				}
 			}
@@ -230,12 +218,40 @@ public class Buildable : MonoBehaviour
 		progress = 0;
 	}
 
+	IEnumerator FlashBuildingBar()
+	{
+		if (buildingBarBackgroundFlashCount < buildingBarBackgroundFlashNumber)
+		{
+			if (buildingBarBackgroundFlashTimer > buildingBarBackgroundFlashTime)
+			{
+				if (buildingBarBackgroundFlashAlternate == true)
+				{
+					buildingBarBackground.GetComponent<Image>().color = Color.white;
+					buildingBarBackgroundFlashAlternate = false;
+				}
+				else if (buildingBarBackgroundFlashAlternate == false)
+				{
+					buildingBarBackground.GetComponent<Image>().color = Color.black;
+					buildingBarBackgroundFlashAlternate = true;
+				}
+				buildingBarBackgroundFlashTimer = 0f;
+				buildingBarBackgroundFlashCount++;
+			}
+		}
+		else
+		{
+			buildingBarBackgroundFlashTimer = 0f;
+			buildingBarBackgroundFlashCount = 0;
+			buildingBarBackgroundFlashing = false;
+		}
+		yield return null;
+	}
+
 	void Release()
 	{
 		if (buildingBarFillAmount > 0)
 		{
 			buildingBarFillAmount -= fillspeed;
-			buildingBarBackgroundFlashing = false;
 			if (buildingBarFillAmount < 0) {buildingBarFillAmount = 0;}
 		}
 		else 
