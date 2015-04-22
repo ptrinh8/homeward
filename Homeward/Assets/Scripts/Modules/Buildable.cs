@@ -124,24 +124,28 @@ public class Buildable : MonoBehaviour
 		}
 		else
 		{
-			if (buildingFlag) 
+			if (buildingFlag == true && buildingBarBackgroundFlashing == false) 
 			{
 				buildingBarBackgroundFlashing = true;
 				buildingFlag = false;
 				if (buildingBarFillAmount >= 0 && buildingBarFillAmount <= 0.85f)
 				{
+					buildingBarBackgroundFlashNumber = 0;
 					progress = 0;
 				}
 				else if (buildingBarFillAmount > 0.85f && buildingBarFillAmount <= 0.93f)
 				{
+					buildingBarBackgroundFlashNumber = 3;
 					progress = 1;
 				}
 				else if (buildingBarFillAmount > 0.93f && buildingBarFillAmount <= 0.98f)
 				{
+					buildingBarBackgroundFlashNumber = 6;
 					progress = 2;
 				}
 				else if (buildingBarFillAmount > 0.98f && buildingBarFillAmount <= 1f)
 				{
+					buildingBarBackgroundFlashNumber = 9;
 					progress = 3;
 				}
 			}
