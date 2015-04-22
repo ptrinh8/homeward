@@ -12,6 +12,8 @@ public class ArrowQueueControl : MonoBehaviour {
 	private int arrowsCount, currentPosition;
 	private int currentInput;// 1 stands for UP; 2 stands for LEFT; 3 stands for DOWN; 4 stands for RIGHT
 
+	private AudioController audioController;
+
 	public bool CorrectInput
 	{
 		get {return this.correctInput;}
@@ -25,6 +27,8 @@ public class ArrowQueueControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Reset();
+
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -58,6 +62,7 @@ public class ArrowQueueControl : MonoBehaviour {
 				if (currentInput == arrows[currentPosition].GetComponent<Arrow>().Direction)
 				{
 					// current input correct
+					audioController.PlayRepairSound(1);
 					arrows[currentPosition].GetComponent<Image>().color = Color.white;
 					currentPosition ++;
 					if (currentPosition >= arrows.Count)
