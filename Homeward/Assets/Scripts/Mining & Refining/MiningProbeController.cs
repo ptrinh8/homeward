@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
-public class MiningProbeController : MonoBehaviour {
+public class MiningProbeController : MonoBehaviour
+{
 
     GameObject player;
 
@@ -9,10 +11,21 @@ public class MiningProbeController : MonoBehaviour {
 
     public GameObject probeInventory;
 
-	void Start () 
+    int miningCount;
+
+    int maxMiningCount;
+
+    GameObject[] tiles;
+
+    GameObject GameObject;
+
+
+    void Start()
     {
         player = GameObject.Find("MainPlayer");
         spawnFlag = true;
+        miningCount = 0;
+        maxMiningCount = 0;
 
         gameObject.transform.SetParent(player.transform);
         gameObject.transform.position = player.transform.position;
@@ -29,27 +42,61 @@ public class MiningProbeController : MonoBehaviour {
         probeInventory.GetComponent<Inventory>().SetSlotsActive(false);
         probeInventory.transform.SetParent(GameObject.Find("Canvas").transform);
         UIInventory.SetModuleInventory(null);
-	}
-	
-	void Update () 
+
+        GameObject = GameObject.Find("GameObject");
+    }
+
+
+    void Update()
     {
 
         if (Input.GetKeyDown(KeyCode.H) && spawnFlag)
         {
+            tiles = GameObject.FindGameObjectsWithTag("FinalTextures");
+
+            PlanetTileController.probeSpawnedFlag = true;
+
+            foreach (GameObject tile in tiles)
+            {
+                if (playerIsInside(tile))
+                {
+                    Debug.Log("player is inside of " + tile.name);
+                    int[] extractableValues = GameObject.GetComponent<PCG_Tiles>().ExtractableValues;
+                    string num = tile.name.Remove(0, 14);
+                    maxMiningCount = extractableValues[Int32.Parse(num)];
+                }
+            }
+
             spawnFlag = false;
 
             gameObject.transform.SetParent(player.transform.parent);
             gameObject.renderer.enabled = true;
 
-            InvokeRepeating("Mine", 3, 3); // mines once in ten seconds
+            InvokeRepeating("Mine", 3, 3); // mines once in 3 seconds
         }
-	}
+    }
+
+    bool playerIsInside(GameObject tile)
+    {
+        if (tile.GetComponent<PlanetTileController>().playerIsInside)
+        {
+            Debug.Log("PlayerIsInside");
+
+            return true;
+        }
+
+        return false;
+    }
 
     void Mine()
     {
-        Item item = GameObject.Find("Material").GetComponent<Item>();
-        probeInventory.GetComponent<Inventory>().AddItem(item);
-        probeInventory.GetComponent<Inventory>().DebugShowInventory();
+        if (miningCount < maxMiningCount)
+        {
+            Item item = GameObject.Find("Mineral").GetComponent<Item>();
+            probeInventory.GetComponent<Inventory>().AddItem(item);
+            probeInventory.GetComponent<Inventory>().DebugShowInventory();
+            miningCount++;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

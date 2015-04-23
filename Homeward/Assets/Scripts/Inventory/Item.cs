@@ -28,7 +28,8 @@ public enum ItemName
 	RepairingToolEquipped,
 	Wire,
 	Screw,
-	Metal
+	Metal,
+	MiningProbe
 }
 
 [System.Serializable]
@@ -76,6 +77,8 @@ public class Item : MonoBehaviour
 			case ItemName.Screw:
 				break;
 			case ItemName.Metal:
+				break;
+			case ItemName.MiningProbe:
 				break;
         }
     }

@@ -21,6 +21,7 @@ public class Building : MonoBehaviour
     private GameObject oxygenModuleDeploying;
     private GameObject UIModuleDeploying;
 	private GameObject buildingModuleDeploying;
+	private GameObject miningProbeModuleDeploying;
 
     private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
     private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
@@ -36,6 +37,7 @@ public class Building : MonoBehaviour
     private Deployable oxygenModuleDeployable;
     private Deployable UIModuleDeployable;
 	private Deployable buildingModuleDeployable;
+	private Deployable miningProbeModuleDeployable;
 
     private KeyCode habitatModuleKey = KeyCode.Alpha1;
     private KeyCode connectorModuleKey = KeyCode.Alpha2;
@@ -51,6 +53,7 @@ public class Building : MonoBehaviour
     private KeyCode oxygenModuleKey = KeyCode.F2;
     private KeyCode UIModuleKey = KeyCode.F3;
 	private KeyCode buildingModuleKey = KeyCode.F4;
+	private KeyCode miningProbeModuleKey = KeyCode.F5;
 
     private Dictionary<string, bool> moduleDictionary;
 
@@ -70,6 +73,7 @@ public class Building : MonoBehaviour
 	public static bool spawnAirlockModuleFlag;
     public static bool spawnOxygenModuleFlag;
 	public static bool spawnBuildingModuleFlag;
+	public static bool spawnMiningProbeModuleFlag;
 
     public List<GameObject> initialModules = new List<GameObject>();
     private int i = 0;  // initialize in order
@@ -115,6 +119,8 @@ public class Building : MonoBehaviour
         UIModuleDeploying.SetActive(false);
 		buildingModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Building Module/Building Module Deploying")) as GameObject;
 		buildingModuleDeploying.SetActive(false);
+		miningProbeModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Mining Probe Module/Mining Probe Module Deploying")) as GameObject;
+		miningProbeModuleDeploying.SetActive(false);
 
         habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
         connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
@@ -130,6 +136,7 @@ public class Building : MonoBehaviour
         oxygenModuleDeployable = oxygenModuleDeploying.GetComponent<Deployable>();
         UIModuleDeployable = UIModuleDeploying.GetComponent<Deployable>();
 		buildingModuleDeployable = buildingModuleDeploying.GetComponent<Deployable>();
+		miningProbeModuleDeployable = miningProbeModuleDeploying.GetComponent<Deployable>();
 
         moduleDictionary = new Dictionary<string, bool>();
         moduleDictionary.Add("HabitatModule", true);
@@ -146,6 +153,7 @@ public class Building : MonoBehaviour
         moduleDictionary.Add("OxygenModule", true);
         moduleDictionary.Add("UIModule", true);
 		moduleDictionary.Add("BuildingModule", true);
+		moduleDictionary.Add("MiningProbeModule", true);
         isDeploying = false;
 
         spawnHabitatModuleFlag = false;
@@ -161,6 +169,7 @@ public class Building : MonoBehaviour
         spawnAirlockModuleFlag = false;
         spawnOxygenModuleFlag = false;
 		spawnBuildingModuleFlag = false;
+		spawnMiningProbeModuleFlag = false;
 
         newGameFlag = true;
     }
@@ -240,6 +249,11 @@ public class Building : MonoBehaviour
 		{
 			buildingModuleDeployable.isDeploying = !buildingModuleDeployable.isDeploying;
 			buildingModuleDeploying.SetActive(buildingModuleDeployable.isDeploying);
+		}
+		if (miningProbeModuleDeployable.isDeploying && moduleDictionary["MiningProbeModule"])
+		{
+			miningProbeModuleDeployable.isDeploying = !miningProbeModuleDeployable.isDeploying;
+			miningProbeModuleDeploying.SetActive(miningProbeModuleDeployable.isDeploying);
 		}
 	}
 	
@@ -372,6 +386,14 @@ public class Building : MonoBehaviour
 				isDeploying = buildingModuleDeployable.isDeploying;
 			}
 
+			if (Input.GetKeyDown(miningProbeModuleKey))
+			{
+				NowBuilding("MiningProbeModule");
+				miningProbeModuleDeployable.isDeploying = !miningProbeModuleDeployable.isDeploying;
+				miningProbeModuleDeploying.SetActive(miningProbeModuleDeployable.isDeploying);
+				isDeploying = miningProbeModuleDeployable.isDeploying;
+			}
+
             spawnHabitatModuleFlag = false;
             spawnConnectorModuleFlag = false;
             spawnFoodModuleFlag = false;
@@ -385,6 +407,7 @@ public class Building : MonoBehaviour
             spawnAirlockModuleFlag = false;
             spawnOxygenModuleFlag = false;
 			spawnBuildingModuleFlag = false;
+			spawnMiningProbeModuleFlag = false;
         }
     }
 }

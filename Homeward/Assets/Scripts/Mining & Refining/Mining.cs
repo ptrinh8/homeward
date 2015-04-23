@@ -47,6 +47,8 @@ public class Mining : MonoBehaviour
     private float accel;
     private float miningCircleInitialPosition;
 
+	private ParticleSystem rockParticleSystem;
+
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -93,6 +95,11 @@ public class Mining : MonoBehaviour
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
         time = 2500.0F * Time.deltaTime;
 
+		rockParticleSystem = this.gameObject.GetComponentInChildren<ParticleSystem>();
+		rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+		rockParticleSystem.renderer.sortingOrder = 1;
+		rockParticleSystem.loop = false;
+
         //SetMiningBar();
     }
 
@@ -101,6 +108,12 @@ public class Mining : MonoBehaviour
         PlayerMiningState();
         StartDestoryMineCoroutine();
         MineralsValidations();
+        UpdateScreenSize();
+    }
+
+    void UpdateScreenSize()
+    {
+
     }
 
     void MineSupportFunction(int mineralsCount)
@@ -116,9 +129,21 @@ public class Mining : MonoBehaviour
 
     public void Mine(int numberOfMinerals)
 	{
+		if (numberOfMinerals == 0)
+		{
+			rockParticleSystem.Emit (3);
+		}
+		else if (numberOfMinerals == 1)
+		{
+			rockParticleSystem.Emit (6);
+		}
+		else if (numberOfMinerals == 2)
+		{
+			rockParticleSystem.Emit (10);
+		}
 		audioController.PlayMiningSound();
-
 		MineSupportFunction(numberOfMinerals);
+		SetMiningBarInvisible();
 	}
 
     IEnumerator DestroyMine()
@@ -152,7 +177,7 @@ public class Mining : MonoBehaviour
 
 	public void SetMiningBarVisible()
 	{
-		playerController.miningBarBackground.SetActive(true);
+        playerController.miningBarBackground.SetActive(true);
 		playerController.miningCircle.SetActive(true);
 		playerController.miningBarAimingSpot.SetActive(true);
 		playerController.AnimateMiningBar();
