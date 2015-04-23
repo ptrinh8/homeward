@@ -16,6 +16,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance repair;
 	private FMOD.Studio.EventInstance repairStart;
 	private FMOD.Studio.EventInstance repairEnd;
+	private FMOD.Studio.EventInstance buildingStart;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -30,6 +31,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairSelector;
 	private FMOD.Studio.ParameterInstance repairStartSelector;
 	private FMOD.Studio.ParameterInstance repairEndSelector;
+	private FMOD.Studio.ParameterInstance buildingStartSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -38,6 +40,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairInsideOutside;
 	private FMOD.Studio.ParameterInstance repairStartInsideOutside;
 	private FMOD.Studio.ParameterInstance repairEndInsideOutside;
+	private FMOD.Studio.ParameterInstance buildingStartInsideOutside;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
@@ -45,6 +48,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairAirlockPressure;
 	private FMOD.Studio.ParameterInstance repairStartAirlockPressure;
 	private FMOD.Studio.ParameterInstance repairEndAirlockPressure;
+	private FMOD.Studio.ParameterInstance buildingStartAirlockPressure;
 
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
@@ -525,6 +529,18 @@ public class AudioController : MonoBehaviour {
 				repairEnd.start();
 				repairEnd.release();
 			}
+		}
+	}
+
+	public void PlayBuildingSound(int buildingSound)
+	{
+		if (buildingSound == 1)
+		{
+			buildingStart = FMOD_StudioSystem.instance.GetEvent("event:/BuildingStart");
+			buildingStart.getParameter("Selector", out buildingStartSelector);
+			buildingStart.getParameter("InsideOutside", out buildingStartInsideOutside);
+			buildingStart.getParameter("AirlockPressure", out buildingStartAirlockPressure);
+			buildingStart.setValue(Random.Range (1f, 9f));
 		}
 	}
 	
