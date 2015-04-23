@@ -41,6 +41,7 @@ public class Deployable : MonoBehaviour {
 		else {
 			gameObject.SetActive(!CentralControl.isInside);
 		}
+
 		// Condition to detach the blueprint
 		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
 			Instantiate(moduleUnfinished, gameObject.transform.position, gameObject.transform.rotation);

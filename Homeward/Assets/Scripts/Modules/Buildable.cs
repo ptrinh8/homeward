@@ -5,8 +5,6 @@ using UnityEngine.UI;
 // This class is for handling detached blueprint
 public class Buildable : MonoBehaviour 
 {
-    //private ItemDatabase itemDatabase;
-    //private Inventory inventory;
 	public GameObject module;	// Completed module(prefabs)
 	public int materialsRequired;	// Materials required to complete the module
 	private int buildingProgress;	// Number of materials spend to build this module

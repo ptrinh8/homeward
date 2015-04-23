@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
+// attached to habitat module to handle all the module in the outpost
 public class CentralControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
@@ -18,7 +20,7 @@ public class CentralControl : MonoBehaviour {
 
     public List<GameObject> Locals
     {
-        get { return locals; }
+        get { return locals;}
     }
 
 	public int durability;
@@ -31,7 +33,6 @@ public class CentralControl : MonoBehaviour {
 	private int pos;
 
     public GameObject refineryModule;
-    //public GameObject foodModule;
     public GameObject airlockModule;
 
     /*** UI module flags by Takahide ***/
@@ -44,9 +45,14 @@ public class CentralControl : MonoBehaviour {
     private GameObject player;
     private float repairActionTime;
     private bool repairingFlag;
+	private bool repairArrowQueueFlag;
+
+	private GameObject repairArrowQueue;
 
 	// Use this for initialization
 	void Start () {
+		repairArrowQueueFlag = false;
+
 		locals = new List<GameObject>(); 
 		spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		isEnter = true;
@@ -55,7 +61,7 @@ public class CentralControl : MonoBehaviour {
 		ShowInside();
 		moduleStatusText = gameObject.GetComponentInChildren<Text>();
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-		durability = 100;
+		durability = 10;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
 
         /*** UI module flags ***/
@@ -65,7 +71,7 @@ public class CentralControl : MonoBehaviour {
 
         player = GameObject.FindWithTag("Player");
         repairingFlag = true;
-        repairActionTime = 0f;
+        repairActionTime = 1f;
 
         if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
             Invoke("InitializeRefineryModule", Time.deltaTime);
@@ -74,6 +80,8 @@ public class CentralControl : MonoBehaviour {
         GameObject moduleControl = Instantiate(Resources.Load("ModuleControl/ModuleControl")) as GameObject;
         moduleControl.SendMessage("OutpostGenerated", gameObject);
 		gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
+
+		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
 	}
 
     void InitializeRefineryModule()
@@ -279,22 +287,30 @@ public class CentralControl : MonoBehaviour {
 		else
 			moduleStatusText.text = "Broken";
 		
-		if (isEnter) {
-            if (Input.GetKeyDown(repairKey))
-            {
-                if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
-                {
-                    if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
-                    {
-                        if (repairingFlag)
-                        {
-                            repairingFlag = false;
-                            RepairAction();
-                            Invoke("TimeWait", repairActionTime);
-                        }
-                    }
-                }
-            }
+		if (isEnter) 
+		{
+			if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
+			{
+				if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
+				{
+					if (repairingFlag)
+					{
+						if (Input.GetKeyDown(repairKey))
+						{
+							repairArrowQueueFlag = !repairArrowQueueFlag;
+							PlayerController.showRepairArrows = repairArrowQueueFlag;
+							repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
+							repairArrowQueue.SetActive(repairArrowQueueFlag);
+						}
+						if (repairArrowQueue.GetComponent<ArrowQueueControl>().CorrectInput)
+						{
+							repairArrowQueue.GetComponent<ArrowQueueControl>().CorrectInput = false;
+							repairingFlag = false;
+							Invoke("TimeWait", repairActionTime);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -306,19 +322,27 @@ public class CentralControl : MonoBehaviour {
             {
                 durability += 10;
             }
-            else durability = 100;
+            else 
+			{
+				durability = 100;
+			}
         }
         else
         {
             durability += 10;
             isBroken = false;
         }
+		repairArrowQueueFlag = false;
+		PlayerController.showRepairArrows = false;
+		repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
+		repairArrowQueue.SetActive(false);
         player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
     }
 
     void TimeWait()
     {
         repairingFlag = true;
+		RepairAction();
     }
 
     void DisplayText(bool flag)

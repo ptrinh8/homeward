@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+// random direction arrow generation
 public class Arrow : MonoBehaviour {
 
 	public Sprite upArrowSprite;

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// class attaches to air panel gameobject
+// handle air panel interaction
 public class AirPanel : MonoBehaviour {
 
     private KeyCode airLockInteractKey = KeyCode.F;
@@ -17,17 +19,6 @@ public class AirPanel : MonoBehaviour {
         }
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
     }
-
-    //void OnTriggerStay2D(Collider2D other)
-    //{
-    //    if (other.gameObject.tag == "Player")
-    //    {
-    //        if (Input.GetKeyDown(airLockInteractKey))
-    //        {
-    //            gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
-    //        }
-    //    }
-    //}
 
     void OnTriggerEnter2D(Collider2D other)
     {

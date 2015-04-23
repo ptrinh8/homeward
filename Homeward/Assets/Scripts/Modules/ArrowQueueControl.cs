@@ -29,7 +29,6 @@ public class ArrowQueueControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//transform.position = GameObject.Find("MainPlayer").transform.position + new Vector3(10, 0, 0);
 		if (Input.GetKeyDown(KeyCode.UpArrow))
 		{
 			currentInput = 1;
