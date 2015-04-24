@@ -99,8 +99,6 @@ public class Mining : MonoBehaviour
 		rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		rockParticleSystem.renderer.sortingOrder = 1;
 		rockParticleSystem.loop = false;
-
-        //SetMiningBar();
     }
 
     void Update()
@@ -108,12 +106,6 @@ public class Mining : MonoBehaviour
         PlayerMiningState();
         StartDestoryMineCoroutine();
         MineralsValidations();
-        UpdateScreenSize();
-    }
-
-    void UpdateScreenSize()
-    {
-
     }
 
     void MineSupportFunction(int mineralsCount)
@@ -152,27 +144,6 @@ public class Mining : MonoBehaviour
 		SetMiningBarInvisible();
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
-        
-    }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-			/*
-			if (Input.GetKeyDown(miningKey) && playerController.MiningToolCheck() == true)
-			{
-            	miningBarBackground.SetActive(true);
-            	miningCircle.SetActive(true);
-            	miningBarAimingSpot.SetActive(true);
-			}*/
-			/*
-			miningBarBackground.SetActive(true);
-			miningCircle.SetActive(true);
-			miningBarAimingSpot.SetActive(true);*/
-        }
-
-        timer = 0.0f;
     }
 
 	public void SetMiningBarVisible()
@@ -192,13 +163,10 @@ public class Mining : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        timer = Time.time;
-
         if (other.gameObject.tag == "Player") 
 		{
 			playerController.nearestMineral = this;
 			playerInMiningPosition = true;
-            //AnimateMiningBar();
 		}
     }
 
@@ -208,6 +176,7 @@ public class Mining : MonoBehaviour
 		{ 
 			playerController.nearestMineral = null;
 			playerInMiningPosition = false;
+            SetMiningBarInvisible();
 		}
     }
 

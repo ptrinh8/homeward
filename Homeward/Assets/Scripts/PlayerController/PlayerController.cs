@@ -334,7 +334,6 @@ public class PlayerController : MonoBehaviour
 			}
 
 			miningBarCurrentPosition += (addition / miningBarBackgroundRect.sizeDelta.x);
-			//miningCircle.transform.localPosition += new Vector3(addition % 100.0f, 0.0f);
 		}
 		else
 		{
@@ -353,7 +352,6 @@ public class PlayerController : MonoBehaviour
 			}
 
 			miningBarCurrentPosition -= (addition / miningBarBackgroundRect.sizeDelta.x);
-			//miningCircle.transform.localPosition -= new Vector3(addition % 100.0f, 0.0f);
 		}
 
 		miningCircle.GetComponent<RectTransform>().localPosition = new Vector2(miningBarCurrentPosition * miningBarBackgroundRect.sizeDelta.x - (miningBarBackgroundRect.sizeDelta.x / 2), 0.0f);
@@ -606,7 +604,6 @@ public class PlayerController : MonoBehaviour
                 songSilenceTimer += Time.deltaTime;
                 if (songSilenceTimer > songSilenceLength)
                 {
-                    //Debug.Log("silence over");
                     if (isSongPlaying == false)
                     {
                         audioController.MusicControl(1, songSelected);
@@ -616,7 +613,6 @@ public class PlayerController : MonoBehaviour
             }
             else if (isSongQueued == false)
             {
-                // Debug.Log ("starting coroutine");
                 StartCoroutine(MusicTrigger());
             }
 
@@ -650,8 +646,6 @@ public class PlayerController : MonoBehaviour
                 isDead = true;
             }
 
-
-
             if (currentHealth > 0 && isDead == false)
             {
                 if (isSleeping == false)
@@ -674,7 +668,6 @@ public class PlayerController : MonoBehaviour
                     {
                         showPlayerInventory = !showPlayerInventory;
                     }
-
 
                     if (Input.GetKeyDown(KeyCode.F))
                     {
@@ -702,7 +695,6 @@ public class PlayerController : MonoBehaviour
 							{
 								Debug.Log ("Animating");
 								nearestMineral.SetMiningBarVisible();
-								//AnimateMiningBar();
 								miningBarActive = true;
 							}
                         }
@@ -719,13 +711,13 @@ public class PlayerController : MonoBehaviour
                         playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                         ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
 
-                        if (Input.GetKeyDown(KeyCode.P)) // p is temporary. Delete this once you find how to add item.
+                        if (Input.GetKeyDown(KeyCode.P))
                         {
                             Item item = GameObject.Find("Mineral").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
                         }
 
-                        if (Input.GetKeyDown(KeyCode.O)) // o is temporary. Delete this once you find how to add item.
+                        if (Input.GetKeyDown(KeyCode.O))
                         {
                             Item item = GameObject.Find("BuildingTool").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
@@ -816,8 +808,6 @@ public class PlayerController : MonoBehaviour
                                 isRepairing = true;
                             }
                         }
-
-
                     }
 
                     if (currentStamina <= 50)
@@ -892,19 +882,6 @@ public class PlayerController : MonoBehaviour
                         staminaTimer = 0;
                     }
 
-                    /*        // Mining control
-                            if ((isMining) && (miningTimer < miningSpeed))
-                            {
-                                if (playerStatus.maxMineralsHaveReached == false)
-                                miningTimer += Time.deltaTime;
-                            }
-                            else if (miningTimer > miningSpeed)
-                            {
-                                miningNow = true;
-                                miningTimer = 0;
-                                isMining = false;
-                            }
-                            */
                     x = y = 0.0f;
                     Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 
@@ -962,18 +939,12 @@ public class PlayerController : MonoBehaviour
                     }
 
 					direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-					//rigidbody2D.AddForce(direction * speed);
-					//rigidbody2D.velocity = direction * speed;   // speed is changable by us
 					rigidbody2D.AddForce(direction * 5f);
 					
 					if (rigidbody2D.velocity.magnitude < .01f)
 					{
 						rigidbody2D.velocity = Vector2.zero;
 					}
-					//Debug.Log (rigidbody2D.velocity);
-					//Debug.Log (rigidbody2D.velocity.magnitude);
-					
-					
 					
 					//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
 					if (rigidbody2D.velocity.y > 0.01f && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
@@ -1311,7 +1282,6 @@ public class PlayerController : MonoBehaviour
 
         if (zoomTransition)
         {
-            // Variables used in 'else' condition below
             zoomExitDuration = 1.0f;
             zoomExitElapsed = 0.0f;
 
@@ -1321,7 +1291,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Variables used in 'if' condition above
             zoomDuration = 1.0f;
             zoomElapsed = 0.0f;
 
@@ -1339,17 +1308,11 @@ public class PlayerController : MonoBehaviour
 
     void zoomInWhenIndoor()
     {
-        GameObject mainPlayerGameObject = GameObject.Find("MainPlayer");
-        var mainPlayerPos = mainPlayerGameObject.transform.position;
-        int playerPosY = (int)mainPlayerPos.y;
-        int playerPosX = (int)mainPlayerPos.x;
-
         // If inside the falcon's boundaries, set zoomTransition = true
         zoomTransition = CentralControl.isInside;
 
         if (zoomTransition)
         {
-            // Variables used in 'else' condition below
             zoomExitDuration = 1.0f;
             zoomExitElapsed = 0.0f;
 
@@ -1359,7 +1322,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // Variables used in 'if' condition above
             zoomDuration = 1.0f;
             zoomElapsed = 0.0f;
 
@@ -1381,16 +1343,6 @@ public class PlayerController : MonoBehaviour
         GameObject healthBar = GameObject.Find("HealthBar");
         Image healthBarImage = healthBar.GetComponent<Image>();
         healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
-        //if (!CentralControl.healthStaminaModuleExists)
-        //{
-        //    Debug.LogError("12121212");
-        //    healthBar.SetActive(false);
-        //}
-        //else
-        //{
-        //    Debug.LogError("iiiiiii");
-        //    healthBar.SetActive(true);
-        //}
     }
 
     private void manageStamina()
@@ -1399,16 +1351,6 @@ public class PlayerController : MonoBehaviour
         GameObject healthBar = GameObject.Find("StaminaBar");
         Image healthBarImage = healthBar.GetComponent<Image>();
         healthBarImage.fillAmount = (float)currentStamina / 100.0F;
-        //if (!CentralControl.healthStaminaModuleExists)
-        //{
-        //    Debug.LogError("1111");
-        //    //healthBar.SetActive(false);
-        //}
-        //else
-        //{
-        //    Debug.LogError("2222");
-        //    //healthBar.SetActive(true);
-        //}
     }
 
     private void Sleep()
@@ -1421,8 +1363,6 @@ public class PlayerController : MonoBehaviour
         dayNightController.currentCycleTime += sleepTimePassed;
         allLocalControl = FindObjectsOfType<LocalControl>();
         allCentralControl = FindObjectsOfType<CentralControl>();
-
-
 
         for (int i = 0; i < allLocalControl.Length; i++)
         {
@@ -1477,7 +1417,6 @@ public class PlayerController : MonoBehaviour
 	{
 		if (other.gameObject.tag == "FinalTextures")
 		{
-			Debug.Log ("working");
 			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
 			tileColor = tile.color;
 		}
@@ -1492,13 +1431,10 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator MusicTrigger()
     {
-        // Debug.Log ("checking trigger");
         if (Random.Range(0, 4) > 2)
         {
-            // Debug.Log ("song queued");
             if (isSongPlaying == false)
             {
-                // Debug.Log ("selecting song");
                 songSelected = Random.Range(1, 5);
                 songLength = Random.Range(100f, 200f);
                 songSilenceLength = Random.Range(100f, 200f);
