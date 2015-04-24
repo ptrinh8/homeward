@@ -16,15 +16,13 @@ public class PlayerController : MonoBehaviour
     private EndGame endgame;
 
     public float speed;
-    public Sprite[] sprites;
     private SpriteRenderer spriteRenderer;
-    private float animateSpeed;         //Time between frames of animation
-    private float animateTime;          //Variable storing the timer for the animation
-    public int animateIterator;         //Variable storing the frame of the spritesheet to use
-    private int animateZone;            //Specifies the direction of the astronaut's animation (up, down, left, right)
-    private bool frameAscending;        //boolean to tell AnimateFrames if spritesheet animation frame is increasing
-    private bool frameDescending;       //boolean to tell AnimateFrames if spritesheet animation frame is decreasing
-    private int leftRightFootstep = 0;
+	private bool leftRightFootstep = false;
+	private float animationTime;
+	private int animationFacing;
+
+	private Animator anim;
+	private bool playerMoving = false;
 
     public bool isDead = false;
     private float deadTimer;
@@ -396,10 +394,6 @@ public class PlayerController : MonoBehaviour
         dayNightController = GameObject.Find("DayNightController").GetComponent<DayNightController>();
 
         speed = 1.0f;
-        animateSpeed = .15f;
-        animateTime = 0f;
-        frameAscending = true;
-        frameDescending = false;
 
         miningTimer = 0;
         isRepairing = false;
@@ -520,6 +514,8 @@ public class PlayerController : MonoBehaviour
 		playerParticleSystem = GameObject.Find ("Particle System").GetComponent<ParticleSystem>();
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		playerParticleSystem.loop = false;
+
+		anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -956,30 +952,10 @@ public class PlayerController : MonoBehaviour
 							else if (Input.GetKey(KeyCode.S))
 							{ x = 0; y = 0;}
 						}
-						else
-						{
-							if (Input.GetKey(KeyCode.A))
-							{
-								x = -1.0f;
-								y = 0;
-							}
-							else if (Input.GetKey(KeyCode.D))
-							{
-								x = 1.0f;
-								y = 0;
-							}
-							if (Input.GetKey(KeyCode.W))
-							{
-								y = 1.0f;
-							}
-							else if (Input.GetKey(KeyCode.S))
-							{
-								y = -1.0f;
-							}
-						}
                     }
                     else
                     {
+						CheckPlayerFacing();
                         x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
                         y = Input.GetAxisRaw("Vertical");
                     }
@@ -996,9 +972,29 @@ public class PlayerController : MonoBehaviour
                     }
 
 					direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-					//rigidbody2D.AddForce(direction * speed);
-					//rigidbody2D.velocity = direction * speed;   // speed is changable by us
 					rigidbody2D.AddForce(direction * 5f);
+
+					/*
+					if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.W))
+					{
+						playerMoving = true;
+					}
+					else
+					{
+						playerMoving = false;
+					}*/
+
+					if (rigidbody2D.velocity.magnitude > .01f)
+					{
+						playerMoving = true;
+					}
+					else
+					{
+						playerMoving = false;
+					}
+					anim.SetBool("PlayerMoving", playerMoving);
+					anim.SetFloat("VelocityX", rigidbody2D.velocity.x);
+					anim.SetFloat("VelocityY", rigidbody2D.velocity.y);
 					
 					if (rigidbody2D.velocity.magnitude < .01f)
 					{
@@ -1008,50 +1004,7 @@ public class PlayerController : MonoBehaviour
 					//Debug.Log (rigidbody2D.velocity.magnitude);
 					
 					
-					
-					//using the velocity of the character to determine which direction it's facing and which frames from the spritesheet to use for animation
-					if (rigidbody2D.velocity.y > 0.01f && rigidbody2D.velocity.magnitude > 0.01f)		// y > 0
-					{
-						if (rigidbody2D.velocity.x > 0.5f)
-						{
-							AnimateFrames(3);
-						}
-						else if (rigidbody2D.velocity.x < -0.5f)
-						{
-							AnimateFrames(2);
-						}
-						else
-						{
-							AnimateFrames(1);
-						}
-						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator]; //actually drawing the sprite
-					}
-					else if (rigidbody2D.velocity.y < -.01f && rigidbody2D.velocity.magnitude > 0.01f)	// y < 0
-					{
-						if (rigidbody2D.velocity.x > 0.5f)
-						{
-							AnimateFrames(3);
-						}
-						else if (rigidbody2D.velocity.x < -0.5f)
-						{
-							AnimateFrames(2);
-						}
-						else
-						{
-							AnimateFrames(0);
-						}
-						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];	// Turn Down
-					}
-					else if (rigidbody2D.velocity.x > 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x > 0
-					{
-						AnimateFrames(3);
-						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-					}
-					else if (rigidbody2D.velocity.x < 0 && rigidbody2D.velocity.magnitude > 0.01f)	// x < 0
-					{
-						AnimateFrames(2);
-						this.GetComponentInChildren<SpriteRenderer>().sprite = sprites[animateIterator];
-					}
+
                 }
 
                 if (canSleep == true)
@@ -1103,223 +1056,6 @@ public class PlayerController : MonoBehaviour
                     Application.LoadLevel(0);
                 }
             }
-        }
-    }
-
-    /*---------------------------------------------------------------------------------------------------------------------------------------------------
-     * AnimateFrames takes an int that tells which "zone" or "direction" the character is facing
-     * It then tells animateIterator to iterate back and forth across the spritesheet to create a walking animation in each direction
-     * ------------------------------------------------------------------------------------------------------------------------------------------------*/
-    void AnimateFrames(int animateZoneNumber)
-    {
-        animateTime += Time.deltaTime; //add game clock time to our timer
-        if (animateTime >= animateSpeed) //if our timer has passed the time to switch frames
-        {
-            if (animateZoneNumber == 0)
-            {
-                if (animateIterator == 0) //bottom of iterator zone, should ascend
-                {
-                    //audioController.PlayFootstep(0);
-                    frameAscending = true;
-                    frameDescending = false;
-                }
-                else if (animateIterator == 1)
-                {
-                    if (leftRightFootstep == 0)
-                    {
-                        audioController.PlayFootstep(0);
-						if (rightFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(rightFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
-						}
-                        leftRightFootstep = 1;
-                    }
-                    else
-                    {
-						if (leftFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(leftFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 180));
-						}
-                        audioController.PlayFootstep(1);
-                        leftRightFootstep = 0;
-                    }
-                }
-                else if (animateIterator == 2) // top of iterator zone, should descend
-                {
-                    //audioController.PlayFootstep(1);
-                    frameAscending = false;
-                    frameDescending = true;
-                }
-
-                if (animateIterator > 2) // when switching directions, if our animation is facing one direction make sure it switches to the proper direction
-                {
-                    animateIterator = 1;
-                }
-                else if (frameAscending == true && frameDescending == false) //ascend if frameascending is true
-                {
-                    animateIterator++;
-                }
-                else if (frameAscending == false && frameDescending == true) //descend if framedescending is true
-                {
-                    animateIterator--;
-                }
-            }
-            else if (animateZoneNumber == 1)
-            {
-                if (animateIterator == 3)
-                {
-                    //audioController.PlayFootstep(0);
-                    frameAscending = true;
-                    frameDescending = false;
-                }
-                else if (animateIterator == 4)
-                {
-                    if (leftRightFootstep == 0)
-                    {
-						if (rightFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(rightFootprint, new Vector3(this.transform.position.x + .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
-						}
-                        audioController.PlayFootstep(0);
-                        leftRightFootstep = 1;
-                    }
-                    else
-                    {
-						if (leftFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(leftFootprint, new Vector3(this.transform.position.x - .03f, this.transform.position.y), Quaternion.Euler(0, 0, 0));
-						}
-                        audioController.PlayFootstep(1);
-                        leftRightFootstep = 0;
-                    }
-                }
-                else if (animateIterator == 5)
-                {
-                    //audioController.PlayFootstep(1);
-                    frameAscending = false;
-                    frameDescending = true;
-                }
-
-                if (animateIterator < 3 || animateIterator > 5)
-                {
-                    animateIterator = 4;
-                }
-                else if (frameAscending == true && frameDescending == false)
-                {
-                    animateIterator++;
-                }
-                else if (frameAscending == false && frameDescending == true)
-                {
-                    animateIterator--;
-                }
-            }
-            else if (animateZoneNumber == 2)
-            {
-                if (animateIterator == 6)
-                {
-                    //audioController.PlayFootstep(0);
-                    frameAscending = true;
-                    frameDescending = false;
-                }
-                else if (animateIterator == 7)
-                {
-                    if (leftRightFootstep == 0)
-                    {
-						if (rightFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 90));
-						}
-                        audioController.PlayFootstep(0);
-                        leftRightFootstep = 1;
-                    }
-                    else
-                    {
-						if (leftFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 90));
-						}
-                        audioController.PlayFootstep(1);
-                        leftRightFootstep = 0;
-                    }
-                }
-                else if (animateIterator == 8)
-                {
-                    //audioController.PlayFootstep(1);
-                    frameAscending = false;
-                    frameDescending = true;
-                }
-
-                if (animateIterator < 6 || animateIterator > 8)
-                {
-                    animateIterator = 7;
-                }
-                else if (frameAscending == true && frameDescending == false)
-                {
-                    animateIterator++;
-                }
-                else if (frameAscending == false && frameDescending == true)
-                {
-                    animateIterator--;
-                }
-            }
-            else if (animateZoneNumber == 3)
-            {
-                if (animateIterator == 9)
-                {
-                    //audioController.PlayFootstep(0);
-                    frameAscending = true;
-                    frameDescending = false;
-                }
-                else if (animateIterator == 10)
-                {
-                    if (leftRightFootstep == 0)
-                    {
-						if (rightFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .14f), Quaternion.Euler(0, 0, 270));
-						}
-                        audioController.PlayFootstep(0);
-                        leftRightFootstep = 1;
-                    }
-                    else
-                    {
-						if (leftFootprint != null && CentralControl.isInside == false)
-						{
-							playerParticleSystem.Emit(5);
-							Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .08f), Quaternion.Euler(0, 0, 270));
-						}
-                        audioController.PlayFootstep(1);
-                        leftRightFootstep = 0;
-                    }
-                }
-                else if (animateIterator == 11)
-                {
-                    //audioController.PlayFootstep(1);
-                    frameAscending = false;
-                    frameDescending = true;
-                }
-
-                if (animateIterator < 9 || animateIterator > 11)
-                {
-                    animateIterator = 10;
-                }
-                else if (frameAscending == true && frameDescending == false)
-                {
-                    animateIterator++;
-                }
-                else if (frameAscending == false && frameDescending == true)
-                {
-                    animateIterator--;
-                }
-            }
-            animateTime = 0; //reset timer after animation time has passed
         }
     }
 
@@ -1599,6 +1335,190 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		yield return null;
+	}
+
+	private void CheckPlayerFacing()
+	{
+		if (Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.S) && !Input.GetKey (KeyCode.A))
+		{
+			anim.SetBool("WasMovingNorth", true);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 0;
+		}
+		else if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.A))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", true);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 1;
+		}
+		else if (Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.W))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", true);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 2;
+		}
+		else if (Input.GetKey (KeyCode.D) && Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.A))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", true);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 3;
+		}
+		else if (Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", true);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 4;
+		}
+		else if (Input.GetKey (KeyCode.S) && Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.D))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", true);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 5;
+		}
+		else if (Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.D))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", true);
+			anim.SetBool("WasMovingNorthWest", false);
+			animationFacing = 6;
+		}
+		else if (Input.GetKey (KeyCode.A) && Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D))
+		{
+			anim.SetBool("WasMovingNorth", false);
+			anim.SetBool("WasMovingNorthEast", false);
+			anim.SetBool("WasMovingEast", false);
+			anim.SetBool("WasMovingSouthEast", false);
+			anim.SetBool("WasMovingSouth", false);
+			anim.SetBool("WasMovingSouthWest", false);
+			anim.SetBool("WasMovingWest", false);
+			anim.SetBool("WasMovingNorthWest", true);
+			animationFacing = 7;
+		}
+	}
+
+	private void AnimationEffectsLeft()
+	{
+		if (CentralControl.isInside == false)
+		{
+			switch (animationFacing)
+			{
+			case 0: //north
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				playerParticleSystem.Emit (5);
+				break;
+			case 1:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -45));
+				playerParticleSystem.Emit (5);
+				break;
+			case 2:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				playerParticleSystem.Emit (5);
+				break;
+			case 3:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -135));
+				playerParticleSystem.Emit (5);
+				break;
+			case 4:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				playerParticleSystem.Emit (5);
+				break;
+			case 5:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .02f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -225));
+				playerParticleSystem.Emit (5);
+				break;
+			case 6:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				playerParticleSystem.Emit (5);
+				break;
+			case 7:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -315));
+				playerParticleSystem.Emit (5);
+				break;
+			}
+		}
+	}
+
+	private void AnimationEffectsRight()
+	{
+		if (CentralControl.isInside == false)
+		{
+			switch (animationFacing)
+			{
+			case 0: //north
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				playerParticleSystem.Emit (5);
+				break;
+			case 1:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -45));
+				playerParticleSystem.Emit (5);
+				break;
+			case 2:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				playerParticleSystem.Emit (5);
+				break;
+			case 3:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -135));
+				playerParticleSystem.Emit (5);
+				break;
+			case 4:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				playerParticleSystem.Emit (5);
+				break;
+			case 5:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .02f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -225));
+				playerParticleSystem.Emit (5);
+				break;
+			case 6:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .075f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -270));
+				playerParticleSystem.Emit (5);
+				break;
+			case 7:
+				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -315));
+				playerParticleSystem.Emit (5);
+				break;
+			}
+		}
 	}
 
     void Quit()

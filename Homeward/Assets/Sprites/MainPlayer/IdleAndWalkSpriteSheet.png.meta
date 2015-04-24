@@ -1,0 +1,1103 @@
+fileFormatVersion: 2
+guid: c0cd3e94624517a4d9c28d6554700e77
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Astronaut_NorthWest_Idle
+    21300002: Astronaut_NorthWest_Walk1
+    21300004: Astronaut_NorthWest_Walk2
+    21300006: Astronaut_NorthWest_Walk3
+    21300008: Astronaut_NorthWest_Walk4
+    21300010: Astronaut_NorthWest_Walk5
+    21300012: Astronaut_NorthWest_Walk6
+    21300014: Astronaut_NorthWest_Walk7
+    21300016: Astronaut_NorthWest_Walk8
+    21300018: Astronaut_NorthWest_Walk9
+    21300020: Astronaut_NorthWest_Walk10
+    21300022: Astronaut_NorthWest_Walk11
+    21300024: Astronaut_North_Idle
+    21300026: Astronaut_North_Walk1
+    21300028: Astronaut_North_Walk2
+    21300030: Astronaut_North_Walk3
+    21300032: Astronaut_North_Walk4
+    21300034: Astronaut_North_Walk5
+    21300036: Astronaut_North_Walk6
+    21300038: Astronaut_North_Walk7
+    21300040: Astronaut_North_Walk8
+    21300042: Astronaut_North_Walk9
+    21300044: Astronaut_North_Walk10
+    21300046: Astronaut_North_Walk11
+    21300048: Astronaut_NorthEast_Idle
+    21300050: Astronaut_NorthEast_Walk1
+    21300052: Astronaut_NorthEast_Walk2
+    21300054: Astronaut_NorthEast_Walk3
+    21300056: Astronaut_NorthEast_Walk4
+    21300058: Astronaut_NorthEast_Walk5
+    21300060: Astronaut_NorthEast_Walk6
+    21300062: Astronaut_NorthEast_Walk7
+    21300064: Astronaut_NorthEast_Walk8
+    21300066: Astronaut_NorthEast_Walk9
+    21300068: Astronaut_NorthEast_Walk10
+    21300070: Astronaut_NorthEast_Walk11
+    21300072: Astronaut_West_Idle
+    21300074: Astronaut_West_Walk2
+    21300076: Astronaut_West_Walk3
+    21300078: Astronaut_West_Walk4
+    21300080: Astronaut_West_Walk1
+    21300082: Astronaut_West_Walk5
+    21300084: Astronaut_West_Walk6
+    21300086: Astronaut_West_Walk7
+    21300088: Astronaut_West_Walk8
+    21300090: Astronaut_West_Walk9
+    21300092: Astronaut_West_Walk11
+    21300094: Astronaut_East_Idle
+    21300096: Astronaut_East_Walk1
+    21300098: Astronaut_East_Walk2
+    21300100: Astronaut_East_Walk3
+    21300102: Astronaut_East_Walk4
+    21300104: Astronaut_East_Walk5
+    21300106: Astronaut_East_Walk6
+    21300108: Astronaut_East_Walk7
+    21300110: Astronaut_East_Walk8
+    21300112: Astronaut_East_Walk10
+    21300114: Astronaut_East_Walk11
+    21300116: Astronaut_SouthWest_Idle
+    21300118: Astronaut_SouthWest_Walk1
+    21300120: Astronaut_SouthWest_Walk2
+    21300122: Astronaut_SouthWest_Walk3
+    21300124: Astronaut_SouthWest_Walk4
+    21300126: Astronaut_SouthWest_Walk5
+    21300128: Astronaut_SouthWest_Walk7
+    21300130: Astronaut_SouthWest_Walk9
+    21300132: Astronaut_SouthWest_Walk10
+    21300134: Astronaut_SouthWest_Walk11
+    21300136: Astronaut_South_Idle
+    21300138: Astronaut_South_Walk1
+    21300140: Astronaut_South_Walk2
+    21300142: Astronaut_South_Walk3
+    21300144: Astronaut_South_Walk4
+    21300146: Astronaut_South_Walk5
+    21300148: Astronaut_South_Walk6
+    21300150: Astronaut_South_Walk7
+    21300152: Astronaut_South_Walk8
+    21300154: Astronaut_South_Walk9
+    21300156: Astronaut_South_Walk10
+    21300158: IdleAndWalkSpriteSheet_96
+    21300160: Astronaut_SouthEast_Idle
+    21300162: Astronaut_SouthEast_Walk1
+    21300164: Astronaut_SouthEast_Walk2
+    21300166: Astronaut_SouthEast_Walk3
+    21300168: Astronaut_SouthEast_Walk4
+    21300170: Astronaut_SouthEast_Walk5
+    21300172: Astronaut_SouthEast_Walk6
+    21300174: Astronaut_SouthEast_Walk7
+    21300176: Astronaut_SouthEast_Walk8
+    21300178: Astronaut_SouthEast_Walk9
+    21300180: Astronaut_SouthEast_Walk10
+    21300182: IdleAndWalkSpriteSheet_110
+    21300184: Astronaut_West_Walk10
+    21300186: Astronaut_East_Walk9
+    21300188: Astronaut_SouthWest_Walk8
+    21300190: Astronaut_SouthWest_Walk6
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 4096
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Astronaut_NorthWest_Idle
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 3838
+        width: 176
+        height: 437
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk1
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 3838
+        width: 225
+        height: 424
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk2
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 3839
+        width: 216
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1116
+        y: 3853
+        width: 195
+        height: 413
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1446
+        y: 3838
+        width: 182
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1726
+        y: 3822
+        width: 203
+        height: 440
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk6
+      rect:
+        serializedVersion: 2
+        x: 2005
+        y: 3809
+        width: 220
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2327
+        y: 3809
+        width: 228
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2649
+        y: 3817
+        width: 224
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2992
+        y: 3847
+        width: 199
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3301
+        y: 3860
+        width: 190
+        height: 410
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthWest_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3589
+        y: 3851
+        width: 194
+        height: 411
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Idle
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 3309
+        width: 144
+        height: 428
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk1
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 3301
+        width: 158
+        height: 436
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk2
+      rect:
+        serializedVersion: 2
+        x: 786
+        y: 3305
+        width: 148
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1124
+        y: 3335
+        width: 157
+        height: 410
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1446
+        y: 3313
+        width: 157
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1742
+        y: 3292
+        width: 157
+        height: 445
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk6
+      rect:
+        serializedVersion: 2
+        x: 2043
+        y: 3284
+        width: 161
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2352
+        y: 3288
+        width: 157
+        height: 445
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2691
+        y: 3313
+        width: 157
+        height: 428
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk9
+      rect:
+        serializedVersion: 2
+        x: 3004
+        y: 3330
+        width: 148
+        height: 415
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3313
+        y: 3314
+        width: 149
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_North_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3610
+        y: 3297
+        width: 152
+        height: 436
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Idle
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 2801
+        width: 178
+        height: 436
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk1
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 2797
+        width: 228
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk2
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 2797
+        width: 212
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1107
+        y: 2814
+        width: 195
+        height: 410
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1438
+        y: 2801
+        width: 177
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1743
+        y: 2780
+        width: 203
+        height: 444
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk6
+      rect:
+        serializedVersion: 2
+        x: 2035
+        y: 2767
+        width: 220
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2348
+        y: 2767
+        width: 224
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2666
+        y: 2776
+        width: 222
+        height: 448
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2971
+        y: 2805
+        width: 202
+        height: 424
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3282
+        y: 2818
+        width: 192
+        height: 411
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_NorthEast_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3597
+        y: 2810
+        width: 195
+        height: 410
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Idle
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 2272
+        width: 156
+        height: 440
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk2
+      rect:
+        serializedVersion: 2
+        x: 756
+        y: 2272
+        width: 237
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 2268
+        width: 169
+        height: 431
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1459
+        y: 2268
+        width: 167
+        height: 431
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk1
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 2272
+        width: 253
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1745
+        y: 2268
+        width: 196
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk6
+      rect:
+        serializedVersion: 2
+        x: 1997
+        y: 2268
+        width: 258
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2310
+        y: 2268
+        width: 271
+        height: 422
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2670
+        y: 2272
+        width: 203
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk9
+      rect:
+        serializedVersion: 2
+        x: 3004
+        y: 2268
+        width: 170
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3601
+        y: 2276
+        width: 190
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Idle
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 1751
+        width: 156
+        height: 436
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk1
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 1768
+        width: 253
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk2
+      rect:
+        serializedVersion: 2
+        x: 756
+        y: 1768
+        width: 237
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1118
+        y: 1764
+        width: 171
+        height: 431
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1459
+        y: 1764
+        width: 165
+        height: 431
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1747
+        y: 1764
+        width: 198
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk6
+      rect:
+        serializedVersion: 2
+        x: 1997
+        y: 1764
+        width: 260
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2310
+        y: 1764
+        width: 271
+        height: 422
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2670
+        y: 1768
+        width: 203
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3313
+        y: 1768
+        width: 174
+        height: 428
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3597
+        y: 1772
+        width: 191
+        height: 419
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Idle
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 1222
+        width: 174
+        height: 448
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk1
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 1200
+        width: 216
+        height: 445
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk2
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 1196
+        width: 216
+        height: 458
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1112
+        y: 1200
+        width: 199
+        height: 458
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1442
+        y: 1226
+        width: 178
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1730
+        y: 1235
+        width: 194
+        height: 414
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2323
+        y: 1213
+        width: 232
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2979
+        y: 1234
+        width: 177
+        height: 424
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3288
+        y: 1226
+        width: 173
+        height: 428
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk11
+      rect:
+        serializedVersion: 2
+        x: 3589
+        y: 1209
+        width: 194
+        height: 440
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Idle
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 629
+        width: 148
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk1
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 595
+        width: 152
+        height: 449
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk2
+      rect:
+        serializedVersion: 2
+        x: 802
+        y: 591
+        width: 153
+        height: 457
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1145
+        y: 616
+        width: 149
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1435
+        y: 637
+        width: 155
+        height: 411
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1747
+        y: 620
+        width: 151
+        height: 420
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk6
+      rect:
+        serializedVersion: 2
+        x: 2048
+        y: 591
+        width: 152
+        height: 452
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2369
+        y: 578
+        width: 153
+        height: 461
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2682
+        y: 599
+        width: 153
+        height: 445
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2975
+        y: 625
+        width: 148
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_South_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3284
+        y: 642
+        width: 156
+        height: 406
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IdleAndWalkSpriteSheet_96
+      rect:
+        serializedVersion: 2
+        x: 3601
+        y: 616
+        width: 149
+        height: 424
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Idle
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 87
+        width: 178
+        height: 448
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk1
+      rect:
+        serializedVersion: 2
+        x: 447
+        y: 66
+        width: 216
+        height: 448
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk2
+      rect:
+        serializedVersion: 2
+        x: 781
+        y: 66
+        width: 216
+        height: 457
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk3
+      rect:
+        serializedVersion: 2
+        x: 1116
+        y: 70
+        width: 199
+        height: 457
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk4
+      rect:
+        serializedVersion: 2
+        x: 1429
+        y: 95
+        width: 178
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk5
+      rect:
+        serializedVersion: 2
+        x: 1732
+        y: 104
+        width: 197
+        height: 415
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk6
+      rect:
+        serializedVersion: 2
+        x: 2026
+        y: 91
+        width: 233
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk7
+      rect:
+        serializedVersion: 2
+        x: 2327
+        y: 83
+        width: 228
+        height: 431
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2657
+        y: 87
+        width: 199
+        height: 436
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2981
+        y: 104
+        width: 176
+        height: 423
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthEast_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3271
+        y: 95
+        width: 172
+        height: 428
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: IdleAndWalkSpriteSheet_110
+      rect:
+        serializedVersion: 2
+        x: 3593
+        y: 78
+        width: 199
+        height: 441
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_West_Walk10
+      rect:
+        serializedVersion: 2
+        x: 3299
+        y: 2272
+        width: 195
+        height: 427
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_East_Walk9
+      rect:
+        serializedVersion: 2
+        x: 2994
+        y: 1763
+        width: 202
+        height: 432
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk8
+      rect:
+        serializedVersion: 2
+        x: 2644
+        y: 1208
+        width: 235
+        height: 444
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Astronaut_SouthWest_Walk6
+      rect:
+        serializedVersion: 2
+        x: 1988
+        y: 1219
+        width: 258
+        height: 430
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

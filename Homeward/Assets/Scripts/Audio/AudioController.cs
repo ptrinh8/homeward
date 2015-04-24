@@ -540,7 +540,10 @@ public class AudioController : MonoBehaviour {
 			buildingStart.getParameter("Selector", out buildingStartSelector);
 			buildingStart.getParameter("InsideOutside", out buildingStartInsideOutside);
 			buildingStart.getParameter("AirlockPressure", out buildingStartAirlockPressure);
-			buildingStart.setValue(Random.Range (1f, 9f));
+			buildingStartSelector.setValue(Random.Range (1f, 9f));
+			buildingStartAirlockPressure.setValue(controllerSoundPressure);
+			buildingStart.start();
+			buildingStart.release();
 		}
 	}
 	
