@@ -287,7 +287,7 @@ public class PlayerController : MonoBehaviour
 		miningBarBackgroundRect.localScale = new Vector3(1, 1, 1);
 		miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 150.0f);
 		miningBarBackgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20.0f);
-		miningBarBackgroundRect.position = GameObject.Find ("Canvas").transform.position + new Vector3(0f, 20.0f);
+		miningBarBackgroundRect.position = GameObject.Find ("Canvas").transform.position + new Vector3(0f, 60.0f);
 		
 		miningCircle = Instantiate(Resources.Load("Mining/MiningCircle")) as GameObject;
 		miningCircle.transform.parent = GameObject.Find("Canvas").transform;
@@ -1247,7 +1247,6 @@ public class PlayerController : MonoBehaviour
 	{
 		if (other.gameObject.tag == "FinalTextures")
 		{
-			Debug.Log ("working");
 			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
 			tileColor = tile.color;
 		}
@@ -1285,15 +1284,12 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator FlashMiningBar()
 	{
-		Debug.Log ("flashing");
 		if (miningBarFlashCount < miningBarFlashNumber)
 		{
 			if (miningBarFlashTimer > miningBarFlashTime)
 			{
-				Debug.Log ("timer");
 				if (miningBarSuccess == true)
 				{
-					Debug.Log ("success");
 					if (miningBarAlternate == false)
 					{
 						miningBar.GetComponent<Image>().color = miningBarSucceedColor;
@@ -1307,7 +1303,6 @@ public class PlayerController : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log ("failure");
 					if (miningBarAlternate == false)
 					{
 						miningBar.GetComponent<Image>().color = miningBarFailColor;

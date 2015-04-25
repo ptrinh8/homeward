@@ -17,6 +17,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance repairStart;
 	private FMOD.Studio.EventInstance repairEnd;
 	private FMOD.Studio.EventInstance buildingStart;
+	private FMOD.Studio.EventInstance building;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -32,6 +33,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairStartSelector;
 	private FMOD.Studio.ParameterInstance repairEndSelector;
 	private FMOD.Studio.ParameterInstance buildingStartSelector;
+	private FMOD.Studio.ParameterInstance buildingSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -41,6 +43,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairStartInsideOutside;
 	private FMOD.Studio.ParameterInstance repairEndInsideOutside;
 	private FMOD.Studio.ParameterInstance buildingStartInsideOutside;
+	private FMOD.Studio.ParameterInstance buildingInsideOutside;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
@@ -49,6 +52,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairStartAirlockPressure;
 	private FMOD.Studio.ParameterInstance repairEndAirlockPressure;
 	private FMOD.Studio.ParameterInstance buildingStartAirlockPressure;
+	private FMOD.Studio.ParameterInstance buildingAirlockPressure;
 
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
