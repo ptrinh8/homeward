@@ -19,6 +19,8 @@ public class MiningProbeController : MonoBehaviour
 
     GameObject GameObject;
 
+    int abc = 0;
+
 
     void Start()
     {

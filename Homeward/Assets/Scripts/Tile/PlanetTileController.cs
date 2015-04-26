@@ -13,11 +13,6 @@ public class PlanetTileController : MonoBehaviour {
     {
         probeSpawnedFlag = false;
 	}
-	
-	void Update () 
-    {
-	
-	}
 
     void OnTriggerStay2D(Collider2D other)
     {

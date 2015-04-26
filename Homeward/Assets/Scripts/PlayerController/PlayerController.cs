@@ -677,23 +677,23 @@ public class PlayerController : MonoBehaviour
 							{
 								if (0.45f < miningBarCurrentPosition && miningBarCurrentPosition < 0.55f)
 								{
-									Debug.Log("Great!");
+									//Debug.Log("Great!");
 									nearestMineral.Mine (2);
 								}
 								else if ((0.4f < miningBarCurrentPosition && miningBarCurrentPosition < 0.45f) || (0.55f < miningBarCurrentPosition && miningBarCurrentPosition < 0.6f))
 								{
-									Debug.Log("Nice!");
+									//Debug.Log("Nice!");
 									nearestMineral.Mine (1);
 								}
 								else
 								{
 									nearestMineral.Mine (0);
-									Debug.Log("No good");
+									//Debug.Log("No good");
 								}
 							}
 							else if (nearestMineral != null && miningBarActive == false)
 							{
-								Debug.Log ("Animating");
+								//Debug.Log ("Animating");
 								nearestMineral.SetMiningBarVisible();
 								miningBarActive = true;
 							}

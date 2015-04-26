@@ -274,7 +274,7 @@ public class AudioController : MonoBehaviour {
 		// 1 = play, 2 = stop
 		if (controlNumber == 1)
 		{
-			Debug.Log("song playing");
+			//Debug.Log("song playing");
 			if (songPlaying == false)
 			{
 				switch(songSelectNumber)
