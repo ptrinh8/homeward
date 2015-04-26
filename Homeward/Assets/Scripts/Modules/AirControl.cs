@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 
+// class that handle airpresure in module
 public class AirControl : MonoBehaviour {
 
     private bool air;
@@ -29,50 +30,26 @@ public class AirControl : MonoBehaviour {
 
     public bool Air
     {
-        get
-        {
-            return air;
-        }
-        set
-        {
-            this.air = value;
-        }
+        get { return air;}
+        set { this.air = value;}
     }
 
     public float Timer
     {
-        get
-        {
-            return timer;
-        }
-        set
-        {
-            this.timer = value;
-        }
+        get { return timer;}
+        set { this.timer = value;}
     }
 
     public int Flag
     {
-        get
-        {
-            return flag;
-        }
-        set
-        {
-            this.flag = value;
-        }
+        get { return flag;}
+        set { this.flag = value;}
     }
 
     public void ResetTimer()
     {
-        if (air)
-        {
-            flag = 1;
-        }
-        else
-        {
-            flag = -1;
-        }
+        if (air) { flag = 1;}
+        else { flag = -1;}
     }
 
 	// Use this for initialization
@@ -95,37 +72,17 @@ public class AirControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 		airlockSound.getPlaybackState(out airlockPlaybackState);
-		//audioController.controllerSoundPressure = this.soundPressure;
-		//audioController.airlockActivated = this.airlockActivated;
-		//audioController.audioPressureTimer = pressureTimer;
-		
-	
-
         if (flag == 0) { 
             // do nothing
-			/*
-			soundTransition = 3.5f;
-			airlockTransition.setValue(soundTransition);
-			*/
         }
         else if (flag == 1)
         {
             if (airPressureBar.size < 1)
             {
-				//Debug.Log ("pressure rising");
                 timer += Time.deltaTime;
 				airPressureBar.size = timer / duration;
-				//pressureTimer = timer / duration;
-				/*
-				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
-				airlockPressure.setValue(soundPressure);
-				soundTransition = 2.5f;
-				airlockTransition.setValue(soundTransition);
-				*/
 				audioController.pressureRisingFalling = true;
-				//audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
@@ -141,15 +98,7 @@ public class AirControl : MonoBehaviour {
 			{
                 timer -= Time.deltaTime;
                 airPressureBar.size = timer / duration;
-				//pressureTimer = timer / duration;
-				/*
-				soundPressure = Mathf.Lerp(10f, 0f, pressureTimer);
-				airlockPressure.setValue(soundPressure);
-				soundTransition = 2.5f;
-				airlockTransition.setValue(soundTransition);
-				*/
 				audioController.pressureRisingFalling = true;
-				//audioController.audioPressureTimer = pressureTimer;
             }
             else
             {
@@ -186,8 +135,9 @@ public class AirControl : MonoBehaviour {
 				}
 			}
 		}
-
 	}
+
+	// method to activite airlock module
     void AirModuleActivite()
     {
         if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
@@ -196,11 +146,6 @@ public class AirControl : MonoBehaviour {
 			{
 				airlockActivated = true;
 				audioController.airlockActivated = true;
-				/*
-				if (airlockPlaybackState != FMOD.Studio.PLAYBACK_STATE.PLAYING)
-				{
-					airlockSound.start();
-				}*/
 			}
         }
     }

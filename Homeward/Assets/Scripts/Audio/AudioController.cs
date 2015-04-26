@@ -67,8 +67,7 @@ public class AudioController : MonoBehaviour {
 	public float stemTriggerValue3;
 	public float stemTriggerValue4;
 	public float droneVolumeValue;
-	private float refineryStartingStopping;
-	private PlayerController player;
+    private float refineryStartingStopping;
 
 	private bool refineryStarted;
 
@@ -124,7 +123,6 @@ public class AudioController : MonoBehaviour {
 		droneVolumeValue = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		songPlaying = false;
 		controllerSoundPressure = 0f;
 
@@ -301,7 +299,7 @@ public class AudioController : MonoBehaviour {
 		// 1 = play, 2 = stop
 		if (controlNumber == 1)
 		{
-			Debug.Log("song playing");
+			//Debug.Log("song playing");
 			if (songPlaying == false)
 			{
 				switch(songSelectNumber)

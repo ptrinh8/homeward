@@ -45,6 +45,7 @@ public class Deployable : MonoBehaviour {
 		else {
 			gameObject.SetActive(!CentralControl.isInside);
 		}
+
 		// Condition to detach the blueprint
 		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
 			audioController.PlayBuildingSound(1);

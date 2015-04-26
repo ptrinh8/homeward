@@ -4,8 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+// class handles the airlock(door to inside and outside)
 public class Airlock : MonoBehaviour {
-
     public bool xEnter;	// whether the doorway open for x axis
 	private GameObject mainPlayer;
 	private PlayerController playerController;
@@ -23,20 +23,16 @@ public class Airlock : MonoBehaviour {
 
     public bool IsToOustside
     {
-        get
-        {
-            return isToOutside;
-        }
-        set
-        {
-            this.isToOutside = value;
-        }
+        get { return isToOutside;}
+        set { this.isToOutside = value;}
     }
+
     void Awake()
     {
         isDoorway = true;
         isToOutside = true;
     }
+
 	// Use this for initialization
 	void Start () {
 		mainPlayer = GameObject.FindGameObjectWithTag("Player");
@@ -65,13 +61,12 @@ public class Airlock : MonoBehaviour {
         {
             AirlockTriggered(true);
         }
-
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
 	}
 
+	// Record the direction when player enters the trigger
 	void OnTriggerStay2D (Collider2D other) 
     {
-		// Record the direction when player enters the trigger
 		if (other.gameObject.tag == "Player") {
             if (playerEnterCheckFlag)
             {
@@ -131,12 +126,15 @@ public class Airlock : MonoBehaviour {
         if (spriteRenderer.enabled != disabled)
         {
             spriteRenderer.enabled = disabled;
-            foreach (BoxCollider2D collider in colliders)
-                if (!collider.isTrigger)
-                    collider.enabled = disabled;
+			foreach (BoxCollider2D collider in colliders)
+			{
+				if (!collider.isTrigger)
+					collider.enabled = disabled;
+			}
         }
     }
 
+	// method handles the situation when players go inside or outside
     void AirCheck()
     {
         if (CentralControl.isInside)

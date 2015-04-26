@@ -57,7 +57,6 @@ public class Building : MonoBehaviour
 
     private Dictionary<string, bool> moduleDictionary;
 
-	//public GameObject habitatModule;
     public static bool isDeploying;
 
 	public static bool spawnHabitatModuleFlag;
