@@ -1434,6 +1434,7 @@ public class PlayerController : MonoBehaviour
 
 	private void AnimationEffectsLeft()
 	{
+		audioController.PlayFootstep(0);
 		if (CentralControl.isInside == false)
 		{
 			switch (animationFacing)
@@ -1476,6 +1477,7 @@ public class PlayerController : MonoBehaviour
 
 	private void AnimationEffectsRight()
 	{
+		audioController.PlayFootstep(1);
 		if (CentralControl.isInside == false)
 		{
 			switch (animationFacing)

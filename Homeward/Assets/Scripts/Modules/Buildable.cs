@@ -19,7 +19,7 @@ public class Buildable : MonoBehaviour
 
     private GameObject player;
     private float buildActionTime;
-    private bool buildingFlag;
+    private bool canBuild;
 
 	private GameObject buildingBarBackground;
 	private float fillspeed;
@@ -35,6 +35,9 @@ public class Buildable : MonoBehaviour
 	private bool buildingBarBackgroundFlashing;
 	private bool buildingBarBackgroundFlashAlternate;
 
+	private AudioController audioController;
+	private bool soundPlayed = false;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -47,7 +50,7 @@ public class Buildable : MonoBehaviour
 		buildingProgress = 0;
 
         player = GameObject.FindWithTag("Player");
-        buildingFlag = true;
+        canBuild = true;
         buildActionTime = 0f;
 		building = false;
 
@@ -59,6 +62,8 @@ public class Buildable : MonoBehaviour
 
 		buildingBarBackgroundFlashNumber = 3;
 		buildingBarBackgroundFlashTime = .2f;
+
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -72,7 +77,7 @@ public class Buildable : MonoBehaviour
 
 		if (buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>() != null)
 		{
-			if (!buildingFlag && buildingBarBackgroundFlashing == false)
+			if (!building && buildingBarBackgroundFlashing == false)
 			{
 				Invoke ("Release", .5f);
 			}
@@ -84,14 +89,17 @@ public class Buildable : MonoBehaviour
 			else if (buildingBarFillAmount > 0.85f && buildingBarFillAmount <= 0.93f)
 			{
 				buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>().color = Color.yellow;
+				buildingBarBackgroundFlashColor = Color.yellow;
 			}
 			else if (buildingBarFillAmount > 0.93f && buildingBarFillAmount <= 0.98f)
 			{
 				buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>().color = Color.green;
+				buildingBarBackgroundFlashColor = Color.green;
 			}
 			else if (buildingBarFillAmount > 0.98f && buildingBarFillAmount <= 1f)
 			{
 				buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>().color = Color.blue;
+				buildingBarBackgroundFlashColor = Color.blue;
 			}
 			buildingBarBackground.transform.FindChild("BuildingBar").gameObject.GetComponent<Image>().fillAmount = buildingBarFillAmount;
 			// else fail?
@@ -101,7 +109,7 @@ public class Buildable : MonoBehaviour
 		{
 			if (!buildingBarBackground.activeSelf)
 			{
-				if (buildingFlag)
+				if (canBuild)
 				{
 					buildingBarBackground.SetActive(true);
 					buildingBarBackground.GetComponent<Image>().color = Color.gray;
@@ -122,12 +130,12 @@ public class Buildable : MonoBehaviour
 				}
 			}
 		}
-		else
+		else if (building == false && Input.GetKey(buildKey) == false)
 		{
-			if (buildingFlag == true && buildingBarBackgroundFlashing == false) 
+			if (canBuild == true && buildingBarBackgroundFlashing == false) 
 			{
+				//audioController.PlayBuildingSound(2);
 				buildingBarBackgroundFlashing = true;
-				buildingFlag = false;
 				if (buildingBarFillAmount >= 0 && buildingBarFillAmount <= 0.85f)
 				{
 					buildingBarBackgroundFlashNumber = 0;
@@ -169,10 +177,12 @@ public class Buildable : MonoBehaviour
 					if (Input.GetKey(buildKey))
 					{
 						building = true;
+						canBuild = false;
 					}
 					else
 					{
 						building = false;
+						canBuild = true;
 					}
 				}
 			}
@@ -195,23 +205,28 @@ public class Buildable : MonoBehaviour
 
     void BuildAction()
     {
-		if (buildingProgress + progress < materialsRequired)
+		Debug.Log ("build");
+		//audioController.PlayBuildingSound(2);
+		if (canBuild == false)
 		{
-			buildingProgress += progress;
-		}
-		else 
-		{
-			progress = materialsRequired - buildingProgress;
-			buildingProgress = materialsRequired;
-		}
-        color.a += (0.4f / materialsRequired) * progress;
-        spriteRenderer.color = color;
-		for (int i = 0; i < progress; i++)
-		{
-			player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+			if (buildingProgress + progress < materialsRequired)
+			{
+				buildingProgress += progress;
+			}
+			else 
+			{
+				progress = materialsRequired - buildingProgress;
+				buildingProgress = materialsRequired;
+			}
+	        color.a += (0.4f / materialsRequired) * progress;
+	        spriteRenderer.color = color;
+			for (int i = 0; i < progress; i++)
+			{
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+			}
 		}
 		//buildingBarBackgroundFlashing = true;
-		buildingFlag = true;
+		canBuild = true;
 		Reset();
     }
 
@@ -230,7 +245,7 @@ public class Buildable : MonoBehaviour
 			{
 				if (buildingBarBackgroundFlashAlternate == true)
 				{
-					buildingBarBackground.GetComponent<Image>().color = Color.white;
+					buildingBarBackground.GetComponent<Image>().color = buildingBarBackgroundFlashColor;
 					buildingBarBackgroundFlashAlternate = false;
 				}
 				else if (buildingBarBackgroundFlashAlternate == false)
@@ -253,14 +268,23 @@ public class Buildable : MonoBehaviour
 
 	void Release()
 	{
+		//soundPlayed = false;
 		if (buildingBarFillAmount > 0)
 		{
-			buildingBarFillAmount -= fillspeed;
-			if (buildingBarFillAmount < 0) {buildingBarFillAmount = 0;}
+			canBuild = false;
+			buildingBarFillAmount = 0;
+			//if (buildingBarFillAmount < 0) {buildingBarFillAmount = 0;}
 		}
 		else 
 		{
-			BuildAction();
+			if (canBuild == false)
+			{
+				BuildAction();
+			}
+			else
+			{
+				Reset ();
+			}
 		}
 	}
 }

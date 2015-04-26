@@ -549,6 +549,17 @@ public class AudioController : MonoBehaviour {
 			buildingStart.start();
 			buildingStart.release();
 		}
+		else if (buildingSound == 2)
+		{
+			building = FMOD_StudioSystem.instance.GetEvent("event:/Building");
+			building.getParameter("Selector", out buildingSelector);
+			building.getParameter("InsideOutside", out buildingInsideOutside);
+			building.getParameter("AirlockPressure", out buildingAirlockPressure);
+			buildingSelector.setValue(Random.Range(1f, 6f));
+			buildingAirlockPressure.setValue(controllerSoundPressure);
+			building.start();
+			building.release();
+		}
 	}
 	
 	public void RefineryMachineControl(int controlNumber)
