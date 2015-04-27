@@ -10,20 +10,22 @@ using System.Linq;
 
 public class PCG_Tiles : MonoBehaviour
 {
-    PCG_TriggerA trigger = new PCG_TriggerA();
-    PCG_TriggerB trigger1 = new PCG_TriggerB();
-    PCG_TriggerC trigger2 = new PCG_TriggerC();
-    PCG_TriggerD trigger3 = new PCG_TriggerD();
+    PCG_SurfaceElements pcg_surfaceElements = new PCG_SurfaceElements();
     PCG_Rocks pcg_rocks = new PCG_Rocks();
-    PCG_CratersChasms pcg_cratersChasms = new PCG_CratersChasms();
+    //PCG_TriggerA trigger = new PCG_TriggerA();
+    //PCG_TriggerB trigger1 = new PCG_TriggerB();
+    //PCG_TriggerC trigger2 = new PCG_TriggerC();
+    //PCG_TriggerD trigger3 = new PCG_TriggerD();
 
     public GameObject _tile;
-    public GameObject _tileA, _tileB, _tileC,
+    public Sprite _tileA, _tileB, _tileC,
     _tileD, _tileE, _tileF, _tileG,
     _tileH, _tileI, _tileJ, _tileK,
     _tileL, _tileM, _tileN, _tileO,
     _tileP, _tileQ, _tileR, _tileS,
     _tileT;
+
+    public float areaSpan = 50.0F;
 
     [HideInInspector]
     public int[] extractableValue = new int[11071];
@@ -35,10 +37,7 @@ public class PCG_Tiles : MonoBehaviour
     bool moveTrigger = false;
 
     PCG_Rand rand = new PCG_Rand();
-    float increm = 33.0F;
 
-    int lowerLmt_Y = 0;
-    int lowerLmt_X = 1;
     int vertiLmtINC = 0;
     int vertiLmtINC_again = 0;
     int vertiLmt = 90;
@@ -103,39 +102,38 @@ public class PCG_Tiles : MonoBehaviour
                 for (int i = 0; i < 11071; i++)
                 {
                     distBWplayerTiles = Vector2.Distance(new Vector2(_x[i], _y[i]), mainPlayerPos);
-                    if (distBWplayerTiles < 20.0F)
+                    if (distBWplayerTiles < areaSpan)
                     {
                         tiles[i] = Instantiate(_tile, new Vector3(_x[i], _y[i], 0), transform.rotation) as GameObject;
                         tiles[i].tag = "FinalTextures";
                         tiles[i].name = "FinalTextures " + i;
                         extractableValue[i] = Random.Range(0, 10);
-                        Debug.Log(tiles[i].name + " = " + extractableValue[i]);
 
                         if (tiles[i].name == "FinalTextures 90") { tiles[i].GetComponentInChildren<SpriteRenderer>().enabled = false; }
 
                         switch (RandomNosRangeToExactValues(i))
                         {
                             case -1: Debug.LogError("RndNosOutOfBounds"); break;
-                            case 0: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileA.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 1: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileB.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 2: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileC.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 3: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileD.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 4: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileE.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 5: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileF.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 6: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileG.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 7: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileH.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 8: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileI.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 9: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileJ.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 10: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileK.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 11: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileL.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 12: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileM.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 13: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileN.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 14: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileO.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 15: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileP.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 16: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileQ.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 17: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileR.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 18: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileS.GetComponentInChildren<SpriteRenderer>().sprite; break;
-                            case 19: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileT.GetComponentInChildren<SpriteRenderer>().sprite; break;
+                            case 0: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileA; break;
+                            case 1: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileB; break;
+                            case 2: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileC; break;
+                            case 3: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileD; break;
+                            case 4: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileE; break;
+                            case 5: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileF; break;
+                            case 6: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileG; break;
+                            case 7: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileH; break;
+                            case 8: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileI; break;
+                            case 9: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileJ; break;
+                            case 10: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileK; break;
+                            case 11: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileL; break;
+                            case 12: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileM; break;
+                            case 13: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileN; break;
+                            case 14: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileO; break;
+                            case 15: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileP; break;
+                            case 16: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileQ; break;
+                            case 17: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileR; break;
+                            case 18: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileS; break;
+                            case 19: tiles[i].GetComponentInChildren<SpriteRenderer>().sprite = _tileT; break;
                             default: break;
                         }
 
@@ -147,15 +145,13 @@ public class PCG_Tiles : MonoBehaviour
                             }
                         }
                     }
-
-                    
                 }
 
                 GameObject[] allTexturesMyFriend = GameObject.FindGameObjectsWithTag("FinalTextures");
                 foreach (GameObject texture in allTexturesMyFriend)
                 {
                     var distance2 = Vector2.Distance(texture.transform.position, mainPlayerPos);
-                    if (distance2 > 20.0F)
+                    if (distance2 > areaSpan)
                     {
                         GameObject.Destroy(texture);
                     }
@@ -166,31 +162,21 @@ public class PCG_Tiles : MonoBehaviour
 
     int RandomNosRangeToExactValues(int pos)
     {
-        if ((rand.tempRndNosRock1[pos] <= 0.05F) && (rand.tempRndNosRock1[pos] >= 0.0F)) return 0;
-        if ((rand.tempRndNosRock1[pos] <= 0.10f) && (rand.tempRndNosRock1[pos] >= 0.05f)) return 1;
-        if ((rand.tempRndNosRock1[pos] <= 0.15f) && (rand.tempRndNosRock1[pos] >= 0.10f)) return 2;
-        if ((rand.tempRndNosRock1[pos] <= 0.20f) && (rand.tempRndNosRock1[pos] >= 0.15f)) return 3;
-        if ((rand.tempRndNosRock1[pos] <= 0.25f) && (rand.tempRndNosRock1[pos] >= 0.20f)) return 4;
-        if ((rand.tempRndNosRock1[pos] <= 0.30f) && (rand.tempRndNosRock1[pos] >= 0.25f)) return 5;
-        if ((rand.tempRndNosRock1[pos] <= 0.35f) && (rand.tempRndNosRock1[pos] >= 0.30f)) return 6;
-        if ((rand.tempRndNosRock1[pos] <= 0.40f) && (rand.tempRndNosRock1[pos] >= 0.35f)) return 7;
-        if ((rand.tempRndNosRock1[pos] <= 0.45f) && (rand.tempRndNosRock1[pos] >= 0.40f)) return 8;
-        if ((rand.tempRndNosRock1[pos] <= 0.50f) && (rand.tempRndNosRock1[pos] >= 0.45f)) return 9;
-        if ((rand.tempRndNosRock1[pos] <= 0.55f) && (rand.tempRndNosRock1[pos] >= 0.50f)) return 10;
-        if ((rand.tempRndNosRock1[pos] <= 0.60f) && (rand.tempRndNosRock1[pos] >= 0.55f)) return 11;
-        if ((rand.tempRndNosRock1[pos] <= 0.65f) && (rand.tempRndNosRock1[pos] >= 0.60f)) return 12;
-        if ((rand.tempRndNosRock1[pos] <= 0.70f) && (rand.tempRndNosRock1[pos] >= 0.65f)) return 13;
-        if ((rand.tempRndNosRock1[pos] <= 0.75f) && (rand.tempRndNosRock1[pos] >= 0.70f)) return 14;
-        if ((rand.tempRndNosRock1[pos] <= 0.80f) && (rand.tempRndNosRock1[pos] >= 0.75f)) return 15;
-        if ((rand.tempRndNosRock1[pos] <= 0.85f) && (rand.tempRndNosRock1[pos] >= 0.80f)) return 16;
-        if ((rand.tempRndNosRock1[pos] <= 0.90f) && (rand.tempRndNosRock1[pos] >= 0.85f)) return 17;
-        if ((rand.tempRndNosRock1[pos] <= 0.95f) && (rand.tempRndNosRock1[pos] >= 0.90f)) return 18;
-        if ((rand.tempRndNosRock1[pos] <= 1.00f) && (rand.tempRndNosRock1[pos] >= 0.95f)) return 19;
+        if ((rand.seedRndNos_spawning[pos] <= 0.05F) && (rand.seedRndNos_spawning[pos] >= 0.0F)) return 0; if ((rand.seedRndNos_spawning[pos] <= 0.10f) && (rand.seedRndNos_spawning[pos] >= 0.05f)) return 1;
+        if ((rand.seedRndNos_spawning[pos] <= 0.15f) && (rand.seedRndNos_spawning[pos] >= 0.10f)) return 2; if ((rand.seedRndNos_spawning[pos] <= 0.20f) && (rand.seedRndNos_spawning[pos] >= 0.15f)) return 3;
+        if ((rand.seedRndNos_spawning[pos] <= 0.25f) && (rand.seedRndNos_spawning[pos] >= 0.20f)) return 4; if ((rand.seedRndNos_spawning[pos] <= 0.30f) && (rand.seedRndNos_spawning[pos] >= 0.25f)) return 5;
+        if ((rand.seedRndNos_spawning[pos] <= 0.35f) && (rand.seedRndNos_spawning[pos] >= 0.30f)) return 6; if ((rand.seedRndNos_spawning[pos] <= 0.40f) && (rand.seedRndNos_spawning[pos] >= 0.35f)) return 7;
+        if ((rand.seedRndNos_spawning[pos] <= 0.45f) && (rand.seedRndNos_spawning[pos] >= 0.40f)) return 8; if ((rand.seedRndNos_spawning[pos] <= 0.50f) && (rand.seedRndNos_spawning[pos] >= 0.45f)) return 9;
+        if ((rand.seedRndNos_spawning[pos] <= 0.55f) && (rand.seedRndNos_spawning[pos] >= 0.50f)) return 10; if ((rand.seedRndNos_spawning[pos] <= 0.60f) && (rand.seedRndNos_spawning[pos] >= 0.55f)) return 11;
+        if ((rand.seedRndNos_spawning[pos] <= 0.65f) && (rand.seedRndNos_spawning[pos] >= 0.60f)) return 12; if ((rand.seedRndNos_spawning[pos] <= 0.70f) && (rand.seedRndNos_spawning[pos] >= 0.65f)) return 13;
+        if ((rand.seedRndNos_spawning[pos] <= 0.75f) && (rand.seedRndNos_spawning[pos] >= 0.70f)) return 14; if ((rand.seedRndNos_spawning[pos] <= 0.80f) && (rand.seedRndNos_spawning[pos] >= 0.75f)) return 15;
+        if ((rand.seedRndNos_spawning[pos] <= 0.85f) && (rand.seedRndNos_spawning[pos] >= 0.80f)) return 16; if ((rand.seedRndNos_spawning[pos] <= 0.90f) && (rand.seedRndNos_spawning[pos] >= 0.85f)) return 17;
+        if ((rand.seedRndNos_spawning[pos] <= 0.95f) && (rand.seedRndNos_spawning[pos] >= 0.90f)) return 18; if ((rand.seedRndNos_spawning[pos] <= 1.00f) && (rand.seedRndNos_spawning[pos] >= 0.95f)) return 19;
         else return -1;
     }
 
     void RepositionTriggers()
-    {
+    {/*
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
@@ -201,16 +187,16 @@ public class PCG_Tiles : MonoBehaviour
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
-                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 5.0F);
-                trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
-                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
-                trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+                trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+                trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
                 pcg_rocks.moveTrigger = true;
                 pcg_rocks.addRemoveTiles = false;
                 pcg_rocks.triggerEntered = true;
-                pcg_cratersChasms.moveTrigger = true;
-                pcg_cratersChasms.addRemoveTiles = false;
-                pcg_cratersChasms.triggerEntered = true;
+                pcg_surfaceElements.moveTrigger = true;
+                pcg_surfaceElements.addRemoveTiles = false;
+                pcg_surfaceElements.triggerEntered = true;
             }
         }
         if (trigger1.playerInsideCircleTriggerA1 == true)
@@ -220,16 +206,16 @@ public class PCG_Tiles : MonoBehaviour
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
-                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 5.0F);
-                trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
-                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
-                trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+                trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+                trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
                 pcg_rocks.moveTrigger = true;
                 pcg_rocks.addRemoveTiles = false;
                 pcg_rocks.triggerEntered = true;
-                pcg_cratersChasms.moveTrigger = true;
-                pcg_cratersChasms.addRemoveTiles = false;
-                pcg_cratersChasms.triggerEntered = true;
+                pcg_surfaceElements.moveTrigger = true;
+                pcg_surfaceElements.addRemoveTiles = false;
+                pcg_surfaceElements.triggerEntered = true;
             }
         }
         if (trigger2.playerInsideCircleTriggerA2 == true)
@@ -239,16 +225,16 @@ public class PCG_Tiles : MonoBehaviour
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
-                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 5.0F);
-                trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
-                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
-                trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+                trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+                trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
                 pcg_rocks.moveTrigger = true;
                 pcg_rocks.addRemoveTiles = false;
                 pcg_rocks.triggerEntered = true;
-                pcg_cratersChasms.moveTrigger = true;
-                pcg_cratersChasms.addRemoveTiles = false;
-                pcg_cratersChasms.triggerEntered = true;
+                pcg_surfaceElements.moveTrigger = true;
+                pcg_surfaceElements.addRemoveTiles = false;
+                pcg_surfaceElements.triggerEntered = true;
             }
         }
         if (trigger3.playerInsideCircleTriggerA3 == true)
@@ -258,43 +244,43 @@ public class PCG_Tiles : MonoBehaviour
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
-                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 5.0F);
-                trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
-                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
-                trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+                trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+                trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+                trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+                trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
                 pcg_rocks.moveTrigger = true;
                 pcg_rocks.addRemoveTiles = false;
                 pcg_rocks.triggerEntered = true;
-                pcg_cratersChasms.moveTrigger = true;
-                pcg_cratersChasms.addRemoveTiles = false;
-                pcg_cratersChasms.triggerEntered = true;
+                pcg_surfaceElements.moveTrigger = true;
+                pcg_surfaceElements.addRemoveTiles = false;
+                pcg_surfaceElements.triggerEntered = true;
             }
-        }
+        }*/
     }
 
     void Start()
     {
         rand = FindObjectOfType(typeof(PCG_Rand)) as PCG_Rand;
-        trigger = FindObjectOfType(typeof(PCG_TriggerA)) as PCG_TriggerA;
-        trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
-        trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
-        trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
+        //trigger = FindObjectOfType(typeof(PCG_TriggerA)) as PCG_TriggerA;
+        //trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
+        //trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
+        //trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
         pcg_rocks = FindObjectOfType(typeof(PCG_Rocks)) as PCG_Rocks;
-        pcg_cratersChasms = FindObjectOfType(typeof(PCG_CratersChasms)) as PCG_CratersChasms;
+        pcg_surfaceElements = FindObjectOfType(typeof(PCG_SurfaceElements)) as PCG_SurfaceElements;
         RndNosGeneration();
 
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
-        trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 5.0F);
-        trigger1.transform.position = new Vector2(mainPlayerPos.x - 5.0F, mainPlayerPos.y);
-        trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 5.0F);
-        trigger3.transform.position = new Vector2(mainPlayerPos.x + 5.0F, mainPlayerPos.y);
+        //trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+        //trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+        //trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+        //trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
     }
 
     void Update()
     {
         AddRemoveTiles();
-        RepositionTriggers();
+        //RepositionTriggers();
     }
 }

@@ -26,7 +26,7 @@ public class Mining : MonoBehaviour
     private bool isPlayerMining = false;
     private KeyCode miningKey = KeyCode.F;
     private AudioController audioController;
-	private bool miningSoundPlayed;
+    private bool miningSoundPlayed;
 
     private float time = 0.0F;
     private bool timerReached = false;
@@ -46,8 +46,9 @@ public class Mining : MonoBehaviour
     private float addition;
     private float accel;
     private float miningCircleInitialPosition;
+	public bool miningBarVisible = false;
 
-	private ParticleSystem rockParticleSystem;
+    private ParticleSystem rockParticleSystem;
 
     void StartTimer()
     {
@@ -58,10 +59,10 @@ public class Mining : MonoBehaviour
     void StopTimer()
     {
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
-		if (miningSoundPlayed = true)
-		{
-			miningSoundPlayed = false;
-		}
+        if (miningSoundPlayed = true)
+        {
+            miningSoundPlayed = false;
+        }
     }
 
     private void PlayerMiningState()
@@ -95,12 +96,10 @@ public class Mining : MonoBehaviour
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
         time = 2500.0F * Time.deltaTime;
 
-		rockParticleSystem = this.gameObject.GetComponentInChildren<ParticleSystem>();
-		rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
-		rockParticleSystem.renderer.sortingOrder = 1;
-		rockParticleSystem.loop = false;
-
-        //SetMiningBar();
+        rockParticleSystem = this.gameObject.GetComponentInChildren<ParticleSystem>();
+        rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+        rockParticleSystem.renderer.sortingOrder = 1;
+        rockParticleSystem.loop = false;
     }
 
     void Update()
@@ -113,7 +112,7 @@ public class Mining : MonoBehaviour
     void MineSupportFunction(int mineralsCount)
     {
         Item item = GameObject.Find("Mineral").GetComponent<Item>();
-		randomMineralsQuantity -= mineralsCount;
+        randomMineralsQuantity -= mineralsCount;
 
         for (int i = 0; i < mineralsCount; i++)
         {
@@ -137,72 +136,49 @@ public class Mining : MonoBehaviour
 		}
 		audioController.PlayMiningSound();
 		MineSupportFunction(numberOfMinerals);
-		SetMiningBarInvisible();
+		playerController.PlayMiningAnimation();
 	}
 
     IEnumerator DestroyMine()
     {
         animation.Play();
-		SetMiningBarInvisible();
+        SetMiningBarInvisible();
         yield return new WaitForSeconds(0.5f);
         Destroy(gameObject);
-        
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    public void SetMiningBarVisible()
     {
-        if (other.gameObject.tag == "Player")
-        {
-			/*
-			if (Input.GetKeyDown(miningKey) && playerController.MiningToolCheck() == true)
-			{
-            	miningBarBackground.SetActive(true);
-            	miningCircle.SetActive(true);
-            	miningBarAimingSpot.SetActive(true);
-			}*/
-			/*
-			miningBarBackground.SetActive(true);
-			miningCircle.SetActive(true);
-			miningBarAimingSpot.SetActive(true);*/
-        }
-
-        timer = 0.0f;
+        playerController.miningBarBackground.SetActive(true);
+        playerController.miningCircle.SetActive(true);
+        playerController.miningBarAimingSpot.SetActive(true);
+        playerController.AnimateMiningBar();
     }
 
-	public void SetMiningBarVisible()
-	{
-		playerController.miningBarBackground.SetActive(true);
-		playerController.miningCircle.SetActive(true);
-		playerController.miningBarAimingSpot.SetActive(true);
-		playerController.AnimateMiningBar();
-	}
-
-	public void SetMiningBarInvisible()
-	{
-		playerController.miningBarActive = false;
-		playerController.miningBarBackground.SetActive(false);
-		playerController.miningCircle.SetActive(false);
-	}
+    public void SetMiningBarInvisible()
+    {
+        playerController.miningBarActive = false;
+        playerController.miningBarBackground.SetActive(false);
+        playerController.miningCircle.SetActive(false);
+    }
 
     void OnTriggerStay2D(Collider2D other)
     {
-        timer = Time.time;
-
-        if (other.gameObject.tag == "Player") 
-		{
-			playerController.nearestMineral = this;
-			playerInMiningPosition = true;
-            //AnimateMiningBar();
-		}
+        if (other.gameObject.tag == "Player")
+        {
+            playerController.nearestMineral = this;
+            playerInMiningPosition = true;
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player") 
-		{ 
-			playerController.nearestMineral = null;
-			playerInMiningPosition = false;
-		}
+        if (other.gameObject.tag == "Player")
+        {
+            playerController.nearestMineral = null;
+            playerInMiningPosition = false;
+            SetMiningBarInvisible();
+        }
     }
 
 }

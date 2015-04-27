@@ -22,7 +22,7 @@ public class UIModuleSelection : MonoBehaviour
 
 	private static int slots;
 
-	private static int rows, columns;
+	private static int columns;
 
     private GameObject moduleSelection;
 
@@ -50,7 +50,6 @@ public class UIModuleSelection : MonoBehaviour
         descriptionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, moduleSelection.GetComponent<ModuleSelection>().moduleSelectionHeight - 5.0f);
 
         selectionBoxSize = moduleSelection.GetComponent<ModuleSelection>().moduleSlotSize + 7.0f;
-		rows = moduleSelection.GetComponent<ModuleSelection>().moduleRows;
 		columns = moduleSelection.GetComponent<ModuleSelection>().moduleColumns;
         showDescriptionFlag = true;
 

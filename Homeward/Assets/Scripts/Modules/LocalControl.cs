@@ -57,6 +57,8 @@ public class LocalControl : MonoBehaviour {
 
 	private GameObject repairArrowQueue;
 
+	private AudioController audioController;
+
     public bool ShowTextFlag
     {
         get { return showTextFlag; }
@@ -103,6 +105,7 @@ public class LocalControl : MonoBehaviour {
         player.SendMessage("LocalModuleGenerated", gameObject);
 
 		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -250,6 +253,7 @@ public class LocalControl : MonoBehaviour {
 	                {
 						if (Input.GetKeyDown(repairKey))
 						{
+							audioController.PlayRepairSound(2);
 							repairArrowQueueFlag = !repairArrowQueueFlag;
 							PlayerController.showRepairArrows = repairArrowQueueFlag;
 							repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
@@ -295,6 +299,7 @@ public class LocalControl : MonoBehaviour {
             flag = true;
 			// arrow reset
         }
+		audioController.PlayRepairSound(3);
 		repairArrowQueueFlag = false;
 		PlayerController.showRepairArrows = false;
 		repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);

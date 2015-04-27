@@ -16,6 +16,8 @@ public class Deployable : MonoBehaviour {
 	private int matchedPoint;	// record which detector is "matched"
 	private Color color;
 
+	private AudioController audioController;
+
 	// Use this for initialization
 	void Start () {
 		transform.parent = GameObject.Find("MainPlayer").transform;
@@ -32,6 +34,8 @@ public class Deployable : MonoBehaviour {
 		isDeploying = true;
 
 		matchedPoint = -1;	// -1 means no match
+
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -44,6 +48,7 @@ public class Deployable : MonoBehaviour {
 
 		// Condition to detach the blueprint
 		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
+			audioController.PlayBuildingSound(1);
 			Instantiate(moduleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
 			isDeploying = false;
 			Reset();

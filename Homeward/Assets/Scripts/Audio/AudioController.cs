@@ -13,27 +13,52 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance mining;
 	private FMOD.Studio.EventInstance drone;
 	private FMOD.Studio.EventInstance refineryMachine;
+	private FMOD.Studio.EventInstance repair;
+	private FMOD.Studio.EventInstance repairStart;
+	private FMOD.Studio.EventInstance repairEnd;
+	private FMOD.Studio.EventInstance buildingStart;
+	private FMOD.Studio.EventInstance building;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
 	public FMOD.Studio.ParameterInstance stemTrigger2;
 	public FMOD.Studio.ParameterInstance stemTrigger3;
 	public FMOD.Studio.ParameterInstance stemTrigger4;
+
 	private FMOD.Studio.ParameterInstance leftFootMetalSelector;
 	private FMOD.Studio.ParameterInstance rightFootMetalSelector;
 	private FMOD.Studio.ParameterInstance leftFootSandSelector;
 	private FMOD.Studio.ParameterInstance rightFootSandSelector;
+	private FMOD.Studio.ParameterInstance repairSelector;
+	private FMOD.Studio.ParameterInstance repairStartSelector;
+	private FMOD.Studio.ParameterInstance repairEndSelector;
+	private FMOD.Studio.ParameterInstance buildingStartSelector;
+	private FMOD.Studio.ParameterInstance buildingSelector;
+
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance leftFootSandInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootSandInsideOutside;
+	private FMOD.Studio.ParameterInstance repairInsideOutside;
+	private FMOD.Studio.ParameterInstance repairStartInsideOutside;
+	private FMOD.Studio.ParameterInstance repairEndInsideOutside;
+	private FMOD.Studio.ParameterInstance buildingStartInsideOutside;
+	private FMOD.Studio.ParameterInstance buildingInsideOutside;
+
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance refineryAirlockPressure;
+	private FMOD.Studio.ParameterInstance repairAirlockPressure;
+	private FMOD.Studio.ParameterInstance repairStartAirlockPressure;
+	private FMOD.Studio.ParameterInstance repairEndAirlockPressure;
+	private FMOD.Studio.ParameterInstance buildingStartAirlockPressure;
+	private FMOD.Studio.ParameterInstance buildingAirlockPressure;
+
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
 	private FMOD.Studio.ParameterInstance droneVolume;
 	private FMOD.Studio.ParameterInstance startingStopping;
+
 
 	public FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
 	private FMOD.Studio.PLAYBACK_STATE refineryPlaybackState;
@@ -42,8 +67,7 @@ public class AudioController : MonoBehaviour {
 	public float stemTriggerValue3;
 	public float stemTriggerValue4;
 	public float droneVolumeValue;
-	private float refineryStartingStopping;
-	private PlayerController player;
+    private float refineryStartingStopping;
 
 	private bool refineryStarted;
 
@@ -99,7 +123,6 @@ public class AudioController : MonoBehaviour {
 		droneVolumeValue = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		songPlaying = false;
 		controllerSoundPressure = 0f;
 
@@ -276,7 +299,7 @@ public class AudioController : MonoBehaviour {
 		// 1 = play, 2 = stop
 		if (controlNumber == 1)
 		{
-			Debug.Log("song playing");
+			//Debug.Log("song playing");
 			if (songPlaying == false)
 			{
 				switch(songSelectNumber)
@@ -423,6 +446,117 @@ public class AudioController : MonoBehaviour {
 			miningInsideOutside.setValue(1.75f);
 			mining.start();
 			mining.release ();
+		}
+	}
+
+	public void PlayRepairSound(int repairSound)
+	{
+		if (repairSound == 1) //repair action sound
+		{
+			if (CentralControl.isInside == true)
+			{
+				repair = FMOD_StudioSystem.instance.GetEvent("event:/Repair");
+				repair.getParameter("Selector", out repairSelector);
+				repair.getParameter("InsideOutside", out repairInsideOutside);
+				repair.getParameter("AirlockPressure", out repairAirlockPressure);
+				repairSelector.setValue(Random.Range (1f, 9f));
+				repairInsideOutside.setValue(.5f);
+				repairAirlockPressure.setValue(controllerSoundPressure);
+				repair.start();
+				repair.release();
+			}
+			else
+			{
+				repair = FMOD_StudioSystem.instance.GetEvent("event:/Repair");
+				repair.getParameter("Selector", out repairSelector);
+				repair.getParameter("InsideOutside", out repairInsideOutside);
+				repair.getParameter("AirlockPressure", out repairAirlockPressure);
+				repairSelector.setValue(Random.Range (1f, 9f));
+				repairInsideOutside.setValue(1.75f);
+				repairAirlockPressure.setValue(controllerSoundPressure);
+				repair.start();
+				repair.release();
+			}
+		}
+		else if (repairSound == 2) //repair start sound
+		{
+			if (CentralControl.isInside == true)
+			{
+				repairStart = FMOD_StudioSystem.instance.GetEvent("event:/RepairStart");
+				repairStart.getParameter("Selector", out repairStartSelector);
+				repairStart.getParameter("InsideOutside", out repairStartInsideOutside);
+				repairStart.getParameter("AirlockPressure", out repairStartAirlockPressure);
+				repairStartSelector.setValue(Random.Range (1f, 5f));
+				repairStartInsideOutside.setValue(.5f);
+				repairStartAirlockPressure.setValue(controllerSoundPressure);
+				repairStart.start();
+				repairStart.release();
+			}
+			else
+			{
+				repairStart = FMOD_StudioSystem.instance.GetEvent("event:/RepairStart");
+				repairStart.getParameter("Selector", out repairStartSelector);
+				repairStart.getParameter("InsideOutside", out repairStartInsideOutside);
+				repairStart.getParameter("AirlockPressure", out repairStartAirlockPressure);
+				repairStartSelector.setValue(Random.Range (1f, 5f));
+				repairStartInsideOutside.setValue(1.75f);
+				repairStartAirlockPressure.setValue(controllerSoundPressure);
+				repairStart.start();
+				repairStart.release();
+			}
+		}
+		else if (repairSound == 3) //repair end sound
+		{
+			if (CentralControl.isInside == true)
+			{
+				repairEnd = FMOD_StudioSystem.instance.GetEvent("event:/RepairEnd");
+				repairEnd.getParameter("Selector", out repairEndSelector);
+				repairEnd.getParameter("InsideOutside", out repairEndInsideOutside);
+				repairEnd.getParameter("AirlockPressure", out repairEndAirlockPressure);
+				repairEndSelector.setValue(Random.Range (1f, 9f));
+				repairEndInsideOutside.setValue(.5f);
+				repairEndAirlockPressure.setValue(controllerSoundPressure);
+				repairEnd.start();
+				repairEnd.release();
+			}
+			else
+			{
+				repairEnd = FMOD_StudioSystem.instance.GetEvent("event:/RepairEnd");
+				repairEnd.getParameter("Selector", out repairEndSelector);
+				repairEnd.getParameter("InsideOutside", out repairEndInsideOutside);
+				repairEnd.getParameter("AirlockPressure", out repairEndAirlockPressure);
+				repairEndSelector.setValue(Random.Range (1f, 9f));
+				repairEndInsideOutside.setValue(1.75f);
+				repairEndAirlockPressure.setValue(controllerSoundPressure);
+				repairEnd.start();
+				repairEnd.release();
+			}
+		}
+	}
+
+	public void PlayBuildingSound(int buildingSound)
+	{
+		if (buildingSound == 1)
+		{
+			buildingStart = FMOD_StudioSystem.instance.GetEvent("event:/BuildingStart");
+			buildingStart.getParameter("Selector", out buildingStartSelector);
+			buildingStart.getParameter("InsideOutside", out buildingStartInsideOutside);
+			buildingStart.getParameter("AirlockPressure", out buildingStartAirlockPressure);
+			buildingStartSelector.setValue(Random.Range (1f, 9f));
+			buildingStartAirlockPressure.setValue(controllerSoundPressure);
+			buildingStart.start();
+			buildingStart.release();
+		}
+		else if (buildingSound == 2)
+		{
+			building = FMOD_StudioSystem.instance.GetEvent("event:/Building");
+			building.getParameter("Selector", out buildingSelector);
+			building.getParameter("InsideOutside", out buildingInsideOutside);
+			building.getParameter("AirlockPressure", out buildingAirlockPressure);
+			buildingSelector.setValue(Random.Range(1f, 6f));
+			buildingAirlockPressure.setValue(controllerSoundPressure);
+			building.start();
+			building.release();
 		}
 	}
 	

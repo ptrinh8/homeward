@@ -41,7 +41,7 @@ public class UIInventory : MonoBehaviour
     public static void SetModuleInventory(GameObject moduleInv)
     {
         moduleInventory = moduleInv;
-        if (moduleInventory == null) Debug.Log("asdfasdfasdfasdf");
+        if (moduleInventory == null) //Debug.Log("asdfasdfasdfasdf");
         firstTimeFlag = true;
     }
 
@@ -76,7 +76,7 @@ public class UIInventory : MonoBehaviour
                     slots = playerInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     drawSelectionBox(0, playerInventory);
-                    Debug.Log(allSlots.Count);
+                    //Debug.Log(allSlots.Count);
                 }
             }
             else
@@ -88,7 +88,7 @@ public class UIInventory : MonoBehaviour
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     allSlots.AddRange(moduleInventory.GetComponent<Inventory>().allSlots);
                     drawSelectionBox(0, playerInventory);
-                    Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots.Count);
+                    //Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots.Count);
                     if (moduleInventory.GetComponent<Inventory>().allSlots == null) Debug.Log("null");
                 }
             }

@@ -3,8 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-// attach to Repair Arrow Queue gameobject
-// handle the arrow queue when repairing
 public class ArrowQueueControl : MonoBehaviour {
 
 	public GameObject arrow;
@@ -14,20 +12,23 @@ public class ArrowQueueControl : MonoBehaviour {
 	private int arrowsCount, currentPosition;
 	private int currentInput;// 1 stands for UP; 2 stands for LEFT; 3 stands for DOWN; 4 stands for RIGHT
 
+	private AudioController audioController;
+
 	public bool CorrectInput
 	{
-		get { return this.correctInput;}
-		set { this.correctInput = value;}
+		get {return this.correctInput;}
+		set {this.correctInput = value;}
 	}
 
 	void Awake () {
 		alphaPointFive = Color.white;
 		alphaPointFive.a = 0.5f;
 	}
-
 	// Use this for initialization
 	void Start () {
 		Reset();
+
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -60,6 +61,7 @@ public class ArrowQueueControl : MonoBehaviour {
 				if (currentInput == arrows[currentPosition].GetComponent<Arrow>().Direction)
 				{
 					// current input correct
+					audioController.PlayRepairSound(1);
 					arrows[currentPosition].GetComponent<Image>().color = Color.white;
 					currentPosition ++;
 					if (currentPosition >= arrows.Count)
