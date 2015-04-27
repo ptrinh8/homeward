@@ -326,56 +326,59 @@ public class PlayerController : MonoBehaviour
 
 	public void AnimateMiningBar()
 	{
-		if (goingUp)
+		if (miningBarFlashing == false)
 		{
-			if (miningBarCurrentPosition <= 0.5f)
+			if (goingUp)
 			{
-				accel += 0.01f;
-				addition += accel;
-			}
-			else if (0.5f < miningBarCurrentPosition)
-			{
-				if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
+				if (miningBarCurrentPosition <= 0.5f)
+				{
+					accel += 0.01f;
+					addition += accel;
 				}
+				else if (0.5f < miningBarCurrentPosition)
+				{
+					if (addition > accel) 
+					{ 
+						accel -= 0.01f;
+						addition -= accel; 
+					}
+				}
+				
+				miningBarCurrentPosition += (addition / miningBarBackgroundRect.sizeDelta.x);
+			}
+			else
+			{
+				if (miningBarCurrentPosition <= 0.5f)
+				{
+					if (addition > accel) 
+					{ 
+						accel -= 0.01f;
+						addition -= accel; 
+					}
+				}
+				else if (0.5f < miningBarCurrentPosition)
+				{
+					accel += 0.01f;
+					addition += accel;
+				}
+				
+				miningBarCurrentPosition -= (addition / miningBarBackgroundRect.sizeDelta.x);
 			}
 			
-			miningBarCurrentPosition += (addition / miningBarBackgroundRect.sizeDelta.x);
-		}
-		else
-		{
-			if (miningBarCurrentPosition <= 0.5f)
-			{
-				if (addition > accel) 
-				{ 
-					accel -= 0.01f;
-					addition -= accel; 
-				}
-			}
-			else if (0.5f < miningBarCurrentPosition)
-			{
-				accel += 0.01f;
-				addition += accel;
-			}
+			miningCircle.GetComponent<RectTransform>().localPosition = new Vector2(miningBarCurrentPosition * miningBarBackgroundRect.sizeDelta.x - (miningBarBackgroundRect.sizeDelta.x / 2), 0.0f);
 			
-			miningBarCurrentPosition -= (addition / miningBarBackgroundRect.sizeDelta.x);
-		}
-		
-		miningCircle.GetComponent<RectTransform>().localPosition = new Vector2(miningBarCurrentPosition * miningBarBackgroundRect.sizeDelta.x - (miningBarBackgroundRect.sizeDelta.x / 2), 0.0f);
-		
-		if (miningBarCurrentPosition < 0)
-		{
-			goingUp = true;
-			addition = 1.0f;
-			accel = 0.2f;
-		}
-		else if (miningBarCurrentPosition > 1)
-		{
-			goingUp = false;
-			addition = 1.0f;
-			accel = 0.2f;
+			if (miningBarCurrentPosition < 0)
+			{
+				goingUp = true;
+				addition = 1.0f;
+				accel = 0.2f;
+			}
+			else if (miningBarCurrentPosition > 1)
+			{
+				goingUp = false;
+				addition = 1.0f;
+				accel = 0.2f;
+			}
 		}
 	}
 
@@ -725,6 +728,7 @@ public class PlayerController : MonoBehaviour
 							else if (nearestMineral != null && miningBarActive == false)
 							{
 								//Debug.Log ("Animating");
+								//addition = 1.0f;
 								nearestMineral.SetMiningBarVisible();
 								miningBarActive = true;
 							}
@@ -1230,6 +1234,7 @@ public class PlayerController : MonoBehaviour
 
 	IEnumerator FlashMiningBar()
 	{
+		//addition = 0f;
 		if (miningBarFlashCount < miningBarFlashNumber)
 		{
 			if (miningBarFlashTimer > miningBarFlashTime)
@@ -1276,6 +1281,11 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 		yield return null;
+	}
+
+	public void PlayMiningAnimation()
+	{
+		anim.SetTrigger("Mining");
 	}
 
 	private void CheckPlayerFacing()

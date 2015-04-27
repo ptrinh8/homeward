@@ -46,6 +46,7 @@ public class Mining : MonoBehaviour
     private float addition;
     private float accel;
     private float miningCircleInitialPosition;
+	public bool miningBarVisible = false;
 
     private ParticleSystem rockParticleSystem;
 
@@ -135,6 +136,7 @@ public class Mining : MonoBehaviour
 		}
 		audioController.PlayMiningSound();
 		MineSupportFunction(numberOfMinerals);
+		playerController.PlayMiningAnimation();
 	}
 
     IEnumerator DestroyMine()
