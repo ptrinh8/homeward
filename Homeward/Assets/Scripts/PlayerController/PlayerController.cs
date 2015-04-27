@@ -954,7 +954,7 @@ public class PlayerController : MonoBehaviour
                     }
 
 					direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
-					rigidbody2D.AddForce(direction * 5f);
+					rigidbody2D.AddForce(direction * 6f);
 
 					/*
 					if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey (KeyCode.D) || Input.GetKey (KeyCode.W))

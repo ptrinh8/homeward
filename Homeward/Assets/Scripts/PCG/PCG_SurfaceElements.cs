@@ -62,7 +62,7 @@ public class PCG_SurfaceElements : MonoBehaviour
     List<int> smallRocks = new List<int>();
     bool deleteSmallRocksColliders = false;
 
-    float areaSpan = 10.0F;
+    public float areaSpan = 50.0F;
 
     #region SpritesGeneration
 

@@ -20,7 +20,7 @@ public class PCG_Rocks : MonoBehaviour
     int[] _x = new int[2040];
     int[] _y = new int[2040];
 
-    float areaSpan = 10.0F;
+    public float areaSpan = 50.0F;
     public bool RocksIntensityRegular = false, RocksIntensityHigh = false, RocksIntensityExtreme = false;
 
     [HideInInspector]

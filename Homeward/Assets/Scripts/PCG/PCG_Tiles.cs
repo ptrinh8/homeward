@@ -12,10 +12,10 @@ public class PCG_Tiles : MonoBehaviour
 {
     PCG_SurfaceElements pcg_surfaceElements = new PCG_SurfaceElements();
     PCG_Rocks pcg_rocks = new PCG_Rocks();
-    PCG_TriggerA trigger = new PCG_TriggerA();
-    PCG_TriggerB trigger1 = new PCG_TriggerB();
-    PCG_TriggerC trigger2 = new PCG_TriggerC();
-    PCG_TriggerD trigger3 = new PCG_TriggerD();
+    //PCG_TriggerA trigger = new PCG_TriggerA();
+    //PCG_TriggerB trigger1 = new PCG_TriggerB();
+    //PCG_TriggerC trigger2 = new PCG_TriggerC();
+    //PCG_TriggerD trigger3 = new PCG_TriggerD();
 
     public GameObject _tile;
     public Sprite _tileA, _tileB, _tileC,
@@ -25,7 +25,7 @@ public class PCG_Tiles : MonoBehaviour
     _tileP, _tileQ, _tileR, _tileS,
     _tileT;
 
-    float areaSpan = 10.0F;
+    public float areaSpan = 50.0F;
 
     [HideInInspector]
     public int[] extractableValue = new int[11071];
@@ -176,7 +176,7 @@ public class PCG_Tiles : MonoBehaviour
     }
 
     void RepositionTriggers()
-    {
+    {/*
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
@@ -255,16 +255,16 @@ public class PCG_Tiles : MonoBehaviour
                 pcg_surfaceElements.addRemoveTiles = false;
                 pcg_surfaceElements.triggerEntered = true;
             }
-        }
+        }*/
     }
 
     void Start()
     {
         rand = FindObjectOfType(typeof(PCG_Rand)) as PCG_Rand;
-        trigger = FindObjectOfType(typeof(PCG_TriggerA)) as PCG_TriggerA;
-        trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
-        trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
-        trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
+        //trigger = FindObjectOfType(typeof(PCG_TriggerA)) as PCG_TriggerA;
+        //trigger1 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
+        //trigger2 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
+        //trigger3 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
         pcg_rocks = FindObjectOfType(typeof(PCG_Rocks)) as PCG_Rocks;
         pcg_surfaceElements = FindObjectOfType(typeof(PCG_SurfaceElements)) as PCG_SurfaceElements;
         RndNosGeneration();
@@ -272,15 +272,15 @@ public class PCG_Tiles : MonoBehaviour
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
-        trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
-        trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
-        trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
-        trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
+        //trigger.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y + 2.5F);
+        //trigger1.transform.position = new Vector2(mainPlayerPos.x - 2.5F, mainPlayerPos.y);
+        //trigger2.transform.position = new Vector2(mainPlayerPos.x, mainPlayerPos.y - 2.5F);
+        //trigger3.transform.position = new Vector2(mainPlayerPos.x + 2.5F, mainPlayerPos.y);
     }
 
     void Update()
     {
         AddRemoveTiles();
-        RepositionTriggers();
+        //RepositionTriggers();
     }
 }
