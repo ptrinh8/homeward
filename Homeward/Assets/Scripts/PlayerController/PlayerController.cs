@@ -90,6 +90,8 @@ public class PlayerController : MonoBehaviour
 	private float miningCircleInitialPosition;
 	public bool miningBarActive;
 
+	public bool isNearMachine = false;
+
     // Taylor
     public float CurrentStamina
     {
@@ -220,6 +222,10 @@ public class PlayerController : MonoBehaviour
 	private bool miningBarFlashing;
 
     public static bool pauseFlag;
+
+	private Refining refining;
+	private FoodModule foodModule;
+	private BuildingModule buildingModule;
 
 	private float miningBarCurrentPosition;
 
@@ -567,7 +573,7 @@ public class PlayerController : MonoBehaviour
             EndDemo();
             ManageOxygenLevels();
 
-            if (CentralControl.healthStaminaModuleExists)
+            if (CentralControl.healthStaminaModuleExists == true)
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
@@ -578,7 +584,7 @@ public class PlayerController : MonoBehaviour
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
             }
 
-			if (CentralControl.oxygenModuleExists)
+			if (CentralControl.oxygenModuleExists == true)
 			{
 				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 1;
 			}
@@ -587,7 +593,7 @@ public class PlayerController : MonoBehaviour
 				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
 			}
 
-			if (CentralControl.radarModuleExists)
+			if (CentralControl.radarModuleExists == true)
 			{
 				RadarCamera.camera.cullingMask |= (1 << LayerMask.NameToLayer("Radar"));
 			}
@@ -654,18 +660,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
 
-            /*** if inside in a module turn the flag on ***/
-            if (CentralControl.isInside)
-            {
-                //			if (hold repair tool)
-                {
-                    if (Input.GetKeyDown(KeyCode.F))
-                    {
-                        isRepairing = true;
-                    }
-                }
-            }
-
             if (currentHealth <= 0)
             {
                 isDead = true;
@@ -689,7 +683,7 @@ public class PlayerController : MonoBehaviour
                         moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
+                    if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works && isNearMachine == false)
                     {
                         showPlayerInventory = !showPlayerInventory;
                     }
@@ -921,7 +915,7 @@ public class PlayerController : MonoBehaviour
                     Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
 
 
-					if (showPlayerInventory || showModuleSelection || showRepairArrows)
+					if (showModuleSelection || showRepairArrows || showPlayerInventory)
                     {
 						if (showRepairArrows)
 						{
@@ -938,9 +932,68 @@ public class PlayerController : MonoBehaviour
                     else
                     {
 						CheckPlayerFacing();
-                        x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
-                        y = Input.GetAxisRaw("Vertical");
                     }
+
+					if (refining != null)
+					{
+						if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+						    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+						{
+							if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+							{
+								if (refining.showPlayerAndModuleInventory == true)
+								{
+									refining.showPlayerAndModuleInventory = false;
+									Debug.Log (refining.showPlayerAndModuleInventory);
+								}
+								else if (refining.showPlayerAndModuleInventory == false)
+								{
+									refining.showPlayerAndModuleInventory = true;
+									Debug.Log (refining.showPlayerAndModuleInventory);
+								}
+							}
+						}
+					}
+					if (foodModule != null)
+					{
+						if (foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+						    foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+						{
+							if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+							{
+								if (foodModule.showPlayerAndModuleInventory == true)
+								{
+									foodModule.showPlayerAndModuleInventory = false;
+									Debug.Log (foodModule.showPlayerAndModuleInventory);
+								}
+								else if (foodModule.showPlayerAndModuleInventory == false)
+								{
+									foodModule.showPlayerAndModuleInventory = true;
+									Debug.Log (foodModule.showPlayerAndModuleInventory);
+								}
+							}
+						}
+					}
+					if (buildingModule != null)
+					{
+						if (buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+						    buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+						{
+							if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+							{
+								if (buildingModule.showPlayerAndModuleInventory == true)
+								{
+									buildingModule.showPlayerAndModuleInventory = false;
+									Debug.Log (buildingModule.showPlayerAndModuleInventory);
+								}
+								else if (buildingModule.showPlayerAndModuleInventory == false)
+								{
+									buildingModule.showPlayerAndModuleInventory = true;
+									Debug.Log (buildingModule.showPlayerAndModuleInventory);
+								}
+							}
+						}
+					}
 
                     if (ModuleControl.ShowModuleControl)
                     {
@@ -1042,6 +1095,36 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+	void FixedUpdate()
+	{
+		Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+		if (showModuleSelection || showRepairArrows || showPlayerInventory)
+		{
+			x = 0;
+			y = 0;
+		}
+		else
+		{
+			x = Input.GetAxisRaw("Horizontal");   // Input.GetAxisRaw is independent of framerate, and also gives us raw input which is better for 2D
+			y = Input.GetAxisRaw("Vertical");
+			direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
+			rigidbody2D.AddForce(direction * 6f);
+			CheckPlayerFacing();
+		}
+		if (rigidbody2D.velocity.magnitude > .01f)
+		{
+			playerMoving = true;
+		}
+		else
+		{
+			playerMoving = false;
+		}
+		if (rigidbody2D.velocity.magnitude < .01f)
+		{
+			rigidbody2D.velocity = Vector2.zero;
+		}
+	}
 
     void zoomInWhenOnBase()
     {
@@ -1202,6 +1285,35 @@ public class PlayerController : MonoBehaviour
 		{
 			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
 			tileColor = tile.color;
+		}
+
+		if (other.gameObject.tag == "Machine")
+		{
+			isNearMachine = true;
+		}
+	}
+
+	void OnTriggerStay2D(Collider2D other)
+	{
+		if (other.gameObject.transform.root.gameObject.tag == "RefineryModule")
+		{
+			refining = other.GetComponent<Refining>();
+		}
+		else if (other.gameObject.transform.root.gameObject.tag == "HealthStaminaModule")
+		{
+			foodModule = other.GetComponent<FoodModule>();
+		}
+		else if (other.gameObject.transform.root.gameObject.tag == "BuildingModule")
+		{
+			buildingModule = other.GetComponent<BuildingModule>();
+		}
+	}
+
+	void OnTriggerExit2D(Collider2D other)
+	{
+		if (other.gameObject.tag == "Machine");
+		{
+			isNearMachine = false;
 		}
 	}
 

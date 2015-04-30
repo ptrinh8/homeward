@@ -21,6 +21,14 @@ public class MiningProbeController : MonoBehaviour
 
     int abc = 0;
 
+	private FMOD.Studio.EventInstance miningProbeSound;
+	private FMOD.Studio.ParameterInstance miningProbeInsideOutside;
+	private FMOD.Studio.ParameterInstance miningProbeLooping;
+	private FMOD.Studio.PLAYBACK_STATE miningProbePlaybackState;
+	private float miningLooping;
+	private float miningProbeInsideOutsideFloat;
+
+
 
     void Start()
     {
@@ -46,13 +54,18 @@ public class MiningProbeController : MonoBehaviour
         UIInventory.SetModuleInventory(null);
 
         GameObject = GameObject.Find("GameObject");
+
+		miningProbeSound = FMOD_StudioSystem.instance.GetEvent("event:/MiningProbe");
+		miningProbeSound.getParameter("InsideOutside", out miningProbeInsideOutside);
+		miningProbeSound.getParameter("ProbeLooping", out miningProbeLooping);
+		miningLooping = 0f;
     }
 
 
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.H) && spawnFlag)
+        if (Input.GetKeyDown(KeyCode.H) && spawnFlag && CentralControl.isInside == false)
         {
             tiles = GameObject.FindGameObjectsWithTag("FinalTextures");
 
@@ -71,11 +84,18 @@ public class MiningProbeController : MonoBehaviour
 
             spawnFlag = false;
 
+			miningProbeSound.start();
+			miningLooping = 1.5f;
+			miningProbeLooping.setValue(miningLooping);
+			miningProbeInsideOutsideFloat = 2.0f;
+			miningProbeInsideOutside.setValue(miningProbeInsideOutsideFloat);
+
             gameObject.transform.SetParent(player.transform.parent);
             gameObject.renderer.enabled = true;
 
             InvokeRepeating("Mine", 3, 3); // mines once in 3 seconds
         }
+
     }
 
     bool playerIsInside(GameObject tile)

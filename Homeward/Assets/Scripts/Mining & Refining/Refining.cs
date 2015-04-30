@@ -103,7 +103,7 @@ public class Refining : MonoBehaviour
 
 	void Start () 
     {
-        playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
         minerals = FindObjectOfType(typeof(Mining)) as Mining;
         inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
 
@@ -206,6 +206,26 @@ public class Refining : MonoBehaviour
 		{
 			
 		}
+		if (playerController.isNearMachine == true)
+		{
+			if (showPlayerAndModuleInventory == true)
+			{
+				moduleInventory.SetActive(true);
+				moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
+				PlayerController.ShowPlayerInventory = true;
+			}
+			else if (showPlayerAndModuleInventory == false)
+			{
+				moduleInventory.SetActive(false);
+				moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
+				PlayerController.ShowPlayerInventory = false;
+			}
+		}
+		else
+		{
+			moduleInventory.SetActive(false);
+			moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
+		}
 	}
 
     void OnTriggerEnter2D(Collider2D other)
@@ -215,70 +235,6 @@ public class Refining : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             PlayerController.toolUsingEnable = false;
-        }
-    }
-
-    void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Player")
-        {
-            if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
-            gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
-            {
-                showPlayerAndModuleInventory = true;
-                PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-                PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-                moduleInventory.SetActive(true);
-                moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-            }
-            else
-            {
-                showPlayerAndModuleInventory = false;
-                moduleInventory.SetActive(showPlayerAndModuleInventory);
-                moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-
-                PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-                PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-            }
-
-            if (showPlayerAndModuleInventory) 
-            {
-                if (Input.GetKeyDown(keyToAddItemsDirectlyToModuleinventory))
-                {
-                    if ( moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
-                    {
-                    Item item = GameObject.Find("Material").GetComponent<Item>();
-                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-                    other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-                    }
-
-                }
-
-                if (Input.GetKeyDown(keyToAddItemsFromMainPlayerInventory))
-                {
-                    if ((mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) > 0) && (stopMineralsIntake == false))
-                    {
-                        Item item = other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-                        moduleInventory.GetComponent<Inventory>().AddItem(item);
-                    }
-                }
-            }
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        showPlayerAndModuleInventory = false;
-        moduleInventory.SetActive(showPlayerAndModuleInventory);
-        moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-        PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-        PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-        UIInventory.SetModuleInventory(null);
-
-        // Taylor
-        if (other.gameObject.tag == "Player")
-        {
-            PlayerController.toolUsingEnable = true;
         }
     }
 
