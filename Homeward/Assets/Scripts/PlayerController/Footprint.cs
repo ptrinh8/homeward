@@ -5,7 +5,7 @@ public class Footprint : MonoBehaviour {
 
 	private float timer;
 	private float despawnTime;
-	private SpriteRenderer renderer;
+	private SpriteRenderer _renderer;
 
 	private float alphaValue;
 
@@ -16,7 +16,7 @@ public class Footprint : MonoBehaviour {
 	void Start () {
 
 		despawnTime = GameObject.Find ("DayNightController").GetComponent<DayNightController>().dayCycleLength;
-		renderer = GetComponent<SpriteRenderer>();
+		_renderer = GetComponent<SpriteRenderer>();
 		tileColor = GameObject.Find ("MainPlayer").GetComponent<PlayerController>().tileColor;
 		if ((tileColor.b > tileColor.r) && (tileColor.b > tileColor.g))
 		{
@@ -33,7 +33,7 @@ public class Footprint : MonoBehaviour {
 			tileColor.r += .3f;
 			tileColor.b += .3f;
 		}
-		renderer.color = tileColor;
+		_renderer.color = tileColor;
 		GameObject.Destroy(this.gameObject, despawnTime);
 	
 	}
@@ -45,7 +45,7 @@ public class Footprint : MonoBehaviour {
 
 		alphaValue = Mathf.Lerp (1f, 0f, timer / despawnTime);
 		footstepColor = new Color(tileColor.r, tileColor.g, tileColor.b, alphaValue);
-		renderer.color = footstepColor;
+		_renderer.color = footstepColor;
 	}
 
 

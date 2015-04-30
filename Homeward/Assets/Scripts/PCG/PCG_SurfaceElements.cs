@@ -315,7 +315,7 @@ public class PCG_SurfaceElements : MonoBehaviour
                         foreach (Transform child in tiles[i].transform)
                         {
                             Destroy(child.GetComponent<PCG_OptimizePolygonCollider2D>());
-                            child.gameObject.AddComponent<PCG_OptimizePolygonCollider2D>();
+                            //child.gameObject.AddComponent<PCG_OptimizePolygonCollider2D>();
                         }
                     }
 
@@ -444,23 +444,23 @@ public class PCG_SurfaceElements : MonoBehaviour
             case 0: foreach (Transform child in tiles[pos].transform)
                 {
                     Destroy(child.GetComponent<PolygonCollider2D>());
-                    child.gameObject.AddComponent<PolygonCollider2D>();
-                    child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.13F);
-                    child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.97F, 3.78F);
+                    //child.gameObject.AddComponent<PolygonCollider2D>();
+                    //child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.13F);
+                    //child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(2.97F, 3.78F);
                 } break;
             case 1: foreach (Transform child in tiles[pos].transform)
                 {
                     Destroy(child.GetComponent<PolygonCollider2D>());
-                    child.gameObject.AddComponent<PolygonCollider2D>();
-                    child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.01F);
-                    child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.89F, 4.02F);
+                    //child.gameObject.AddComponent<PolygonCollider2D>();
+                    //child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.01F);
+                    //child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.89F, 4.02F);
                 } break;
             case 2: foreach (Transform child in tiles[pos].transform)
                 {
                     Destroy(child.GetComponent<PolygonCollider2D>());
-                    child.gameObject.AddComponent<PolygonCollider2D>();
-                    child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.01F);
-                    child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.89F, 4.02F);
+                    //child.gameObject.AddComponent<PolygonCollider2D>();
+                    //child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.00F, -0.01F);
+                    //child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.89F, 4.02F);
                 } break;
             default: break;
         }
@@ -472,7 +472,7 @@ public class PCG_SurfaceElements : MonoBehaviour
         {
             Destroy(child.GetComponent<PolygonCollider2D>());
             Destroy(child.GetComponent<BoxCollider2D>());
-            child.gameObject.GetComponent<CircleCollider2D>().enabled = true;
+            //child.gameObject.GetComponent<CircleCollider2D>().enabled = true;
         }
 
         switch (index)
@@ -507,9 +507,9 @@ public class PCG_SurfaceElements : MonoBehaviour
         {
             Destroy(child.GetComponent<PolygonCollider2D>());
             Destroy(child.GetComponent<CircleCollider2D>());
-            child.gameObject.AddComponent<PolygonCollider2D>();
-            child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.06F, 0.00F);
-            child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.63F, 3.05F);
+            //child.gameObject.AddComponent<PolygonCollider2D>();
+            //child.gameObject.GetComponent<BoxCollider2D>().center = new Vector2(0.06F, 0.00F);
+            //child.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(3.63F, 3.05F);
         }
     }
 }
