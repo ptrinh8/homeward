@@ -65,7 +65,7 @@ public class UIInventory : MonoBehaviour
     void Update()
     {
 
-        if (PlayerController.showPlayerInventory)
+        if (PlayerController.PlayerInventoryOpen == true)
         {
             if (moduleInventory == null)
             {

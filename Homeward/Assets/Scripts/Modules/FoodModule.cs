@@ -199,13 +199,11 @@ public class FoodModule : MonoBehaviour
 			{
 				moduleInventory.SetActive(true);
 				moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
-				PlayerController.ShowPlayerInventory = true;
 			}
 			else if (showPlayerAndModuleInventory == false)
 			{
 				moduleInventory.SetActive(false);
 				moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
-				PlayerController.ShowPlayerInventory = false;
 			}
 		}
 		else

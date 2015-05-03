@@ -10,7 +10,7 @@ using System;
 
 public class Refining : MonoBehaviour 
 {
-    private PlayerController playerController = new PlayerController();
+    private PlayerController playerController;
     private Mining minerals = new Mining();
     private Inventory inventory = new Inventory();
 
@@ -135,6 +135,7 @@ public class Refining : MonoBehaviour
 
     void Update()
     {
+//		Debug.Log (showPlayerAndModuleInventory);
 		// Taylor
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
 		// Taylor
@@ -206,22 +207,12 @@ public class Refining : MonoBehaviour
 		{
 			
 		}
-		if (playerController.isNearMachine == true)
+		if (showPlayerAndModuleInventory == true)
 		{
-			if (showPlayerAndModuleInventory == true)
-			{
-				moduleInventory.SetActive(true);
-				moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
-				PlayerController.ShowPlayerInventory = true;
-			}
-			else if (showPlayerAndModuleInventory == false)
-			{
-				moduleInventory.SetActive(false);
-				moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
-				PlayerController.ShowPlayerInventory = false;
-			}
+			moduleInventory.SetActive(true);
+			moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
 		}
-		else
+		else if (showPlayerAndModuleInventory == false)
 		{
 			moduleInventory.SetActive(false);
 			moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);

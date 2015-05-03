@@ -169,17 +169,17 @@ public class PlayerController : MonoBehaviour
 
     public static bool showModuleSelection;
 
-    public static bool showPlayerInventory;
+    private static bool showPlayerInventory;
+
+	public static bool PlayerInventoryOpen
+	{
+		get { return showPlayerInventory; }
+		set { showPlayerInventory = value; } 
+	}
 
     private bool firstSongPlayed;
     // Taylor
     public static bool toolUsingEnable = true;
-
-    public static bool ShowPlayerInventory
-    {
-        get { return showPlayerInventory; }
-        set { showPlayerInventory = value; }
-    }
 
     private static bool keyCode_I_Works;
 
@@ -683,9 +683,27 @@ public class PlayerController : MonoBehaviour
                         moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works && isNearMachine == false)
+                    if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                     {
-                        showPlayerInventory = !showPlayerInventory;
+						if (isNearMachine == true)
+						{
+							if (refining != null)
+							{
+								if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										refining.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+						}
+						else
+						{
+                        	showPlayerInventory = !showPlayerInventory;
+						}
                     }
 
                     if (Input.GetKeyDown(KeyCode.F))
@@ -933,27 +951,7 @@ public class PlayerController : MonoBehaviour
                     {
 						CheckPlayerFacing();
                     }
-
-					if (refining != null)
-					{
-						if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
-						    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
-						{
-							if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
-							{
-								if (refining.showPlayerAndModuleInventory == true)
-								{
-									refining.showPlayerAndModuleInventory = false;
-									Debug.Log (refining.showPlayerAndModuleInventory);
-								}
-								else if (refining.showPlayerAndModuleInventory == false)
-								{
-									refining.showPlayerAndModuleInventory = true;
-									Debug.Log (refining.showPlayerAndModuleInventory);
-								}
-							}
-						}
-					}
+					/*
 					if (foodModule != null)
 					{
 						if (foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
@@ -993,7 +991,7 @@ public class PlayerController : MonoBehaviour
 								}
 							}
 						}
-					}
+					}*/
 
                     if (ModuleControl.ShowModuleControl)
                     {
