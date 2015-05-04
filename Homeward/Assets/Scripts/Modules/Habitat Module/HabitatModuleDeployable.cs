@@ -82,8 +82,11 @@ public class HabitatModuleDeployable : MonoBehaviour {
 
 	// Cannot deploy when blocked
 	void OnTriggerStay2D (Collider2D other) {
-		deployable = false;
-		spriteRenderer.color = new Color(0.5f, 0, 0, 0.7f);
+		if (other.gameObject.tag != "FinalTextures" && other.gameObject.tag != "Footprint" && !other.gameObject.name.Contains("PCG"))
+		{
+			deployable = false;
+			spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
+		}
 	}
 	
 	void OnTriggerExit2D (Collider2D other) {
