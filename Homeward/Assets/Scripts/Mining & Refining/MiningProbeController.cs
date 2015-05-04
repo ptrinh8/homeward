@@ -7,7 +7,7 @@ public class MiningProbeController : MonoBehaviour
 
     GameObject player;
 
-    bool spawnFlag;
+    public static bool spawnFlag;
 
     public GameObject probeInventory;
 
@@ -25,7 +25,7 @@ public class MiningProbeController : MonoBehaviour
     void Start()
     {
         player = GameObject.Find("MainPlayer");
-        spawnFlag = true;
+        spawnFlag = false;
         miningCount = 0;
         maxMiningCount = 0;
 
@@ -51,9 +51,10 @@ public class MiningProbeController : MonoBehaviour
 
     void Update()
     {
-
-        if (Input.GetKeyDown(KeyCode.H) && spawnFlag)
+        if (spawnFlag)
         {
+            Debug.Log("kitakitakitakita");
+
             tiles = GameObject.FindGameObjectsWithTag("FinalTextures");
 
             PlanetTileController.probeSpawnedFlag = true;
