@@ -1398,6 +1398,11 @@ public class PlayerController : MonoBehaviour
 		anim.SetTrigger("Mining");
 	}
 
+	public void PlayBuildingAnimation()
+	{
+		anim.SetTrigger("Building");
+	}
+
 	private void CheckPlayerFacing()
 	{
 		if (Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.S) && !Input.GetKey (KeyCode.A))
@@ -1582,6 +1587,16 @@ public class PlayerController : MonoBehaviour
 				break;
 			}
 		}
+	}
+
+	private void MiningSound()
+	{
+		audioController.PlayMiningSound();
+	}
+
+	private void BuildingSound()
+	{
+		audioController.PlayBuildingSound(2);
 	}
 
     void Quit()

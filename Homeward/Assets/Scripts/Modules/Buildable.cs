@@ -26,6 +26,8 @@ public class Buildable : MonoBehaviour
 	private float buildingBarFillAmount;
 	private int progress;
 
+	private PlayerController playerController;
+
 	// Use this for initialization
 	void Start () 
     {
@@ -49,6 +51,8 @@ public class Buildable : MonoBehaviour
 		fillspeed = 0.02f;
 		buildingBarFillAmount = 0;
 		progress = 0;
+
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame
@@ -61,13 +65,14 @@ public class Buildable : MonoBehaviour
 				if (buildingBarFillAmount >= 0.85f && buildingBarFillAmount <= 1f)
 				{
 					buildingBarBackground.GetComponent<Image>().color = Color.black;
-					flashTimer += (0.2f + Time.deltaTime);
+					flashTimer += (0.05f + Time.deltaTime);
 					Invoke("FlashBuildingBar", flashTimer);
 					if (!buildingNow)
 					{
 						buildingNow = true;
 						Invoke("BuildAction", buildActionTime);
-						// play animation here!!!
+						playerController.PlayBuildingAnimation();// play animation here!!!
+
 					}
 				}
 				else
