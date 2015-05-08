@@ -86,11 +86,14 @@ public class PCG_Tiles : MonoBehaviour
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
 
+        Debug.Log("Outside Generate Content");
+
         if (triggerEntered == true || initialFunctionCall == false)
         {
             initialFunctionCall = true;
             if (!addRemoveTiles)
             {
+                Debug.Log("Generating Content...");
                 addRemoveTiles = true;
                 triggerEntered = false;
                 moveTrigger = false;
@@ -179,11 +182,12 @@ public class PCG_Tiles : MonoBehaviour
     {
         GameObject mainPlayer = GameObject.Find("MainPlayer");
         Vector2 mainPlayerPos = mainPlayer.transform.position;
-
+        Debug.Log("Outside Reposition Triggers");
         if (trigger.playerInsideCircleTriggerA == true)
         {
             if (!moveTrigger)
             {
+                Debug.Log("A");
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
@@ -203,6 +207,7 @@ public class PCG_Tiles : MonoBehaviour
         {
             if (!moveTrigger)
             {
+                Debug.Log("B");
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
@@ -222,6 +227,7 @@ public class PCG_Tiles : MonoBehaviour
         {
             if (!moveTrigger)
             {
+                Debug.Log("C");
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
@@ -241,6 +247,7 @@ public class PCG_Tiles : MonoBehaviour
         {
             if (!moveTrigger)
             {
+                Debug.Log("D");
                 moveTrigger = true;
                 addRemoveTiles = false;
                 triggerEntered = true;
@@ -282,5 +289,7 @@ public class PCG_Tiles : MonoBehaviour
     {
         AddRemoveTiles();
         RepositionTriggers();
+        Debug.Log("MoveTrigger: " + moveTrigger);
+        Debug.Log("AddRemove: " + addRemoveTiles);
     }
 }

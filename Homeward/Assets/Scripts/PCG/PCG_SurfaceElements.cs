@@ -159,16 +159,16 @@ public class PCG_SurfaceElements : MonoBehaviour
     {
         switch (RandomNosRange_ChangingSpritesToCraters(pos))
         {
-            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileA; ChangeColliderDimensions(pos, 3); break;            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileB; ChangeColliderDimensions(pos, 4); break;
-            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileC; ChangeColliderDimensions(pos, 5); break;            case 3: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileD; ChangeColliderDimensions(pos, 6); break;
-            case 4: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileE; ChangeColliderDimensions(pos, 7); break;            case 5: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileF; ChangeColliderDimensions(pos, 8); break;
-            case 6: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileG; ChangeColliderDimensions(pos, 9); break;            case 7: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileH; ChangeColliderDimensions(pos, 10); break;
-            case 8: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileI; ChangeColliderDimensions(pos, 11); break;            case 9: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileJ; ChangeColliderDimensions(pos, 12); break;
-            case 10: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileK; ChangeColliderDimensions(pos, 13); break;            case 11: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileL; ChangeColliderDimensions(pos, 14); break;
-            case 12: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileM; ChangeColliderDimensions(pos, 15); break;            case 13: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileN; ChangeColliderDimensions(pos, 16); break;
-            case 14: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileO; ChangeColliderDimensions(pos, 17); break;            case 15: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileP; ChangeColliderDimensions(pos, 18); break;
-            case 16: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileQ; ChangeColliderDimensions(pos, 19); break;            case 17: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileR; ChangeColliderDimensions(pos, 20); break;
-            case 18: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileS; ChangeColliderDimensions(pos, 21); break;            case 19: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileT; ChangeColliderDimensions(pos, 22); break;
+            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileA; /*ChangeColliderDimensions(pos, 3);*/ break;            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileB; /*ChangeColliderDimensions(pos, 4);*/ break;
+            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileC; /*ChangeColliderDimensions(pos, 5);*/ break;            case 3: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileD; /*ChangeColliderDimensions(pos, 6);*/ break;
+            case 4: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileE; /*ChangeColliderDimensions(pos, 7);*/ break;            case 5: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileF; /*ChangeColliderDimensions(pos, 8);*/ break;
+            case 6: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileG; /*ChangeColliderDimensions(pos, 9);*/ break;            case 7: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileH; /*ChangeColliderDimensions(pos, 10);*/ break;
+            case 8: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileI; /*ChangeColliderDimensions(pos, 11);*/ break;            case 9: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileJ; /*ChangeColliderDimensions(pos, 12);*/ break;
+            case 10: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileK; /*ChangeColliderDimensions(pos, 13);*/ break;            case 11: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileL; /*ChangeColliderDimensions(pos, 14);*/ break;
+            case 12: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileM; /*ChangeColliderDimensions(pos, 15);*/ break;            case 13: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileN; /*ChangeColliderDimensions(pos, 16);*/ break;
+            case 14: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileO; /*ChangeColliderDimensions(pos, 17);*/ break;            case 15: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileP; /*ChangeColliderDimensions(pos, 18);*/ break;
+            case 16: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileQ; /*ChangeColliderDimensions(pos, 19);*/ break;            case 17: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileR; /*ChangeColliderDimensions(pos, 20);*/ break;
+            case 18: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileS; /*ChangeColliderDimensions(pos, 21);*/ break;            case 19: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _tileT; /*ChangeColliderDimensions(pos, 22);*/ break;
             default: break;
         }
     }
@@ -185,9 +185,10 @@ public class PCG_SurfaceElements : MonoBehaviour
     {
         switch (RandomNosRange_ChangingSpritesToChasms(pos))
         {
-            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmA; ChangeColliderDimensions(pos, 0); break;
-            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmB; ChangeColliderDimensions(pos, 1); break;
-            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmC; ChangeColliderDimensions(pos, 2); break;
+            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmA; /*ChangeColliderDimensions(pos, 0);*/
+                break;
+            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmB; /*ChangeColliderDimensions(pos, 1);*/ break;
+            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _chasmC; /*ChangeColliderDimensions(pos, 2);*/ break;
             default: break;
         }
     }
@@ -218,23 +219,26 @@ public class PCG_SurfaceElements : MonoBehaviour
     {
         switch (RandomNosRange_ChangingSpritesToRocks(pos))
         {
-            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock1; ChangeColliderDimensions(pos, 23); break;            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock2; ChangeColliderDimensions(pos, 24); break;
-            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock3; ChangeColliderDimensions(pos, 25); break;            case 3: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock4; ChangeColliderDimensions(pos, 26); break;
-            case 4: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock5; ChangeColliderDimensions(pos, 27); break;            case 5: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock6; ChangeColliderDimensions(pos, 28); break;
-            case 6: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock7; ChangeColliderDimensions(pos, 29); break;            case 7: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock8; ChangeColliderDimensions(pos, 30); break;
-            case 8: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock9; ChangeColliderDimensions(pos, 31); break;            case 9: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock10; ChangeColliderDimensions(pos, 32); break;
-            case 10: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock11; ChangeColliderDimensions(pos, 33); break;            case 11: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock12; ChangeColliderDimensions(pos, 34); break;
-            case 12: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock13; ChangeColliderDimensions(pos, 35); break;            case 13: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock14; ChangeColliderDimensions(pos, 36); break;
-            case 14: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock15; ChangeColliderDimensions(pos, 37); break;            case 15: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock16; ChangeColliderDimensions(pos, 38); break;
-            case 16: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock17; ChangeColliderDimensions(pos, 39); break;            case 17: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock18; ChangeColliderDimensions(pos, 40); break;
-            case 18: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock19; ChangeColliderDimensions(pos, 41); break;            case 19: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock20; ChangeColliderDimensions(pos, 42); break;
-            case 20: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock21; ChangeColliderDimensions(pos, 43); break;            case 21: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock22; ChangeColliderDimensions(pos, 44); break;
-            case 22: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock23; ChangeColliderDimensions(pos, 45); break;            case 23: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock24; ChangeColliderDimensions(pos, 46); break;
-            case 24: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock25; ChangeColliderDimensions(pos, 47); break;            case 25: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock26; ChangeColliderDimensions(pos, 48); break;
-            case 26: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock27; ChangeColliderDimensions(pos, 49); break;            case 27: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock28; ChangeColliderDimensions(pos, 50); break;
-            case 28: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock29; ChangeColliderDimensions(pos, 51); break;            case 29: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock30; ChangeColliderDimensions(pos, 52); break;
-            case 30: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock31; ChangeColliderDimensions(pos, 53); break;            case 31: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock32; ChangeColliderDimensions(pos, 54); break;
-            case 32: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock33; ChangeColliderDimensions(pos, 55); break;            case 33: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock34; ChangeColliderDimensions(pos, 56); break;
+            case 0: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock1; /*ChangeColliderDimensions(pos, 23);*/
+                break;            case 1: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock2; /*ChangeColliderDimensions(pos, 24);*/ break;
+            case 2: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock3; /*ChangeColliderDimensions(pos, 25);*/ break;            case 3: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock4; /*ChangeColliderDimensions(pos, 26);*/ break;
+            case 4: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock5; /*ChangeColliderDimensions(pos, 27);*/ break;            case 5: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock6; /*ChangeColliderDimensions(pos, 28);*/ break;
+            case 6: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock7; /*ChangeColliderDimensions(pos, 29);*/ break;            case 7: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock8; /*ChangeColliderDimensions(pos, 30);*/ break;
+            case 8: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock9; /*ChangeColliderDimensions(pos, 31);*/ break;            case 9: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock10; /*ChangeColliderDimensions(pos, 32);*/ break;
+            case 10: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock11; /*ChangeColliderDimensions(pos, 33);*/ break;            case 11: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock12; /*ChangeColliderDimensions(pos, 34);*/ break;
+            case 12: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock13; /*ChangeColliderDimensions(pos, 35);*/ break;            case 13: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock14; /*ChangeColliderDimensions(pos, 36);*/ break;
+            case 14: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock15; /*ChangeColliderDimensions(pos, 37);*/ break;            case 15: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock16; /*ChangeColliderDimensions(pos, 38);*/ break;
+            case 16: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock17; /*ChangeColliderDimensions(pos, 39);*/ break;            case 17: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock18; /*ChangeColliderDimensions(pos, 40);*/ break;
+            case 18: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock19; /*ChangeColliderDimensions(pos, 41);*/ break;            case 19: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock20; /*ChangeColliderDimensions(pos, 42);*/ break;
+            case 20: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock21; /*ChangeColliderDimensions(pos, 43);*/ break;            case 21: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock22; /*ChangeColliderDimensions(pos, 44);*/ break;
+            case 22: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock23; /*ChangeColliderDimensions(pos, 45);*/ break;            case 23: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock24; /*ChangeColliderDimensions(pos, 46);*/ break;
+            case 24: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock25; /*ChangeColliderDimensions(pos, 47);*/ break;            case 25: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock26; /*ChangeColliderDimensions(pos, 48);*/ break;
+            case 26: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock27; /*ChangeColliderDimensions(pos, 49);*/ break;            case 27: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock28; /*ChangeColliderDimensions(pos, 50);*/ break;
+            case 28: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock29; /*ChangeColliderDimensions(pos, 51);*/ break;            case 29: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock30; /*ChangeColliderDimensions(pos, 52);*/ break;
+            case 30: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock31; /*ChangeColliderDimensions(pos, 53);*/ break;
+            case 31: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock32; /*ChangeColliderDimensions(pos, 54);*/ break;
+            case 32: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock33; /*ChangeColliderDimensions(pos, 55);*/ break;
+            case 33: tiles[pos].GetComponentInChildren<SpriteRenderer>().sprite = _rock34; /*ChangeColliderDimensions(pos, 56);*/ break;
             default: break;
         }
     }
@@ -314,13 +318,16 @@ public class PCG_SurfaceElements : MonoBehaviour
 
                         foreach (Transform child in tiles[i].transform)
                         {
-                            Destroy(child.GetComponent<PCG_OptimizePolygonCollider2D>());
+                            //Destroy(child.GetComponent<PCG_OptimizePolygonCollider2D>());
                             //child.gameObject.AddComponent<PCG_OptimizePolygonCollider2D>();
                         }
                     }
 
-                    if (i == 11070) { deleteSmallRocksColliders = true; }
+                    if (i == 11070) { deleteSmallRocksColliders = true;  }
                 }
+
+                StartCoroutine(CHANGE_COLLIDERS());
+                StartCoroutine(OPTIMIZEPOLYGONCOLLIDER());
 
                 GameObject[] allTexturesMyFriend = GameObject.FindGameObjectsWithTag("CratersOnScreen");
                 foreach (GameObject texture in allTexturesMyFriend)
@@ -338,6 +345,39 @@ public class PCG_SurfaceElements : MonoBehaviour
             }
         }
     }
+
+    IEnumerator CHANGE_COLLIDERS()
+    {
+        yield return new WaitForSeconds(2.0F);
+        GameObject[] all_elements_on_screen = GameObject.FindGameObjectsWithTag("CratersOnScreen");
+
+        foreach(GameObject element in all_elements_on_screen)
+        {
+            foreach (Transform child in element.transform)
+            {
+                Destroy(child.GetComponent<PolygonCollider2D>());
+                child.gameObject.AddComponent<PolygonCollider2D>();
+                Destroy(child.GetComponent<PCG_OptimizePolygonCollider2D>());
+                child.gameObject.AddComponent<PCG_OptimizePolygonCollider2D>();
+            }
+        }
+    }
+
+    IEnumerator OPTIMIZEPOLYGONCOLLIDER()
+    {
+        yield return new WaitForSeconds(3.0F);
+        GameObject[] all_elements_on_screen = GameObject.FindGameObjectsWithTag("CratersOnScreen");
+
+        foreach (GameObject element in all_elements_on_screen)
+        {
+            foreach (Transform child in element.transform)
+            {
+                Destroy(child.GetComponent<PCG_OptimizePolygonCollider2D>());
+                child.gameObject.AddComponent<PCG_OptimizePolygonCollider2D>();
+            }
+        }
+    }
+
     int RandomNosRangeToExactValues(int pos)
     {
         if ((rand.seedRndNos_spawning[pos] <= 0.05F) && (rand.seedRndNos_spawning[pos] >= 0.0F)) return 0;        if ((rand.seedRndNos_spawning[pos] <= 0.10f) && (rand.seedRndNos_spawning[pos] > 0.05f)) return 1;
