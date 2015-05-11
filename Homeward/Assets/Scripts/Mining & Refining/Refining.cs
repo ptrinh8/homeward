@@ -14,8 +14,6 @@ public class Refining : MonoBehaviour
     private Mining minerals = new Mining();
     private Inventory inventory = new Inventory();
 
-    private int refinedMineralsCreated;
-
     private Vector2 worldSpacePos;
     private float loadingStartTime;
     public float loadingUpdateTime;

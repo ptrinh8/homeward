@@ -59,7 +59,7 @@ public class Mining : MonoBehaviour
     void StopTimer()
     {
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
-        if (miningSoundPlayed = true)
+        if (miningSoundPlayed == true)
         {
             miningSoundPlayed = false;
         }
