@@ -41,7 +41,7 @@ public class Buildable : MonoBehaviour
 
         player = GameObject.FindWithTag("Player");
         buildingFlag = true;
-        buildActionTime = 3f;
+        buildActionTime = .5f;
 		flashTimer = 0;
 		flashSwitch = true;
 		buildingNow = false;
