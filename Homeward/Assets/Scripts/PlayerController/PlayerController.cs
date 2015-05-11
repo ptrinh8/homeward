@@ -446,7 +446,7 @@ public class PlayerController : MonoBehaviour
         healthLostPerSecondNight = 5f;
 		eatingTime = dayLength / 4f;
 
-		Debug.Log (dayLength);
+		//Debug.Log (dayLength);
 
         currentHealth = maxHealth;
         currentStamina = maxStamina;

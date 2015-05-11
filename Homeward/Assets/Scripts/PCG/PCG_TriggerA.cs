@@ -13,8 +13,6 @@ public class PCG_TriggerA : MonoBehaviour
     [HideInInspector]
     public bool playerExitedCircleTriggerA = false;
 
-    private bool doOnce = false;
-
     void Start() { playerInsideCircleTriggerA = false; }
 
     void OnTriggerEnter2D(Collider2D other)
