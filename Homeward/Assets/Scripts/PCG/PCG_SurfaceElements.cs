@@ -122,6 +122,7 @@ public class PCG_SurfaceElements : PCG_Manager
                         tiles[i] = Instantiate(_tile, new Vector3(X_GRID[i], Y_GRID[i], 0), transform.rotation) as GameObject;
                         tiles[i].tag = "CratersOnScreen";
                         tiles[i].name = "Craters " + i;
+						tiles[i].transform.parent = GameObject.Find("PCG_World").transform;
 
                         if (tiles[i].name == "Craters 90") { tiles[i].GetComponentInChildren<SpriteRenderer>().enabled = false; }
                         ChangeSprites(tiles[i], i);

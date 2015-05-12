@@ -125,6 +125,7 @@ public class PCG_Manager : MonoBehaviour
                         assets[i] = Instantiate(asset, new Vector3(X_GRID[i], Y_GRID[i], 0), transform.rotation) as GameObject;
                         assets[i].tag = tagName;
                         assets[i].name = tagName + " " + i;
+						assets[i].transform.parent = GameObject.Find("PCG_World").transform;
 
                         assetValue[i] = UnityEngine.Random.Range(0, 10);
                         Change_Textures(textures, assets[i], i);
