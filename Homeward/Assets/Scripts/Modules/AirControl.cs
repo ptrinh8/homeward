@@ -9,7 +9,8 @@ public class AirControl : MonoBehaviour {
     private float timer;
     public int flag;
     public float duration;
-    public Scrollbar airPressureBar;
+	[HideInInspector]
+    public float airPressureBar;
     public int manuallyOperateDifficulty;
 
     private LocalControl moduleControl;
@@ -68,6 +69,8 @@ public class AirControl : MonoBehaviour {
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 		soundPressure = 0f;
 		audioController.airlockDuration = duration;
+
+		airPressureBar = 1;
 	}
 	
 	// Update is called once per frame
@@ -78,32 +81,32 @@ public class AirControl : MonoBehaviour {
         }
         else if (flag == 1)
         {
-            if (airPressureBar.size < 1)
+            if (airPressureBar < 1)
             {
                 timer += Time.deltaTime;
-				airPressureBar.size = timer / duration;
+				airPressureBar = timer / duration;
 				audioController.pressureRisingFalling = true;
             }
             else
             {
 				audioController.pressureRisingFalling = false;
-                airPressureBar.size = 1;
+                airPressureBar = 1;
                 flag = 0;
                 air = true;
             }
         }
         else if (flag == -1)
         {
-            if (airPressureBar.size > 0) 
+            if (airPressureBar > 0) 
 			{
                 timer -= Time.deltaTime;
-                airPressureBar.size = timer / duration;
+                airPressureBar = timer / duration;
 				audioController.pressureRisingFalling = true;
             }
             else
             {
 				audioController.pressureRisingFalling = false;
-                airPressureBar.size = 0;
+                airPressureBar = 0;
                 flag = 0;
                 air = false;
             }

@@ -103,7 +103,7 @@ public class Airlock : MonoBehaviour {
             {
                 airControl.Flag = -1;
                 airControl.Timer += Time.deltaTime * airControl.manuallyOperateDifficulty;
-                airControl.airPressureBar.size = airControl.Timer / airControl.duration;
+                airControl.airPressureBar = airControl.Timer / airControl.duration;
             }
         }
     }
@@ -116,7 +116,7 @@ public class Airlock : MonoBehaviour {
             {
                 airControl.Flag = 1;
                 airControl.Timer -= Time.deltaTime * airControl.manuallyOperateDifficulty;
-                airControl.airPressureBar.size = airControl.Timer / airControl.duration;
+                airControl.airPressureBar = airControl.Timer / airControl.duration;
             }
         }
     }
@@ -143,7 +143,7 @@ public class Airlock : MonoBehaviour {
             {
                 if (gameObject.GetComponentInParent<DoorWayController>().ConnectedTo.GetComponentInParent<AirControl>().Air)
                 {
-                    if (airControl.Air && airControl.airPressureBar.size == 1)
+                    if (airControl.Air && airControl.airPressureBar == 1)
                     {
                         AirlockTriggered(false);
                     }
@@ -161,7 +161,7 @@ public class Airlock : MonoBehaviour {
                         else
                         {
                             AirlockTriggered(false);
-                            airControl.airPressureBar.size = 1;
+                            airControl.airPressureBar = 1;
                             airControl.Air = true;
                             airControl.Flag = 0;
                         }
@@ -169,7 +169,7 @@ public class Airlock : MonoBehaviour {
                 }
                 else
                 {
-                    if (airControl.Air && airControl.airPressureBar.size == 1)
+                    if (airControl.Air && airControl.airPressureBar == 1)
                     {
                         if (airControl.Timer < airControl.duration)
                         {
@@ -183,7 +183,7 @@ public class Airlock : MonoBehaviour {
                         else
                         {
                             AirlockTriggered(false);
-                            airControl.airPressureBar.size = 1;
+                            airControl.airPressureBar = 1;
                             airControl.Air = true;
                             airControl.Flag = 0;
                         }
@@ -205,12 +205,12 @@ public class Airlock : MonoBehaviour {
                     else
                     {
                         AirlockTriggered(false);
-                        airControl.airPressureBar.size = 0;
+                        airControl.airPressureBar = 0;
                         airControl.Air = false;
                         airControl.Flag = 0;
                     }
                 }
-                else if (airControl.airPressureBar.size == 0)
+                else if (airControl.airPressureBar == 0)
                 {
                     AirlockTriggered(false);
                 }
@@ -236,7 +236,7 @@ public class Airlock : MonoBehaviour {
                 else
                 {
                     AirlockTriggered(false);
-                    airControl.airPressureBar.size = 0;
+                    airControl.airPressureBar = 0;
                     airControl.Air = false;
                     airControl.Flag = 0;
                 }
