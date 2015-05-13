@@ -226,6 +226,7 @@ public class PlayerController : MonoBehaviour
 	private Refining refining;
 	private FoodModule foodModule;
 	private BuildingModule buildingModule;
+	private OxygenModule oxygenModule;
 
 	private float miningBarCurrentPosition;
 
@@ -696,6 +697,30 @@ public class PlayerController : MonoBehaviour
 									{
 										showPlayerInventory = !showPlayerInventory;
 										refining.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+							if (oxygenModule != null)
+							{
+								if (oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										oxygenModule.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+							if (foodModule != null)
+							{
+								if (foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										foodModule.showPlayerAndModuleInventory = showPlayerInventory;
 									}
 								}
 							}
@@ -1305,6 +1330,10 @@ public class PlayerController : MonoBehaviour
 		{
 			buildingModule = other.GetComponent<BuildingModule>();
 		}
+		else if (other.gameObject.transform.root.gameObject.tag == "OxygenModule")
+		{
+			oxygenModule = other.GetComponent<OxygenModule>();
+		}
 	}
 
 	void OnTriggerExit2D(Collider2D other)
@@ -1511,38 +1540,48 @@ public class PlayerController : MonoBehaviour
 			switch (animationFacing)
 			{
 			case 0: //north
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				GameObject footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0)) as GameObject;
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 1:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -45));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -45));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 3:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -135));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -135));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 4:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 5:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .02f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -225));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .02f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -225));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 6:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 7:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -315));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -315));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			}
+
+
 		}
 	}
 
@@ -1554,35 +1593,43 @@ public class PlayerController : MonoBehaviour
 			switch (animationFacing)
 			{
 			case 0: //north
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				GameObject footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0)) as GameObject;
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 1:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -45));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -45));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 3:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -135));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -135));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 4:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 5:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .02f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -225));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .02f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -225));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 6:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .075f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -270));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .075f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -270));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 7:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -315));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -315));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			}

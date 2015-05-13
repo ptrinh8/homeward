@@ -10,11 +10,9 @@ using System;
 
 public class OxygenModule : MonoBehaviour 
 {
-	private PlayerController playerController = new PlayerController();
+	private PlayerController playerController;
 	private Mining minerals = new Mining();
 	private Inventory inventory = new Inventory();
-	
-	private int refinedMineralsCreated;
 	
 	private Vector2 worldSpacePos;
 	private float loadingStartTime;
@@ -91,11 +89,7 @@ public class OxygenModule : MonoBehaviour
 				if (!addRefinedMineralOnce)
 				{
 					addRefinedMineralOnce = true;
-					Item item = GameObject.Find("Wire").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					item = GameObject.Find("Metal").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					item = GameObject.Find("Screw").GetComponent<Item>();
+					Item item = GameObject.Find("Oxygen").GetComponent<Item>();
 					moduleInventory.GetComponent<Inventory>().AddItem(item);
 					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
 					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
@@ -108,7 +102,7 @@ public class OxygenModule : MonoBehaviour
 	
 	void Start () 
 	{
-		playerController = FindObjectOfType(typeof(PlayerController)) as PlayerController;
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 		minerals = FindObjectOfType(typeof(Mining)) as Mining;
 		inventory = FindObjectOfType(typeof(Inventory)) as Inventory;
 		
@@ -140,6 +134,7 @@ public class OxygenModule : MonoBehaviour
 	
 	void Update()
 	{
+		//		Debug.Log (showPlayerAndModuleInventory);
 		// Taylor
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
 		// Taylor
@@ -200,12 +195,7 @@ public class OxygenModule : MonoBehaviour
 		if (!addRefinedMineralOnce)
 		{
 			addRefinedMineralOnce = true;
-			Item item = GameObject.Find("Wire").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
-			item = GameObject.Find("Metal").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
-			item = GameObject.Find("Screw").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
+			Item item = GameObject.Find("Material").GetComponent<Item>();
 			moduleInventory.GetComponent<Inventory>().AddItem(item);
 			//mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
 			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
@@ -216,6 +206,16 @@ public class OxygenModule : MonoBehaviour
 		{
 			
 		}
+		if (showPlayerAndModuleInventory == true)
+		{
+			moduleInventory.SetActive(true);
+			moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
+		}
+		else if (showPlayerAndModuleInventory == false)
+		{
+			moduleInventory.SetActive(false);
+			moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
+		}
 	}
 	
 	void OnTriggerEnter2D(Collider2D other)
@@ -225,75 +225,6 @@ public class OxygenModule : MonoBehaviour
 		if (other.gameObject.tag == "Player")
 		{
 			PlayerController.toolUsingEnable = false;
-		}
-	}
-	
-	void OnTriggerStay2D(Collider2D other)
-	{
-		if (other.gameObject.tag == "Player")
-		{
-			if (gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
-			    gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
-			{
-				showPlayerAndModuleInventory = true;
-				//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-				//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-				moduleInventory.SetActive(true);
-				moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-			}
-			else
-			{
-				showPlayerAndModuleInventory = false;
-				moduleInventory.SetActive(showPlayerAndModuleInventory);
-				moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-				
-				//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-				//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-			}
-			
-			if (showPlayerAndModuleInventory) 
-			{
-				if (Input.GetKeyDown(keyToAddItemsDirectlyToModuleinventory))
-				{
-					if ( moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
-					{
-						Item item = GameObject.Find("Wire").GetComponent<Item>();
-						moduleInventory.GetComponent<Inventory>().AddItem(item);
-						item = GameObject.Find("Metal").GetComponent<Item>();
-						moduleInventory.GetComponent<Inventory>().AddItem(item);
-						item = GameObject.Find("Screw").GetComponent<Item>();
-						moduleInventory.GetComponent<Inventory>().AddItem(item);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
-						other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-					}
-					
-				}
-				
-				if (Input.GetKeyDown(keyToAddItemsFromMainPlayerInventory))
-				{
-					if ((mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) > 0) && (stopMineralsIntake == false))
-					{
-						Item item = other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-						moduleInventory.GetComponent<Inventory>().AddItem(item);
-					}
-				}
-			}
-		}
-	}
-	
-	void OnTriggerExit2D(Collider2D other)
-	{
-		showPlayerAndModuleInventory = false;
-		moduleInventory.SetActive(showPlayerAndModuleInventory);
-		moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-		//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-		//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-		UIInventory.SetModuleInventory(null);
-		
-		// Taylor
-		if (other.gameObject.tag == "Player")
-		{
-			PlayerController.toolUsingEnable = true;
 		}
 	}
 	

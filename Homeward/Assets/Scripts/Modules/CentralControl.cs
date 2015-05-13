@@ -90,13 +90,13 @@ public class CentralControl : MonoBehaviour {
     void InitializeRefineryModule()
     {
         if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 2.85f, transform.position.y, 0), transform.rotation) as GameObject;
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 8.64f, transform.position.y, 0), transform.rotation) as GameObject;
         else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 2.85f, 0), transform.rotation) as GameObject;
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 8.64f, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 180)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 2.85f, transform.position.y, 0), transform.rotation) as GameObject;
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 8.64f, transform.position.y, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 270)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 2.85f, 0), transform.rotation) as GameObject;
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 8.64f, 0), transform.rotation) as GameObject;
 
         Invoke("InitializeRefineryModuleVariable", Time.deltaTime);
         Invoke("InitializeAirlockModule", Time.deltaTime);
@@ -105,13 +105,13 @@ public class CentralControl : MonoBehaviour {
     void InitializeAirlockModule()
     {
         if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 4.7f, transform.position.y, 0), transform.rotation) as GameObject;
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 14.4f, transform.position.y, 0), transform.rotation) as GameObject;
         else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y + 4.7f, 0), transform.rotation) as GameObject;
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y + 14.4f, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 180)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x - 4.7f, transform.position.y, 0), transform.rotation) as GameObject;
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x - 14.4f, transform.position.y, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 270)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y - 4.7f, 0), transform.rotation) as GameObject;
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y - 14.4f, 0), transform.rotation) as GameObject;
         Invoke("InitializeAirlockModuleVariable", Time.deltaTime);
     }
 
