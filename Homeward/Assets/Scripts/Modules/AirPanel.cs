@@ -22,7 +22,8 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+		Debug.Log ("sup");
+        if (other.transform.root.gameObject.tag == "Player")
         {
             nearAirPenalFlag = true;
             PlayerController.toolUsingEnable = false;
@@ -31,7 +32,7 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Player")
+		if (other.transform.root.gameObject.tag == "Player")
         {
             nearAirPenalFlag = false;
             PlayerController.toolUsingEnable = true;

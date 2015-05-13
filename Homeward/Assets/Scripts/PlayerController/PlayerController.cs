@@ -391,7 +391,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
+        //miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
 		showRepairArrows = false;// Taylor
         pauseFlag = false;
 
@@ -686,15 +686,20 @@ public class PlayerController : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                     {
+						Debug.Log ("getkeydown");
 						if (isNearMachine == true)
 						{
+							Debug.Log ("near machine");
 							if (refining != null)
 							{
+								Debug.Log ("refining not null");
 								if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
 								    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
 								{
+									Debug.Log ("refining working");
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
+										Debug.Log ("inventory open");
 										showPlayerInventory = !showPlayerInventory;
 										refining.showPlayerAndModuleInventory = showPlayerInventory;
 									}
@@ -1310,14 +1315,6 @@ public class PlayerController : MonoBehaviour
 			tileColor = tile.color;
 		}
 
-		if (other.gameObject.tag == "Machine")
-		{
-			isNearMachine = true;
-		}
-	}
-
-	void OnTriggerStay2D(Collider2D other)
-	{
 		if (other.gameObject.transform.root.gameObject.tag == "RefineryModule")
 		{
 			refining = other.GetComponent<Refining>();
@@ -1334,6 +1331,16 @@ public class PlayerController : MonoBehaviour
 		{
 			oxygenModule = other.GetComponent<OxygenModule>();
 		}
+
+		if (other.gameObject.tag == "Machine")
+		{
+			isNearMachine = true;
+		}
+	}
+
+	void OnTriggerStay2D(Collider2D other)
+	{
+
 	}
 
 	void OnTriggerExit2D(Collider2D other)

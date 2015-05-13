@@ -89,7 +89,7 @@ public class Deployable : MonoBehaviour {
 		if (other.gameObject.tag != "FinalTextures" && other.gameObject.tag != "Footprint" && !other.gameObject.name.Contains("PCG") && other.gameObject.tag != "Wall" && 
 		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point"))
 		{
-			Debug.Log(other.gameObject);
+			//Debug.Log(other.gameObject);
 			deployable = false;
 			spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
 		}

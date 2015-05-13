@@ -223,6 +223,7 @@ public class Refining : MonoBehaviour
         //Taylor
         if (other.gameObject.tag == "Player")
         {
+			Debug.Log ("entered");
             PlayerController.toolUsingEnable = false;
         }
     }
