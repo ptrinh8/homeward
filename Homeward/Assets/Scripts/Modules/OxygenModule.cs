@@ -91,9 +91,9 @@ public class OxygenModule : MonoBehaviour
 					addRefinedMineralOnce = true;
 					Item item = GameObject.Find("Oxygen").GetComponent<Item>();
 					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 					timerReached = false;
 				}
 			}
@@ -140,7 +140,7 @@ public class OxygenModule : MonoBehaviour
 		// Taylor
 		
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
+		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
 		//Debug.Log (mineralCount);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
@@ -161,7 +161,7 @@ public class OxygenModule : MonoBehaviour
 		changeLoadingToPercent();
 		MineralsValidations();
 		
-		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
+		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) == 10)
 		{
 			Debug.Log("This happened");
 			stopMineralsIntake = true;
@@ -198,7 +198,7 @@ public class OxygenModule : MonoBehaviour
 			Item item = GameObject.Find("Material").GetComponent<Item>();
 			moduleInventory.GetComponent<Inventory>().AddItem(item);
 			//mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
+			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral1);
 			timerReached = false;
 		}                
 		

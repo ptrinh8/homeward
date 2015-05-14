@@ -398,6 +398,7 @@ public class UIInventory : MonoBehaviour
      * **************************************************************************/
     public void MoveItem(GameObject clicked)
     {
+		Debug.Log ("moving");
         if (from == null)
         {
             if (!clicked.GetComponent<Slot>().IsEmpty)

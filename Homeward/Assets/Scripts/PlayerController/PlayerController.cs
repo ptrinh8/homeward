@@ -729,6 +729,18 @@ public class PlayerController : MonoBehaviour
 									}
 								}
 							}
+							if (buildingModule != null)
+							{
+								if (buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										buildingModule.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
 						}
 						else
 						{
@@ -790,8 +802,14 @@ public class PlayerController : MonoBehaviour
 
                         if (Input.GetKeyDown(KeyCode.P))
                         {
-                            Item item = GameObject.Find("Mineral").GetComponent<Item>();
+                            Item item = GameObject.Find("Mineral1").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral2").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral3").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
                         }
 
                         if (Input.GetKeyDown(KeyCode.O))

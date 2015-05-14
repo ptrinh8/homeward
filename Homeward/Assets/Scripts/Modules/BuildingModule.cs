@@ -33,7 +33,13 @@ public class BuildingModule : MonoBehaviour
 	public Sprite noPowerSupplyTexture;
 	private GameObject refineryModule;
 	
-	private int mineralCount;
+	private int mineralType1Count;
+	private int mineralType2Count;
+	private int mineralType3Count;
+
+	private bool hasMineralType1;
+	private bool hasMineralType2;
+	private bool hasMineralType3;
 	
 	public bool showPlayerAndModuleInventory; // takahide made it public to use this outside
 	public GameObject moduleInventory;
@@ -88,18 +94,49 @@ public class BuildingModule : MonoBehaviour
 				
 				if (!addRefinedMineralOnce)
 				{
+					if (hasMineralType3 == true && hasMineralType2 == true && hasMineralType1 == true)
+					{
+						Item item = GameObject.Find("Wire").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Screw").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Metal").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral3);
+					}
+					else if (hasMineralType2 == true && hasMineralType1 == true && hasMineralType3 == false)
+					{
+						Item item = GameObject.Find("Wire").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Metal").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Screw").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral2);
+					}
+					else if (hasMineralType2 == false && hasMineralType1 == true && hasMineralType3 == false)
+					{
+						Item item = GameObject.Find("Wire").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Metal").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						item = GameObject.Find("Screw").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					}
 					addRefinedMineralOnce = true;
-					Item item = GameObject.Find("Wire").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					item = GameObject.Find("Metal").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					item = GameObject.Find("Screw").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
 					timerReached = false;
 				}
 			}
@@ -146,8 +183,10 @@ public class BuildingModule : MonoBehaviour
 		// Taylor
 		
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
-		//Debug.Log (mineralCount);
+		mineralType1Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
+		mineralType2Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral2);
+		mineralType3Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral3);
+		//Debug.Log (mineralType1Count);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
@@ -166,21 +205,20 @@ public class BuildingModule : MonoBehaviour
 		
 		changeLoadingToPercent();
 		MineralsValidations();
+		CheckMineralTypes();
 		
-		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
+		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) == 10)
 		{
 			Debug.Log("This happened");
 			stopMineralsIntake = true;
 		}
 		
-		
-		
-		if (mineralCount >= 5)
+		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
 		{
 			RefiningProcess(refineryModuleSpriteRenderer);
 		}
 		
-		if (mineralCount >= 5)
+		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
 		{
 			if (refineryStarted == false)
 			{
@@ -204,7 +242,7 @@ public class BuildingModule : MonoBehaviour
 			Item item = GameObject.Find("Material").GetComponent<Item>();
 			moduleInventory.GetComponent<Inventory>().AddItem(item);
 			//mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
+			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral1);
 			timerReached = false;
 		}                
 		
@@ -230,7 +268,38 @@ public class BuildingModule : MonoBehaviour
 		//Taylor
 		if (other.gameObject.tag == "Player")
 		{
+			Debug.Log ("entered");
 			PlayerController.toolUsingEnable = false;
+		}
+	}
+
+	void CheckMineralTypes()
+	{
+		if (mineralType1Count >= 1)
+		{
+			hasMineralType1 = true;
+		}
+		else
+		{
+			hasMineralType1 = false;
+		}
+
+		if (mineralType2Count >= 1)
+		{
+			hasMineralType2 = true;
+		}
+		else
+		{
+			hasMineralType2 = false;
+		}
+
+		if (mineralType3Count >= 1)
+		{
+			hasMineralType3 = true;
+		}
+		else
+		{
+			hasMineralType3 = false;
 		}
 	}
 	

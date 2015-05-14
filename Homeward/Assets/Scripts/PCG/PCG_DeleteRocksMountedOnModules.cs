@@ -16,9 +16,8 @@ public class PCG_DeleteRocksMountedOnModules : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-		Debug.Log (other);
 		if ((other.gameObject.tag == "Modules" ) || (other.gameObject.tag == "HabitatModule") || (other.gameObject.tag == "HealthStaminaModule") || (other.gameObject.tag == "RefineryModule")
-		    || (other.gameObject.tag == "Airlock") || (other.gameObject.tag.Contains("Connect Point")))
+		    || (other.gameObject.tag == "Airlock") || (other.gameObject.tag.Contains("Connect Point")) || (other.gameObject.tag == "BuildingModule"))
         {
 			rockInsidePolygonTrigger = true;
             Destroy(gameObject);
