@@ -8,19 +8,20 @@ using System.Collections;
 
 public class PCG_DeleteRocksMountedOnModules : MonoBehaviour
 {
-    [HideInInspector]
     public bool rockInsidePolygonTrigger = false;
 
     private bool doOnce = false;
 
     void Start() { rockInsidePolygonTrigger = false; }
 
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (other.gameObject.tag == "Rock1")
+		Debug.Log (other);
+		if ((other.gameObject.tag == "Modules" ) || (other.gameObject.tag == "HabitatModule") || (other.gameObject.tag == "HealthStaminaModule") || (other.gameObject.tag == "RefineryModule")
+		    || (other.gameObject.tag == "Airlock") || (other.gameObject.tag.Contains("Connect Point")))
         {
-            rockInsidePolygonTrigger = true;
-            Destroy(other.gameObject);
+			rockInsidePolygonTrigger = true;
+            Destroy(gameObject);
         }
     }
 }
