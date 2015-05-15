@@ -186,12 +186,25 @@ public class Mining : MonoBehaviour
 
     void MineSupportFunction(int mineralsCount)
     {
-        Item item = GameObject.Find("Mineral").GetComponent<Item>();
         randomMineralsQuantity -= mineralsCount;
 
         for (int i = 0; i < mineralsCount; i++)
         {
-            mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			if (mineralType == 1)
+			{
+				Item item = GameObject.Find("Mineral1").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
+			else if (mineralType == 2)
+			{
+				Item item = GameObject.Find("Mineral2").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
+			else if (mineralType == 3)
+			{
+				Item item = GameObject.Find("Mineral3").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
         }
     }
 

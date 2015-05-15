@@ -94,7 +94,7 @@ public class BuildingModule : MonoBehaviour
 				
 				if (!addRefinedMineralOnce)
 				{
-					if (hasMineralType3 == true && hasMineralType2 == true && hasMineralType1 == true)
+					if (hasMineralType3 == true)
 					{
 						Item item = GameObject.Find("Wire").GetComponent<Item>();
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
@@ -107,7 +107,7 @@ public class BuildingModule : MonoBehaviour
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
 						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral3);
 					}
-					else if (hasMineralType2 == true && hasMineralType1 == true && hasMineralType3 == false)
+					else if (hasMineralType2 == true)
 					{
 						Item item = GameObject.Find("Wire").GetComponent<Item>();
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
@@ -121,7 +121,7 @@ public class BuildingModule : MonoBehaviour
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
 						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral2);
 					}
-					else if (hasMineralType2 == false && hasMineralType1 == true && hasMineralType3 == false)
+					else if (hasMineralType1 == true)
 					{
 						Item item = GameObject.Find("Wire").GetComponent<Item>();
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
