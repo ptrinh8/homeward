@@ -80,6 +80,12 @@ public class LocalControl : MonoBehaviour {
         get { return isBroken;}
     }
 
+	private int powerIndicator;
+
+	public int PowerIndicator
+	{
+		get { return powerIndicator;}
+	}
 	// Use this for initialization
 	void Start () {
 		repairArrowQueueFlag = false;
@@ -116,6 +122,7 @@ public class LocalControl : MonoBehaviour {
 		}
         if (isEnter)
         {
+			Debug.Log(powerIndicator);
             if (GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir != gameObject.GetComponent<AirControl>().Air)
             {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
@@ -166,11 +173,18 @@ public class LocalControl : MonoBehaviour {
 			// do nothing
 		} else {
 			if (powerConsumption > 0)
-				moduleStatusText.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
+			{
+				powerIndicator = (int)(powerLevel / minimumPowerLevel);
+			}
 			else if (powerConsumption == 0)
-				moduleStatusText.text = " ";
+			{
+				powerIndicator = 0;
+			}
 			else
-				moduleStatusText.text = "+" + -powerConsumption;
+			{
+				powerIndicator = powerConsumption;
+			}
+
 			if (!isOn) 
 				moduleStatusText.text = "Off";
 			else if (powerLevel >= minimumPowerLevel) {
