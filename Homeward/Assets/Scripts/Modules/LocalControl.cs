@@ -46,7 +46,6 @@ public class LocalControl : MonoBehaviour {
         set { value = moduleStatusText; }
     }
 
-	private int pos; 
 	private KeyCode repairKey = KeyCode.F;
 
 	private GameObject player;
@@ -130,7 +129,6 @@ public class LocalControl : MonoBehaviour {
 		}
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
-
 	}
 
 	void DoorWayTriggered (bool isDoorway) {
@@ -176,13 +174,9 @@ public class LocalControl : MonoBehaviour {
 			{
 				powerIndicator = (int)(powerLevel / minimumPowerLevel);
 			}
-			else if (powerConsumption == 0)
+			else 
 			{
-				powerIndicator = 0;
-			}
-			else
-			{
-				powerIndicator = powerConsumption;
+				powerIndicator = -1;
 			}
 
 			if (!isOn) 
@@ -193,9 +187,6 @@ public class LocalControl : MonoBehaviour {
 				isPowered = false;
 			}
 		}
-		if (powerConsumption != 0 && !isBroken)
-			moduleStatusText.text += ", ";
-		pos = moduleStatusText.text.Length;
 	}
 
 	void SwitchTriggered (bool flag) {
@@ -285,9 +276,7 @@ public class LocalControl : MonoBehaviour {
 		}
 
 		if (durability > 0) {
-			if (pos < moduleStatusText.text.Length)
-				moduleStatusText.text = moduleStatusText.text.Remove(pos);
-			moduleStatusText.text += durability.ToString();
+			moduleStatusText.text = durability.ToString();
 		}else
 			moduleStatusText.text = "Broken";
 	}

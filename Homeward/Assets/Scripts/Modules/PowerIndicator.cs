@@ -35,8 +35,7 @@ public class PowerIndicator : MonoBehaviour {
 				gameObject.GetComponent<SpriteRenderer>().sprite = indicatorSprites[5];
 				break;
 			default:
-				gameObject.GetComponent<SpriteRenderer>().sprite = indicatorSprites[5];
-				gameObject.GetComponent<SpriteRenderer>().color = Color.green;
+				gameObject.SetActive(false);
 				break;
 		}
 	}
