@@ -30,7 +30,6 @@ public class CentralControl : MonoBehaviour {
 	public float durabilityLossSpeed;
 	private bool isBroken;
 	private Text moduleStatusText;
-	private int pos;
 
     public GameObject refineryModule;
     public GameObject airlockModule;
@@ -285,7 +284,7 @@ public class CentralControl : MonoBehaviour {
 		}
 
 		if (!isBroken) {
-			moduleStatusText.text = "+2, " + durability;
+			moduleStatusText.text = "2+, " + durability.ToString();
 		}
 		else
 			moduleStatusText.text = "Broken";
