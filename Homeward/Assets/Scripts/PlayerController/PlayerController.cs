@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour
     private bool onCoolDown;
 
 	private ParticleSystem playerParticleSystem;
+    private ParticleSystem rainParticleSystem;
 
     [HideInInspector]
     public float x, y;
@@ -523,6 +524,11 @@ public class PlayerController : MonoBehaviour
 		playerParticleSystem = GameObject.Find ("Particle System").GetComponent<ParticleSystem>();
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		playerParticleSystem.loop = false;
+
+        rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
+        rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+        rainParticleSystem.loop = true;
+        rainParticleSystem.Play();
 
 		anim = GetComponent<Animator>();
     }
