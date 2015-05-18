@@ -826,6 +826,12 @@ public class PlayerController : MonoBehaviour
 						{
 							Item item = GameObject.Find("Material").GetComponent<Item>();
 							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Wire").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Screw").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Metal").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
 						}
 						if (Input.GetKeyDown(KeyCode.K))
 						{

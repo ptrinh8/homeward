@@ -21,6 +21,22 @@ public class Buildable : MonoBehaviour
 	private float flashTimer;
 	private bool flashSwitch;
 
+	private int wiresRequired;
+	private int screwsRequired;
+	private int metalRequired;
+
+	private int wiresSpent;
+	private int screwsSpent;
+	private int metalSpent;
+
+	private int wiresLeft;
+	private int screwsLeft;
+	private int metalLeft;
+
+	private bool wiresStillRequired;
+	private bool screwsStillRequired;
+	private bool metalStillRequired;
+
 	private GameObject buildingBarBackground;
 	private float fillspeed;
 	private float buildingBarFillAmount;
@@ -51,6 +67,19 @@ public class Buildable : MonoBehaviour
 		fillspeed = 0.02f;
 		buildingBarFillAmount = 0;
 		progress = 0;
+
+		wiresRequired = 3;
+		screwsRequired = 3;
+		metalRequired = 3;
+
+		wiresLeft = wiresRequired;
+		screwsLeft = screwsRequired;
+		metalLeft = metalRequired;
+
+		wiresStillRequired = true;
+		screwsStillRequired = true;
+		metalStillRequired = true;
+
 
 		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
 	}
@@ -103,10 +132,10 @@ public class Buildable : MonoBehaviour
 			}
 		}
 
-		if (buildingProgress == materialsRequired) 
+		if (wiresLeft == 0 && screwsLeft == 0 && metalLeft == 0) 
         {
 			Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
-			Destroy(gameObject);
+			Destroy(this.gameObject);
         }
 	}
 
@@ -187,6 +216,48 @@ public class Buildable : MonoBehaviour
     void BuildAction()
     {
 		Debug.Log("Been here");
+
+		if (wiresStillRequired == true)
+		{
+			if (wiresSpent + progress < wiresRequired)
+			{
+				wiresSpent += progress;
+			}
+			else
+			{
+				progress = wiresRequired - wiresSpent;
+				wiresSpent = wiresRequired;
+				wiresStillRequired = false;
+			}
+		}
+		else if (screwsStillRequired == true)
+		{
+			if (screwsSpent + progress < screwsRequired)
+			{
+				screwsSpent += progress;
+			}
+			else
+			{
+				progress = screwsRequired - screwsSpent;
+				screwsSpent = screwsRequired;
+				screwsStillRequired = false;
+			}
+		}
+		else if (metalStillRequired == true)
+		{
+			if (metalSpent + progress < metalRequired)
+			{
+				metalSpent += progress;
+			}
+			else
+			{
+				progress = metalRequired - metalSpent;
+				metalSpent = metalRequired;
+				metalStillRequired = false;
+			}
+		}
+
+		/*
 		if (buildingProgress + progress < materialsRequired)
 		{
 			buildingProgress += progress;
@@ -195,12 +266,26 @@ public class Buildable : MonoBehaviour
 		{
 			progress = materialsRequired - buildingProgress;
 			buildingProgress = materialsRequired;
-		}
+		}*/
         color.a += (0.4f / materialsRequired) * progress;
         spriteRenderer.color = color;
 		for (int i = 0; i < progress; i++)
 		{
-			player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+			if (wiresLeft > 0)
+			{
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Wire);
+				wiresLeft--;
+			}
+			else if (screwsLeft > 0)
+			{
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Screw);
+				screwsLeft--;
+			}
+			else if (metalLeft > 0)
+			{
+				player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Metal);
+				metalLeft--;
+			}
 		}
 		Reset();
     }
