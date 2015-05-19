@@ -42,6 +42,8 @@ public class Buildable : MonoBehaviour
 	private float buildingBarFillAmount;
 	private int progress;
 
+	private bool built = false;
+
 	private PlayerController playerController;
 
 	// Use this for initialization
@@ -131,12 +133,6 @@ public class Buildable : MonoBehaviour
 				// else fail?
 			}
 		}
-
-		if (wiresLeft == 0 && screwsLeft == 0 && metalLeft == 0) 
-        {
-			Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
-			Destroy(this.gameObject);
-        }
 	}
 
     void OnTriggerStay2D(Collider2D other)
@@ -203,6 +199,20 @@ public class Buildable : MonoBehaviour
 				// return the materials?
 			}
         }
+		/*
+		if (other.gameObject.tag == "Airlock" || other.gameObject.tag == "ConnectorModule" || other.gameObject.tag == "HealthStaminaModule" || other.gameObject.tag == "HabitatModule" || other.gameObject.tag == "ModuleControlModule"
+		         || other.gameObject.tag == "PowerModule" || other.gameObject.tag == "RadarModule" || other.gameObject.tag == "RefineryModule" || other.gameObject.tag == "BuildingModule" || other.gameObject.tag == "MiningProbeModule"
+		         || other.gameObject.tag == "OxygenModule" || other.gameObject.tag == "StorageModule")
+		{
+			if (wiresLeft == 0 && screwsLeft == 0 && metalLeft == 0)
+			{
+				if (built == true)
+				{
+					Debug.Log("destroying");
+					Destroy(this.gameObject);
+				}
+			}
+		}*/
     }
 
 	void OnTriggerExit2D(Collider2D other)
@@ -256,17 +266,6 @@ public class Buildable : MonoBehaviour
 				metalStillRequired = false;
 			}
 		}
-
-		/*
-		if (buildingProgress + progress < materialsRequired)
-		{
-			buildingProgress += progress;
-		}
-		else 
-		{
-			progress = materialsRequired - buildingProgress;
-			buildingProgress = materialsRequired;
-		}*/
         color.a += (0.4f / materialsRequired) * progress;
         spriteRenderer.color = color;
 		for (int i = 0; i < progress; i++)
@@ -287,6 +286,17 @@ public class Buildable : MonoBehaviour
 				metalLeft--;
 			}
 		}
+		/*
+		if (buildingProgress + progress < materialsRequired)
+		{
+			buildingProgress += progress;
+		}
+		else 
+		{
+			progress = materialsRequired - buildingProgress;
+			buildingProgress = materialsRequired;
+		}*/
+		CheckBuild();
 		Reset();
     }
 
@@ -299,6 +309,20 @@ public class Buildable : MonoBehaviour
 		flashTimer = 0;
 		buildingBarBackground.SetActive(false);
 		buildingNow = false;
+	}
+
+	void CheckBuild()
+	{
+		if (wiresLeft == 0 && screwsLeft == 0 && metalLeft == 0) 
+		{
+			if (built == false)
+			{
+				built = true;
+				Debug.Log ("building");
+				Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
+				Destroy(this.gameObject);
+			}
+		}
 	}
 
 	void FlashBuildingBar()

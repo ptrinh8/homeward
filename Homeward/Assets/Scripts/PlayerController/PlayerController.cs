@@ -489,7 +489,7 @@ public class PlayerController : MonoBehaviour
         songLength = 120f;
         songSilenceLength = 5f;
         songTimer = 0f;
-        songSilenceTimer = 0f;
+        songSilenceTimer = 120f;
         isSongQueued = false;
         isSongPlaying = false;
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
@@ -1404,7 +1404,7 @@ public class PlayerController : MonoBehaviour
             {
                 songSelected = Random.Range(1, 5);
                 songLength = Random.Range(100f, 200f);
-                songSilenceLength = Random.Range(0f, 10f);
+                songSilenceLength = Random.Range(100f, 200f);
                 isSongQueued = true;
                 firstSongPlayed = true;
             }
