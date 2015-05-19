@@ -87,7 +87,7 @@ public class Deployable : MonoBehaviour {
 	// Cannot deploy when blocked
 	void OnTriggerStay2D (Collider2D other) {
 		if (other.gameObject.tag != "FinalTextures" && other.gameObject.tag != "Footprint" && !other.gameObject.name.Contains("PCG") && other.gameObject.tag != "Wall" && 
-		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point") && other.gameObject.tag != "Modules")
+		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point") && other.gameObject.name.Contains("Modules"))
 		{
 			//Debug.Log(other.gameObject);
 			deployable = false;

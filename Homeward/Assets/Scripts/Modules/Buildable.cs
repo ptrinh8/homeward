@@ -145,7 +145,7 @@ public class Buildable : MonoBehaviour
 		{
 			if (PlayerController.holdingBuildingTool && PlayerController.toolUsingEnable)
 			{
-				if (other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0)
+				if (other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Wire) > 0)
 				{
 					if (Input.GetKey(buildKey))
 					{

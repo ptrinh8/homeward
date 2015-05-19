@@ -674,6 +674,14 @@ public class PlayerController : MonoBehaviour
 
             if (currentHealth > 0 && isDead == false)
             {
+				if (CentralControl.isInside == true)
+				{
+					rainParticleSystem.Stop();
+				}
+				else
+				{
+					rainParticleSystem.Play ();
+				}
                 if (isSleeping == false)
                 {
                     staminaTimer += Time.deltaTime;
