@@ -16,7 +16,10 @@ public enum ItemName
     MiningTool,
     RepairingTool,
     BuildingTool,
-    Mineral,
+	Mineral,
+    Mineral1,
+	Mineral2,
+	Mineral3,
     Water,
     Food1,
     Food2,
@@ -54,7 +57,13 @@ public class Item : MonoBehaviour
                 break;
             case ItemName.Water:
                 break;
-            case ItemName.Mineral:
+			case ItemName.Mineral:
+				break;
+            case ItemName.Mineral1:
+                break;
+			case ItemName.Mineral2:
+				break;
+			case ItemName.Mineral3:
                 break;
             case ItemName.MiningTool:
                 break;

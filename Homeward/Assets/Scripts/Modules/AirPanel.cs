@@ -22,6 +22,7 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
+		Debug.Log ("sup");
         if (other.transform.root.gameObject.tag == "Player")
         {
             nearAirPenalFlag = true;

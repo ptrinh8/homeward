@@ -1,4 +1,4 @@
-﻿/****
+/****
  * it is dangerous to use emptySlots if you are accessing directly to slot in Slot.cs
  * */
 
@@ -361,7 +361,7 @@ public class Inventory : MonoBehaviour {
 		int itemCount = 0;
         if (isEmpty == true)
         {
-            //Debug.Log("This Inventory is Empty");
+            Debug.Log("This Inventory is Empty");
             return 0;
         }
         else
