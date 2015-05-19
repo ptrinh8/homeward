@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour
     private bool onCoolDown;
 
 	private ParticleSystem playerParticleSystem;
+    private ParticleSystem rainParticleSystem;
 
     [HideInInspector]
     public float x, y;
@@ -226,6 +227,7 @@ public class PlayerController : MonoBehaviour
 	private Refining refining;
 	private FoodModule foodModule;
 	private BuildingModule buildingModule;
+	private OxygenModule oxygenModule;
 
 	private float miningBarCurrentPosition;
 
@@ -390,7 +392,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
+        //miningProbe = Instantiate(Resources.Load("Mining/MiningProbe")) as GameObject;
 		showRepairArrows = false;// Taylor
         pauseFlag = false;
 
@@ -522,6 +524,11 @@ public class PlayerController : MonoBehaviour
 		playerParticleSystem = GameObject.Find ("Particle System").GetComponent<ParticleSystem>();
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		playerParticleSystem.loop = false;
+
+        rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
+        rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+        rainParticleSystem.loop = true;
+        rainParticleSystem.Play();
 
 		anim = GetComponent<Animator>();
     }
@@ -667,6 +674,14 @@ public class PlayerController : MonoBehaviour
 
             if (currentHealth > 0 && isDead == false)
             {
+				if (CentralControl.isInside == true)
+				{
+					rainParticleSystem.Stop();
+				}
+				else
+				{
+					rainParticleSystem.Play ();
+				}
                 if (isSleeping == false)
                 {
                     staminaTimer += Time.deltaTime;
@@ -685,17 +700,58 @@ public class PlayerController : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                     {
+						Debug.Log ("getkeydown");
 						if (isNearMachine == true)
 						{
+							Debug.Log ("near machine");
 							if (refining != null)
 							{
+								Debug.Log ("refining not null");
 								if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
 								    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									Debug.Log ("refining working");
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										Debug.Log ("inventory open");
+										showPlayerInventory = !showPlayerInventory;
+										refining.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+							if (oxygenModule != null)
+							{
+								if (oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    oxygenModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
 								{
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
 										showPlayerInventory = !showPlayerInventory;
-										refining.showPlayerAndModuleInventory = showPlayerInventory;
+										oxygenModule.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+							if (foodModule != null)
+							{
+								if (foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    foodModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										foodModule.showPlayerAndModuleInventory = showPlayerInventory;
+									}
+								}
+							}
+							if (buildingModule != null)
+							{
+								if (buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
+								    buildingModule.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
+								{
+									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
+									{
+										showPlayerInventory = !showPlayerInventory;
+										buildingModule.showPlayerAndModuleInventory = showPlayerInventory;
 									}
 								}
 							}
@@ -760,8 +816,14 @@ public class PlayerController : MonoBehaviour
 
                         if (Input.GetKeyDown(KeyCode.P))
                         {
-                            Item item = GameObject.Find("Mineral").GetComponent<Item>();
+                            Item item = GameObject.Find("Mineral1").GetComponent<Item>();
                             playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral2").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral3").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Mineral").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
                         }
 
                         if (Input.GetKeyDown(KeyCode.O))
@@ -777,6 +839,12 @@ public class PlayerController : MonoBehaviour
 						if (Input.GetKeyDown(KeyCode.L))
 						{
 							Item item = GameObject.Find("Material").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Wire").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Screw").GetComponent<Item>();
+							playerInventory.GetComponent<Inventory>().AddItem(item);
+							item = GameObject.Find("Metal").GetComponent<Item>();
 							playerInventory.GetComponent<Inventory>().AddItem(item);
 						}
 						if (Input.GetKeyDown(KeyCode.K))
@@ -1285,14 +1353,6 @@ public class PlayerController : MonoBehaviour
 			tileColor = tile.color;
 		}
 
-		if (other.gameObject.tag == "Machine")
-		{
-			isNearMachine = true;
-		}
-	}
-
-	void OnTriggerStay2D(Collider2D other)
-	{
 		if (other.gameObject.transform.root.gameObject.tag == "RefineryModule")
 		{
 			refining = other.GetComponent<Refining>();
@@ -1305,6 +1365,20 @@ public class PlayerController : MonoBehaviour
 		{
 			buildingModule = other.GetComponent<BuildingModule>();
 		}
+		else if (other.gameObject.transform.root.gameObject.tag == "OxygenModule")
+		{
+			oxygenModule = other.GetComponent<OxygenModule>();
+		}
+
+		if (other.gameObject.tag == "Machine")
+		{
+			isNearMachine = true;
+		}
+	}
+
+	void OnTriggerStay2D(Collider2D other)
+	{
+
 	}
 
 	void OnTriggerExit2D(Collider2D other)
@@ -1511,38 +1585,48 @@ public class PlayerController : MonoBehaviour
 			switch (animationFacing)
 			{
 			case 0: //north
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				GameObject footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0)) as GameObject;
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 1:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -45));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -45));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 3:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -135));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -135));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 4:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 5:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .02f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -225));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .02f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -225));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 6:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 7:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -315));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -315));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			}
+
+
 		}
 	}
 
@@ -1554,35 +1638,43 @@ public class PlayerController : MonoBehaviour
 			switch (animationFacing)
 			{
 			case 0: //north
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0));
+				GameObject footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, 0)) as GameObject;
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 1:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -45));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -45));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 3:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -135));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -135));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 4:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .05f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -180));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 5:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .02f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -225));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .02f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -225));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 6:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x - .075f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -270));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x - .075f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -270));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			case 7:
-				Instantiate(leftFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -315));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -315));
+				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
 			}
