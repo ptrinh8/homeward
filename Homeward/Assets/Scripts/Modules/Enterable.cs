@@ -30,8 +30,8 @@ public class Enterable : MonoBehaviour {
 	void OnTriggerEnter2D (Collider2D other) {
 		// Record the direction when player enters the trigger
 		if (other.gameObject.tag == "Player") {
-			x = playerController.x;
-			y = playerController.y;
+			x = mainPlayer.GetComponent<Rigidbody2D>().velocity.x;
+			y = mainPlayer.GetComponent<Rigidbody2D>().velocity.y;
 		}
 	}
 
@@ -41,7 +41,7 @@ public class Enterable : MonoBehaviour {
 			if (xEnter) 
 			{
 				// should not show indoor if player enters and exits the trigger in same direction
-				if (playerController.x == x)
+				if (mainPlayer.GetComponent<Rigidbody2D>().velocity.x * x > 0)
 				{
 					if (gameObject.transform.root.gameObject.tag == "HabitatModule")
 					{
@@ -53,7 +53,7 @@ public class Enterable : MonoBehaviour {
 					}
 				}
 			} 
-			else if (playerController.y == y)
+			else if (mainPlayer.GetComponent<Rigidbody2D>().velocity.y * y > 0)
 			{
 				if (gameObject.transform.root.gameObject.tag == "HabitatModule")
 				{

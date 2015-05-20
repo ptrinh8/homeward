@@ -16,6 +16,8 @@ public class Deployable : MonoBehaviour {
 	private int matchedPoint;	// record which detector is "matched"
 	private Color color;
 
+	private bool canDeploy;
+
 	private AudioController audioController;
 
 	// Use this for initialization
@@ -36,6 +38,8 @@ public class Deployable : MonoBehaviour {
 		matchedPoint = -1;	// -1 means no match
 
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
+
+		canDeploy = false;
 	}
 	
 	// Update is called once per frame
@@ -47,7 +51,7 @@ public class Deployable : MonoBehaviour {
 		}
 
 		// Condition to detach the blueprint
-		if (Input.GetKeyDown(deployKey) && deployable && matchedPoint != -1) {
+		if (Input.GetKeyDown(deployKey) && deployable && canDeploy) {
 			audioController.PlayBuildingSound(1);
 			Instantiate(moduleUnfinished, gameObject.transform.position, gameObject.transform.rotation);
 			isDeploying = false;
@@ -61,21 +65,30 @@ public class Deployable : MonoBehaviour {
 		}
 
 		// See if any snap trigger is matched
-		for (int i = 0; i < detector.Length; i++) {
-			if (detector[i].matched) {
+		for (int i = 0; i < detector.Length; i++) 
+		{
+			if (detector[i].matched) 
+			{
 				matchedPoint = i;
 				break;
-			} else matchedPoint = -1;
+			} 
+			else { matchedPoint = -1;}
 		}
 
-		if (matchedPoint != -1) {
+		if (matchedPoint != -1 && detector[matchedPoint].relation.x < maxLength && detector[matchedPoint].relation.y < maxLength) 
+		{
 			gameObject.transform.position += detector[matchedPoint].relation;	// Snap!
+			canDeploy = true;
 			// Change the sprite color to green
-			if (deployable && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) {
+			if (deployable && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) 
+			{
 				spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
 			}
-		} else if (spriteRenderer.color != color && deployable) {
+		} 
+		else if (spriteRenderer.color != color && deployable)
+		{
 			spriteRenderer.color = color;
+			canDeploy = false;
 		}
 
 		// Unsnap if on-player-blueprint get too far away from origin(player)
@@ -89,7 +102,7 @@ public class Deployable : MonoBehaviour {
 		if (other.gameObject.tag != "FinalTextures" && other.gameObject.tag != "Footprint" && !other.gameObject.name.Contains("PCG") && other.gameObject.tag != "Wall" && 
 		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point") && other.gameObject.tag == "Modules")
 		{
-			//Debug.Log(other.gameObject);
+			Debug.Log(other.gameObject);
 			deployable = false;
 			spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
 		}
