@@ -1,4 +1,4 @@
-﻿/****
+/****
  * it is dangerous to use emptySlots if you are accessing directly to slot in Slot.cs
  * */
 

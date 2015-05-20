@@ -10,13 +10,20 @@ using System.Linq;
 
 public class PCG_OptimizePolygonCollider2D : MonoBehaviour
 {
-    bool optimize = false;
+    bool first_pass = false;
+    bool second_pass = false;
 
     void LateUpdate()
     {
-        if (!optimize)
+        if (!first_pass)
         {
-            optimize = true;
+            first_pass = true;
+            if (gameObject.GetComponent<PolygonCollider2D>() != null) { OptimizePolygonCollider2D(gameObject, gameObject.GetComponent<PolygonCollider2D>()); }
+        }
+
+        if (!second_pass)
+        {
+            second_pass = true;
             if (gameObject.GetComponent<PolygonCollider2D>() != null) { OptimizePolygonCollider2D(gameObject, gameObject.GetComponent<PolygonCollider2D>()); }
         }
     }

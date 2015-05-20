@@ -50,6 +50,21 @@ public class Mining : MonoBehaviour
 
     private ParticleSystem rockParticleSystem;
 
+	private int mineralType;
+	private float mineralTypeSelector;
+	private int mineralSpriteSelector;
+
+	private Sprite mineralSprite1;
+	private Sprite mineralSprite2;
+	private Sprite mineralSprite3;
+	private Sprite mineralSprite4;
+	private Sprite mineralSprite5;
+	private Sprite mineralSprite6;
+	private Sprite mineralSprite7;
+	private Sprite mineralSprite8;
+
+
+
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -59,7 +74,7 @@ public class Mining : MonoBehaviour
     void StopTimer()
     {
         if (timerReached == true) { loadingUpdateTime = 0.0f; loadingStartTime = 0.0f; }
-        if (miningSoundPlayed = true)
+        if (miningSoundPlayed == true)
         {
             miningSoundPlayed = false;
         }
@@ -100,6 +115,66 @@ public class Mining : MonoBehaviour
         rockParticleSystem.renderer.sortingLayerName = "GameplayLayer";
         rockParticleSystem.renderer.sortingOrder = 1;
         rockParticleSystem.loop = false;
+
+		mineralSprite1 = Resources.Load<Sprite>("Sprites/Rocks/1");
+		mineralSprite2 = Resources.Load<Sprite>("Sprites/Rocks/2");
+		mineralSprite3 = Resources.Load<Sprite>("Sprites/Rocks/3");
+		mineralSprite4 = Resources.Load<Sprite>("Sprites/Rocks/4");
+		mineralSprite5 = Resources.Load<Sprite>("Sprites/Rocks/5");
+		mineralSprite6 = Resources.Load<Sprite>("Sprites/Rocks/6");
+		mineralSprite7 = Resources.Load<Sprite>("Sprites/Rocks/7");
+		mineralSprite8 = Resources.Load<Sprite>("Sprites/Rocks/8");
+
+		mineralTypeSelector = Random.Range (1.0f, 10.0f);
+		if (mineralTypeSelector < 5.0f)
+		{
+			mineralType = 1;
+			mineralSpriteSelector = Random.Range(1, 3);
+			switch (mineralSpriteSelector)
+			{
+			case 1:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite7;
+				break;
+			case 2:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite2;
+				break;
+			case 3:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite4;
+				break;
+			}
+		}
+		else if (mineralTypeSelector >= 5.0f && mineralTypeSelector < 8.5f)
+		{
+			mineralType = 2;
+			mineralSpriteSelector = Random.Range(1, 3);
+			switch (mineralSpriteSelector)
+			{
+			case 1:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite1;
+				break;
+			case 2:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite3;
+				break;
+			case 3:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite5;
+				break;
+			}
+		}
+		else if (mineralTypeSelector >= 8.5f)
+		{
+			mineralType = 3;
+			mineralSpriteSelector = Random.Range(1, 2);
+			switch (mineralSpriteSelector)
+			{
+			case 1:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite6;
+				break;
+			case 2:
+				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite8;
+				break;
+			}
+		}
+
     }
 
     void Update()
@@ -111,12 +186,25 @@ public class Mining : MonoBehaviour
 
     void MineSupportFunction(int mineralsCount)
     {
-        Item item = GameObject.Find("Mineral").GetComponent<Item>();
         randomMineralsQuantity -= mineralsCount;
 
         for (int i = 0; i < mineralsCount; i++)
         {
-            mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			if (mineralType == 1)
+			{
+				Item item = GameObject.Find("Mineral1").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
+			else if (mineralType == 2)
+			{
+				Item item = GameObject.Find("Mineral2").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
+			else if (mineralType == 3)
+			{
+				Item item = GameObject.Find("Mineral3").GetComponent<Item>();
+				mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
+			}
         }
     }
 
@@ -134,7 +222,7 @@ public class Mining : MonoBehaviour
 		{
 			rockParticleSystem.Emit (10);
 		}
-		audioController.PlayMiningSound();
+		Debug.Log ("mining");
 		MineSupportFunction(numberOfMinerals);
 		playerController.PlayMiningAnimation();
 	}

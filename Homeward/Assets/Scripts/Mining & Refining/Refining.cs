@@ -14,8 +14,6 @@ public class Refining : MonoBehaviour
     private Mining minerals = new Mining();
     private Inventory inventory = new Inventory();
 
-    private int refinedMineralsCreated;
-
     private Vector2 worldSpacePos;
     private float loadingStartTime;
     public float loadingUpdateTime;
@@ -93,8 +91,8 @@ public class Refining : MonoBehaviour
                     addRefinedMineralOnce = true;
                     Item item = GameObject.Find("Material").GetComponent<Item>();
                     moduleInventory.GetComponent<Inventory>().AddItem(item);
-                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+                    moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
                     timerReached = false;
                 }
             }
@@ -141,7 +139,7 @@ public class Refining : MonoBehaviour
 		// Taylor
 
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
+		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
 		//Debug.Log (mineralCount);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
@@ -162,7 +160,7 @@ public class Refining : MonoBehaviour
         changeLoadingToPercent();
         MineralsValidations();
 
-        if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
+        if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) == 10)
         {
             Debug.Log("This happened");
             stopMineralsIntake = true;
@@ -199,7 +197,7 @@ public class Refining : MonoBehaviour
             Item item = GameObject.Find("Material").GetComponent<Item>();
             moduleInventory.GetComponent<Inventory>().AddItem(item);
             //mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
-            moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral);
+            moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral1);
             timerReached = false;
         }                
 
@@ -225,6 +223,7 @@ public class Refining : MonoBehaviour
         //Taylor
         if (other.gameObject.tag == "Player")
         {
+			Debug.Log ("entered");
             PlayerController.toolUsingEnable = false;
         }
     }

@@ -64,7 +64,6 @@ public class UIInventory : MonoBehaviour
 
     void Update()
     {
-
         if (PlayerController.PlayerInventoryOpen == true)
         {
             if (moduleInventory == null)
@@ -398,6 +397,7 @@ public class UIInventory : MonoBehaviour
      * **************************************************************************/
     public void MoveItem(GameObject clicked)
     {
+		Debug.Log ("moving");
         if (from == null)
         {
             if (!clicked.GetComponent<Slot>().IsEmpty)

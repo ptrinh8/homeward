@@ -17,7 +17,8 @@ public class PCG_DeleteElementsMountedByRocksANDModules : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if ((other.gameObject.tag == "Rock1") || (other.gameObject.tag == "Modules" ) || (other.gameObject.tag == "HabitatModule"))
+        if ((other.gameObject.tag == "Rock1") || (other.gameObject.tag == "Modules" ) || (other.gameObject.tag == "HabitatModule") || (other.gameObject.tag == "HealthStaminaModule") || (other.gameObject.tag == "RefineryModule")
+		    || (other.gameObject.tag == "InitialTerrainTrigger"))
         {
             rockInsidePolygonTrigger = true;
             Destroy(gameObject);

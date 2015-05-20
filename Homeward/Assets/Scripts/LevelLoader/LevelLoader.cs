@@ -10,10 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Diagnostics;
-using UnityEditor;
 using System.Text.RegularExpressions;
 using System.Linq;
-using UnityEditor.Callbacks;
 
 #endregion
 

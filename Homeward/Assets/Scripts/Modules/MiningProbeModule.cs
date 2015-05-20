@@ -93,11 +93,11 @@ public class MiningProbeModule : MonoBehaviour
 					addRefinedMineralOnce = true;
 					Item item = GameObject.Find("MiningProbe").GetComponent<Item>();
 					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 					timerReached = false;
 				}
 			}
@@ -143,7 +143,7 @@ public class MiningProbeModule : MonoBehaviour
 		// Taylor
 		
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral);
+		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
 		//Debug.Log (mineralCount);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
@@ -164,7 +164,7 @@ public class MiningProbeModule : MonoBehaviour
 		changeLoadingToPercent();
 		MineralsValidations();
 		
-		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) == 10)
+		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) == 10)
 		{
 			Debug.Log("This happened");
 			stopMineralsIntake = true;
@@ -200,11 +200,11 @@ public class MiningProbeModule : MonoBehaviour
 			addRefinedMineralOnce = true;
 			Item item = GameObject.Find("MiningProbe").GetComponent<Item>();
 			moduleInventory.GetComponent<Inventory>().AddItem(item);
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+			moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 			timerReached = false;
 		}                
 		
@@ -255,11 +255,11 @@ public class MiningProbeModule : MonoBehaviour
 					{
 						Item item = GameObject.Find("MiningProbe").GetComponent<Item>();
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
-						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 						other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
 					}
 					
@@ -267,9 +267,9 @@ public class MiningProbeModule : MonoBehaviour
 				
 				if (Input.GetKeyDown(keyToAddItemsFromMainPlayerInventory))
 				{
-					if ((mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral) > 0) && (stopMineralsIntake == false))
+					if ((mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) > 0) && (stopMineralsIntake == false))
 					{
-						Item item = other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral);
+						Item item = other.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 						moduleInventory.GetComponent<Inventory>().AddItem(item);
 					}
 				}

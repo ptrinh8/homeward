@@ -46,7 +46,6 @@ public class LocalControl : MonoBehaviour {
         set { value = moduleStatusText; }
     }
 
-	private int pos; 
 	private KeyCode repairKey = KeyCode.F;
 
 	private GameObject player;
@@ -80,6 +79,12 @@ public class LocalControl : MonoBehaviour {
         get { return isBroken;}
     }
 
+	private int powerIndicator;
+
+	public int PowerIndicator
+	{
+		get { return powerIndicator;}
+	}
 	// Use this for initialization
 	void Start () {
 		repairArrowQueueFlag = false;
@@ -116,6 +121,7 @@ public class LocalControl : MonoBehaviour {
 		}
         if (isEnter)
         {
+			//Debug.Log(powerIndicator);
             if (GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir != gameObject.GetComponent<AirControl>().Air)
             {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;
@@ -123,7 +129,6 @@ public class LocalControl : MonoBehaviour {
 		}
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
-
 	}
 
 	void DoorWayTriggered (bool isDoorway) {
@@ -166,11 +171,14 @@ public class LocalControl : MonoBehaviour {
 			// do nothing
 		} else {
 			if (powerConsumption > 0)
-				moduleStatusText.text = Math.Round(powerLevel / minimumPowerLevel, 2).ToString();
-			else if (powerConsumption == 0)
-				moduleStatusText.text = " ";
-			else
-				moduleStatusText.text = "+" + -powerConsumption;
+			{
+				powerIndicator = (int)(powerLevel / minimumPowerLevel);
+			}
+			else 
+			{
+				powerIndicator = -1;
+			}
+
 			if (!isOn) 
 				moduleStatusText.text = "Off";
 			else if (powerLevel >= minimumPowerLevel) {
@@ -179,9 +187,6 @@ public class LocalControl : MonoBehaviour {
 				isPowered = false;
 			}
 		}
-		if (powerConsumption != 0 && !isBroken)
-			moduleStatusText.text += ", ";
-		pos = moduleStatusText.text.Length;
 	}
 
 	void SwitchTriggered (bool flag) {
@@ -271,9 +276,7 @@ public class LocalControl : MonoBehaviour {
 		}
 
 		if (durability > 0) {
-			if (pos < moduleStatusText.text.Length)
-				moduleStatusText.text = moduleStatusText.text.Remove(pos);
-			moduleStatusText.text += durability.ToString();
+			moduleStatusText.text = durability.ToString();
 		}else
 			moduleStatusText.text = "Broken";
 	}
