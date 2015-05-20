@@ -49,6 +49,8 @@ public class CentralControl : MonoBehaviour {
 
 	private GameObject repairArrowQueue;
 
+	private AudioController audioController;
+
 	// Use this for initialization
 	void Start () {
 		repairArrowQueueFlag = false;
@@ -82,6 +84,7 @@ public class CentralControl : MonoBehaviour {
 		gameObject.GetComponent<SpriteRenderer>().material = GameObject.Find("DefaultSpriteMaterial").GetComponent<SpriteRenderer>().material;
 
 		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 
     void InitializeRefineryModule()
@@ -220,7 +223,7 @@ public class CentralControl : MonoBehaviour {
                 else 
                     if (!visited[connection.GetComponent<LocalControl>().moduleID] && connection.GetComponent<LocalControl>().isOn) {
                     /*** Takahide Added From Here***/
-                    if (connection.tag == "FoodModule")
+                    if (connection.tag == "HealthStaminaModule")
                     {
                         healthStaminaModuleExists = true;
                     }
@@ -297,6 +300,7 @@ public class CentralControl : MonoBehaviour {
 					{
 						if (Input.GetKeyDown(repairKey))
 						{
+							audioController.PlayRepairSound(2);
 							repairArrowQueueFlag = !repairArrowQueueFlag;
 							PlayerController.showRepairArrows = repairArrowQueueFlag;
 							repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
@@ -332,6 +336,7 @@ public class CentralControl : MonoBehaviour {
             durability += 10;
             isBroken = false;
         }
+		audioController.PlayRepairSound(3);
 		repairArrowQueueFlag = false;
 		PlayerController.showRepairArrows = false;
 		repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);

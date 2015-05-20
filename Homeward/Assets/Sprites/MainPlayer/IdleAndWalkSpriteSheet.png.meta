@@ -81,7 +81,7 @@ TextureImporter:
     21300152: Astronaut_South_Walk8
     21300154: Astronaut_South_Walk9
     21300156: Astronaut_South_Walk10
-    21300158: IdleAndWalkSpriteSheet_96
+    21300158: Astronaut_South_Walk11
     21300160: Astronaut_SouthEast_Idle
     21300162: Astronaut_SouthEast_Walk1
     21300164: Astronaut_SouthEast_Walk2
@@ -93,7 +93,7 @@ TextureImporter:
     21300176: Astronaut_SouthEast_Walk8
     21300178: Astronaut_SouthEast_Walk9
     21300180: Astronaut_SouthEast_Walk10
-    21300182: IdleAndWalkSpriteSheet_110
+    21300182: Astronaut_SouthEast_Walk11
     21300184: Astronaut_West_Walk10
     21300186: Astronaut_East_Walk9
     21300188: Astronaut_SouthWest_Walk8
@@ -929,15 +929,15 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: IdleAndWalkSpriteSheet_96
+    - name: Astronaut_South_Walk11
       rect:
         serializedVersion: 2
-        x: 3601
-        y: 616
-        width: 149
-        height: 424
+        x: 3602
+        y: 618
+        width: 148
+        height: 422
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Astronaut_SouthEast_Idle
       rect:
@@ -1049,15 +1049,15 @@ TextureImporter:
       alignment: 0
       pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
-    - name: IdleAndWalkSpriteSheet_110
+    - name: Astronaut_SouthEast_Walk11
       rect:
         serializedVersion: 2
-        x: 3593
+        x: 3596
         y: 78
-        width: 199
-        height: 441
+        width: 193
+        height: 440
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: .5, y: .5}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: Astronaut_West_Walk10
       rect:

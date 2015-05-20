@@ -65,7 +65,7 @@ public class UIInventory : MonoBehaviour
     void Update()
     {
 
-        if (PlayerController.showPlayerInventory)
+        if (PlayerController.PlayerInventoryOpen == true)
         {
             if (moduleInventory == null)
             {
@@ -342,12 +342,6 @@ public class UIInventory : MonoBehaviour
 								player.OxygenTaken();
 							}
 						}
-                        
-                        if (item.itemName == ItemName.MiningProbe)
-                        {
-                            Debug.Log("miningprobe");
-                            MiningProbeController.spawnFlag = true;
-                        }
 
 
                         if (slot.GetComponent<Slot>().IsEmpty)

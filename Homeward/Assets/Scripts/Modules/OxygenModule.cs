@@ -236,8 +236,8 @@ public class OxygenModule : MonoBehaviour
 			    gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
 			{
 				showPlayerAndModuleInventory = true;
-				PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
-				PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
+				//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
+				//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
 				moduleInventory.SetActive(true);
 				moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
 			}
@@ -247,8 +247,8 @@ public class OxygenModule : MonoBehaviour
 				moduleInventory.SetActive(showPlayerAndModuleInventory);
 				moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
 				
-				PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-				PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
+				//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
+				//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
 			}
 			
 			if (showPlayerAndModuleInventory) 
@@ -286,8 +286,8 @@ public class OxygenModule : MonoBehaviour
 		showPlayerAndModuleInventory = false;
 		moduleInventory.SetActive(showPlayerAndModuleInventory);
 		moduleInventory.GetComponent<Inventory>().SetSlotsActive(showPlayerAndModuleInventory);
-		PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
-		PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
+		//PlayerController.ShowPlayerInventory = showPlayerAndModuleInventory;
+		//PlayerController.KeyCode_I_Works = !showPlayerAndModuleInventory;
 		UIInventory.SetModuleInventory(null);
 		
 		// Taylor
