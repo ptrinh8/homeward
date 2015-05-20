@@ -361,7 +361,7 @@ public class Inventory : MonoBehaviour {
 		int itemCount = 0;
         if (isEmpty == true)
         {
-            Debug.Log("This Inventory is Empty");
+            //Debug.Log("This Inventory is Empty");
             return 0;
         }
         else

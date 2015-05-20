@@ -487,9 +487,9 @@ public class PlayerController : MonoBehaviour
         moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
 
         songLength = 120f;
-        songSilenceLength = 120f;
+        songSilenceLength = 5f;
         songTimer = 0f;
-        songSilenceTimer = 0f;
+        songSilenceTimer = 120f;
         isSongQueued = false;
         isSongPlaying = false;
         audioController = GameObject.Find("AudioObject").GetComponent<AudioController>();
@@ -525,10 +525,10 @@ public class PlayerController : MonoBehaviour
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		playerParticleSystem.loop = false;
 
-        rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
-        rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
-        rainParticleSystem.loop = true;
-        rainParticleSystem.Play();
+        //rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
+        //rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+        //rainParticleSystem.loop = true;
+        //rainParticleSystem.Play();
 
 		anim = GetComponent<Animator>();
     }
@@ -676,11 +676,11 @@ public class PlayerController : MonoBehaviour
             {
 				if (CentralControl.isInside == true)
 				{
-					rainParticleSystem.Stop();
+					//rainParticleSystem.Stop();
 				}
 				else
 				{
-					rainParticleSystem.Play ();
+					//rainParticleSystem.Play ();
 				}
                 if (isSleeping == false)
                 {
@@ -689,7 +689,7 @@ public class PlayerController : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.Tab))
                     {
-                        //TODO
+                        Instruction.showInstruction = !Instruction.showInstruction;
                     }
 
                     if (Input.GetKeyDown(KeyCode.B) && keyCode_B_Works)
@@ -1352,7 +1352,7 @@ public class PlayerController : MonoBehaviour
 			SpriteRenderer tile = other.GetComponentInChildren<SpriteRenderer>();
 			tileColor = tile.color;
 		}
-
+		
 		if (other.gameObject.transform.root.gameObject.tag == "RefineryModule")
 		{
 			refining = other.GetComponent<Refining>();
@@ -1378,7 +1378,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnTriggerStay2D(Collider2D other)
 	{
-
+		
 	}
 
 	void OnTriggerExit2D(Collider2D other)

@@ -178,6 +178,7 @@ public class FoodModule : MonoBehaviour
 		
 		if (mineralCount >= 5)
 		{
+			RefiningProcess(refineryModuleSpriteRenderer);
 			if (refineryStarted == false)
 			{
 				refineryMachine.start();

@@ -121,7 +121,7 @@ public class LocalControl : MonoBehaviour {
 		}
         if (isEnter)
         {
-			Debug.Log(powerIndicator);
+			//Debug.Log(powerIndicator);
             if (GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir != gameObject.GetComponent<AirControl>().Air)
             {
                 GameObject.FindWithTag("Player").GetComponent<PlayerController>().EnvironmentalAir = gameObject.GetComponent<AirControl>().Air;

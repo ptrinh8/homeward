@@ -222,7 +222,7 @@ public class Mining : MonoBehaviour
 		{
 			rockParticleSystem.Emit (10);
 		}
-		audioController.PlayMiningSound();
+		Debug.Log ("mining");
 		MineSupportFunction(numberOfMinerals);
 		playerController.PlayMiningAnimation();
 	}
