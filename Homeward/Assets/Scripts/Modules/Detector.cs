@@ -6,6 +6,8 @@ public class Detector : MonoBehaviour {
 
 	[HideInInspector] public Vector3 relation;	// Position change when snap
 	[HideInInspector] public bool matched;	// Whether the trigger is matched
+	[HideInInspector] public GameObject connectedTo;
+
 	// Use this for initialization
 	void Start () {
 		matched = false;
@@ -16,9 +18,12 @@ public class Detector : MonoBehaviour {
 	}
 
 	void OnTriggerStay2D (Collider2D other) {
-		if (other.gameObject.tag == "Connect Point") {
+		if (other.gameObject.tag == "Connect Point")
+		{
 			relation = other.gameObject.transform.position - gameObject.transform.position; //Calculate the position change
 			matched = true;
+
+			connectedTo = other.transform.root.gameObject;
 		}
 	}
 
@@ -26,6 +31,8 @@ public class Detector : MonoBehaviour {
 		if (other.gameObject.tag == "Connect Point") {
 			relation = new Vector3(0, 0, 0);
 			matched = false;
+
+			connectedTo = null;
 		}
 	}
 }
