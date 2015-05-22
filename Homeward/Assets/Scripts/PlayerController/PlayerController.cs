@@ -758,6 +758,14 @@ public class PlayerController : MonoBehaviour
 						}
 						else
 						{
+							if (showPlayerInventory == true)
+							{
+								audioController.PlayInventorySound(1);
+							}
+							else if (showPlayerInventory == false)
+							{
+								audioController.PlayInventorySound(0);
+							}
                         	showPlayerInventory = !showPlayerInventory;
 						}
                     }

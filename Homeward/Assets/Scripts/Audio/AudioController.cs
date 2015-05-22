@@ -18,6 +18,11 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance repairEnd;
 	private FMOD.Studio.EventInstance buildingStart;
 	private FMOD.Studio.EventInstance building;
+	private FMOD.Studio.EventInstance buttonPress;
+	private FMOD.Studio.EventInstance depositBoxClose;
+	private FMOD.Studio.EventInstance depositBoxOpen;
+	private FMOD.Studio.EventInstance inventoryOpen;
+	private FMOD.Studio.EventInstance inventoryClose;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -34,6 +39,11 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairEndSelector;
 	private FMOD.Studio.ParameterInstance buildingStartSelector;
 	private FMOD.Studio.ParameterInstance buildingSelector;
+	private FMOD.Studio.ParameterInstance buttonPressSelector;
+	private FMOD.Studio.ParameterInstance depositBoxCloseSelector;
+	private FMOD.Studio.ParameterInstance depositBoxOpenSelector;
+	private FMOD.Studio.ParameterInstance inventoryOpenSelector;
+	private FMOD.Studio.ParameterInstance inventoryCloseSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -44,6 +54,11 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairEndInsideOutside;
 	private FMOD.Studio.ParameterInstance buildingStartInsideOutside;
 	private FMOD.Studio.ParameterInstance buildingInsideOutside;
+	private FMOD.Studio.ParameterInstance buttonPressInsideOutside;
+	private FMOD.Studio.ParameterInstance depositBoxCloseInsideOutside;
+	private FMOD.Studio.ParameterInstance depositBoxOpenInsideOutside;
+	private FMOD.Studio.ParameterInstance inventoryOpenInsideOutside;
+	private FMOD.Studio.ParameterInstance inventoryCloseInsideOutside;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
@@ -53,6 +68,11 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance repairEndAirlockPressure;
 	private FMOD.Studio.ParameterInstance buildingStartAirlockPressure;
 	private FMOD.Studio.ParameterInstance buildingAirlockPressure;
+	private FMOD.Studio.ParameterInstance buttonPressAirlockPressure;
+	private FMOD.Studio.ParameterInstance depositBoxCloseAirlockPressure;
+	private FMOD.Studio.ParameterInstance depositBoxOpenAirlockPressure;
+	private FMOD.Studio.ParameterInstance inventoryOpenAirlockPressure;
+	private FMOD.Studio.ParameterInstance inventoryCloseAirlockPressure;
 
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
@@ -421,6 +441,140 @@ public class AudioController : MonoBehaviour {
 				rightFootSandInsideOutside.setValue(1.75f);
 				rightFootSand.start ();
 				rightFootSand.release ();
+			}
+		}
+	}
+
+	public void PlayButtonPress()
+	{
+		if (CentralControl.isInside == true)
+		{
+			buttonPress = FMOD_StudioSystem.instance.GetEvent("event:/ButtonPress");
+			buttonPress.getParameter("Selector", out buttonPressSelector);
+			buttonPress.getParameter("InsideOutside", out buttonPressInsideOutside);
+			buttonPress.getParameter("AirlockPressure", out buttonPressAirlockPressure);
+			buttonPressSelector.setValue(Random.Range (1f, 7f));
+			buttonPressInsideOutside.setValue(.5f);
+			buttonPressAirlockPressure.setValue(controllerSoundPressure);
+			buttonPress.start();
+			buttonPress.release ();
+		}
+		else
+		{
+			buttonPress = FMOD_StudioSystem.instance.GetEvent("event:/LeftFootSand");
+			buttonPress.getParameter("Selector", out buttonPressSelector);
+			buttonPress.getParameter("InsideOutside", out buttonPressInsideOutside);
+			buttonPressSelector.setValue(Random.Range (1f, 7f));
+			buttonPressInsideOutside.setValue(1.75f);
+			buttonPress.start();
+			buttonPress.release();
+		}
+	}
+
+	public void PlayDepositBox(int openClose)
+	{
+		if (openClose == 0)
+		{
+			if (CentralControl.isInside == true)
+			{
+				depositBoxOpen = FMOD_StudioSystem.instance.GetEvent("event:/DepositBoxOpen");
+				depositBoxOpen.getParameter("Selector", out depositBoxOpenSelector);
+				depositBoxOpen.getParameter("InsideOutside", out depositBoxOpenInsideOutside);
+				depositBoxOpen.getParameter("AirlockPressure", out depositBoxOpenAirlockPressure);
+				depositBoxOpenSelector.setValue(Random.Range (1f, 6f));
+				depositBoxOpenInsideOutside.setValue(.5f);
+				depositBoxOpenAirlockPressure.setValue(controllerSoundPressure);
+				depositBoxOpen.start();
+				depositBoxOpen.release ();
+			}
+			else
+			{
+				depositBoxOpen = FMOD_StudioSystem.instance.GetEvent("event:/DepositBoxOpen");
+				depositBoxOpen.getParameter("Selector", out depositBoxOpenSelector);
+				depositBoxOpen.getParameter("InsideOutside", out depositBoxOpenInsideOutside);
+				depositBoxOpenSelector.setValue(Random.Range (1f, 6f));
+				depositBoxOpenInsideOutside.setValue(1.75f);
+				depositBoxOpen.start();
+				depositBoxOpen.release();
+			}
+		}
+		else if (openClose == 1)
+		{
+			if (CentralControl.isInside == true)
+			{
+				depositBoxClose = FMOD_StudioSystem.instance.GetEvent("event:/DepositBoxClose");
+				depositBoxClose.getParameter("Selector", out depositBoxCloseSelector);
+				depositBoxClose.getParameter("InsideOutside", out depositBoxCloseInsideOutside);
+				depositBoxClose.getParameter("AirlockPressure", out depositBoxCloseAirlockPressure);
+				depositBoxCloseSelector.setValue(Random.Range (1f, 6f));
+				depositBoxCloseInsideOutside.setValue(.5f);
+				depositBoxCloseAirlockPressure.setValue(controllerSoundPressure);
+				depositBoxClose.start();
+				depositBoxClose.release ();
+			}
+			else
+			{
+				depositBoxClose = FMOD_StudioSystem.instance.GetEvent("event:/DepositBoxClose");
+				depositBoxClose.getParameter("Selector", out depositBoxCloseSelector);
+				depositBoxClose.getParameter("InsideOutside", out depositBoxCloseInsideOutside);
+				depositBoxCloseSelector.setValue(Random.Range (1f, 6f));
+				depositBoxCloseInsideOutside.setValue(1.75f);
+				depositBoxClose.start();
+				depositBoxClose.release();
+			}
+		}
+	}
+
+	public void PlayInventorySound(int inventorySound)
+	{
+		if (inventorySound == 0)
+		{
+			if (CentralControl.isInside == true)
+			{
+				inventoryOpen = FMOD_StudioSystem.instance.GetEvent("event:/InventoryOpen");
+				inventoryOpen.getParameter("Selector", out inventoryOpenSelector);
+				inventoryOpen.getParameter("InsideOutside", out inventoryOpenInsideOutside);
+				inventoryOpen.getParameter("AirlockPressure", out inventoryOpenAirlockPressure);
+				inventoryOpenSelector.setValue(Random.Range (1f, 6f));
+				inventoryOpenInsideOutside.setValue(.5f);
+				inventoryOpenAirlockPressure.setValue(controllerSoundPressure);
+				inventoryOpen.start();
+				inventoryOpen.release ();
+			}
+			else
+			{
+				inventoryOpen = FMOD_StudioSystem.instance.GetEvent("event:/InventoryOpen");
+				inventoryOpen.getParameter("Selector", out inventoryOpenSelector);
+				inventoryOpen.getParameter("InsideOutside", out inventoryOpenInsideOutside);
+				inventoryOpenSelector.setValue(Random.Range (1f, 6f));
+				inventoryOpenInsideOutside.setValue(1.75f);
+				inventoryOpen.start();
+				inventoryOpen.release();
+			}
+		}
+		else if (inventorySound == 1)
+		{
+			if (CentralControl.isInside == true)
+			{
+				inventoryClose = FMOD_StudioSystem.instance.GetEvent("event:/InventoryClose");
+				inventoryClose.getParameter("Selector", out inventoryCloseSelector);
+				inventoryClose.getParameter("InsideOutside", out inventoryCloseInsideOutside);
+				inventoryClose.getParameter("AirlockPressure", out inventoryCloseAirlockPressure);
+				inventoryCloseSelector.setValue(Random.Range (1f, 6f));
+				inventoryCloseInsideOutside.setValue(.5f);
+				inventoryCloseAirlockPressure.setValue(controllerSoundPressure);
+				inventoryClose.start();
+				inventoryClose.release ();
+			}
+			else
+			{
+				inventoryClose = FMOD_StudioSystem.instance.GetEvent("event:/InventoryClose");
+				inventoryClose.getParameter("Selector", out inventoryCloseSelector);
+				inventoryClose.getParameter("InsideOutside", out inventoryCloseInsideOutside);
+				inventoryCloseSelector.setValue(Random.Range (1f, 6f));
+				inventoryCloseInsideOutside.setValue(1.75f);
+				inventoryClose.start();
+				inventoryClose.release();
 			}
 		}
 	}
