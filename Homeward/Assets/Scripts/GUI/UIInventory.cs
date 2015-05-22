@@ -64,7 +64,6 @@ public class UIInventory : MonoBehaviour
 
     void Update()
     {
-		//Debug.Log (moduleInventory.GetComponent<Inventory>().allSlots.Count);
         if (PlayerController.PlayerInventoryOpen == true)
         {
             if (moduleInventory == null)

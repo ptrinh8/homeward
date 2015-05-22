@@ -1,0 +1,29 @@
+1. Basics,/Basic Instruction
+1.1. Astronaut Movement,/Use 'W'","'A'","'S'","'D' to move the astronaut.
+1.2. Health"," Stamina and Oxygen,/Pay attention to health"," stamina and oxygen to survivie.
+1.3. Inventory,/Use 'I' to open/close your backpack","'Arrow Keys' to navigate"," 'G' to grab"," and 'F' to equip item.
+1.4. Mining,/Stand near a minable rock with Mining Tool equipped"," and hit 'F' when red circle comes to the center of Mining Bar.
+1.5. Tools,/There are three kinds of tools: Mining Tool"," Repairing Tool"," and Building Tool.
+1.6. Materials,/There are three kinds of minerals to be used in building.
+1.7. Plant,/Your friend.
+2. Modules,/About modules
+2.1. Module Deploying,/Press 'B' to call the building menu"," 'Arrow Keys' to navigate"," and 'F' to confirm. When the blueprint shows up"," you can deploy the blue print when the color turns to green.
+2.2. Module Building,/Hold 'F' inside the module blueprint when Building Tool is equipped"," and release the key when the color of the bar turns yellow/green/blue.
+2.3. Module Repairing,/Go inside the module you want to repair with Repair Tool is equipped"," and hit 'Arrow Keys' to complete the sequence of repar action.
+2.4. Habitat Module,/Habitat Module is where you sleep to recover your health and stamina. Use 'F' to interact with bed and diary.
+2.5. Airlock Module,/Airlock Module is used to adjust the air pressure in the outpost. Use 'F' to interact with air panel.
+2.6. Connector Module,/Connector Module has four door ways to connect other modules.
+2.7. Refinery Module,/Refinery Module refines minerals into materials.
+2.8. Food Module,/Food Module can make raw life sustain food from material.
+2.9. Power Module,/Power Module provides 1 power unit for whole outpost.
+2.10. Oxygen Module,/Oxygen Module can breakdown the oxygen element inside the material into oxygen gas.
+2.11. Radar Module,/Radar Module gives you the radar signal of mine and modules.
+2.12. Storage Module,/Storage Module stores items.
+2.13. Mining Probe Module,/Mining Probe Module builds Mining Probes as you feed required amount of materials.
+2.14. Health & Stamina Module,/Health & Stamina Module gives you the UI to monitor your health and stamina.
+2.15. Module Control Module,/Module Control Module allows you keep track of the state of all modules in the outpost.
+3. Planet,/Planet description
+3.1. Day-Night Cycle,/Day-Night Cycle description
+3.2. Mine,/Mining description
+3.3 Weather,/Weather description
+3.4. Terrain,/Terrain description

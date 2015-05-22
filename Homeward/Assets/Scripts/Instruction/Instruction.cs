@@ -9,158 +9,538 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 #endregion
 
-public class Instruction : MonoBehaviour {
-    private InstructionDatabase instructionDatabase;
+public class Instruction : MonoBehaviour 
+{
+    public static bool showInstruction;
 
-    [HideInInspector]
-    public bool showInstruction;
-    private KeyCode instKey = KeyCode.B;
-    private int itemsSlotWidth = 70;
-    private int itemsSlotHeight = 70;
-    private int itemsSlotsPadding = 12;
-    private int instructionRowsCount = 1;
-    private int instructionColsCount = 6;
-    private Rect instructionBook = new Rect(50, 200, 0, 0); // Rect (x, y, width, height); Used to add bground to instruction, in consideration with values of rows & cols.
+    /*** Fixed Variables ***/
 
-    public GUISkin GUIskin;
-    private List<InstructionItem> instItems = new List<InstructionItem>(); // Holds instructions
-    private InstructionDatabase database; // Stores items in DB
-    private bool showInstructionItemDetails; // Each item information
-    private string instructionItemDetailsText; // Item information text
+    private int numRowsMain;
 
-    public Texture2D movePlayer;
-    public Texture2D interaction;
-    public Texture2D placingModule;
-    public Texture2D rotatingModule;
-    public Texture2D eating;
-    public Texture2D inventory;
+    private int numRowsSub;
 
-	// Use this for initialization
-	void Start () {
-        instructionDatabase = FindObjectOfType(typeof(InstructionDatabase)) as InstructionDatabase;
+    private static GameObject selectionBox;
 
-		//database = instItems.Add(new InstructionItem("Player Moving", 0, "'w,a,s,d'or arrow keys to move the player around", movePlayer));
-        instItems.Add(new InstructionItem("Move Player", 0, "Press a, s, d, f, or arrow keys", movePlayer));
-        instItems.Add(new InstructionItem("Interact with World", 1, "Press f to mine, refine, place modules", interaction));
-        instItems.Add(new InstructionItem("Prepare Module", 2, "Num Key 1: Habitat Module \nNum Key 2: Connector Module \nNum Key 3: Refinary Module \nNum Key 4: Food Module", placingModule));
-        instItems.Add(new InstructionItem("Rotate Module", 3, "Press r", rotatingModule));
-        instItems.Add(new InstructionItem("Eat Foods", 4, "Press e", eating));
-        instItems.Add(new InstructionItem("Look Inventory", 5, "Press i", inventory));
+    private RectTransform selectionBoxRect;
 
-        GUIskin = Resources.Load<GUISkin>("InvGUIskin");
-		showInstruction = false;
+    private float selectionBoxSize;
 
-        // Set DB instance = DB.component
-		database = GameObject.Find("Instruction Database").GetComponent<InstructionDatabase>();
-	}
-	
-	// Update is called once per frame
+    private List<GameObject> mainMenu;
+
+    private List<GameObject> subMenu1, subMenu2, subMenu3, subMenu;
+
+    private GameObject slotPrefab;
+
+    private float instructionWidth;
+
+    private float instructionHeight;
+
+    private RectTransform instructionRect;
+
+    private float slotMainPaddingTop;
+
+    private float slotMainPaddingLeft;
+
+    private float slotSubPaddingTop;
+
+    private float slotSubPaddingLeft;
+
+    private float slotWidth;
+
+    private float slotHeight;
+
+    /*** Dynamically Changeable Variables ***/
+
+    private int mainNthRow;
+
+    private int subNthRow;
+
+    private bool isOnMainMenu;
+
+    private List<string> column1, column2, column3_1, column3_2;
+
+    private int numTmp;
+
+    private GameObject instructionDetail;
+
+    private GameObject instructionDetailText;
+
+
+    // Use this for initialization
+    void Start()
+    {
+        Initialize();
+        CreateLayout();
+
+        SetActiveSubMenu(subMenu1, 1);
+    }
+
+    void Initialize()
+    {
+        numRowsMain = 3;
+        selectionBoxSize = 3.0f;
+        slotMainPaddingTop = 120.0f;
+        slotMainPaddingLeft = -Screen.width / 2 + 75.0f;
+        slotWidth = 0;
+        slotHeight = 0;
+        mainMenu = new List<GameObject>();
+        subMenu = new List<GameObject>();
+        isOnMainMenu = true;
+        numTmp = 0;
+
+        gameObject.AddComponent<CanvasGroup>();
+        gameObject.GetComponent<CanvasGroup>().alpha = 0;
+        slotPrefab = Instantiate(Resources.Load("Instruction/InstructionSlot")) as GameObject;
+        selectionBox = Instantiate(Resources.Load("Inventory/SelectionBox")) as GameObject;
+        
+    }
+
+    /**************************************************
+     * need to change to reading these variables from the csv file
+     * *****************************************/
+
+    int numRows1 = 7;
+    int numRows2 = 15;
+    int numRows3 = 4;
+
+    void CreateLayout()
+    {
+        ReadCSV();
+
+        instructionWidth = Screen.width;
+        instructionHeight = Screen.height;
+
+        instructionRect = GetComponent<RectTransform>();
+        instructionRect.localScale = new Vector3(1, 1, 1);
+        instructionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, instructionWidth);
+        instructionRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, instructionHeight);
+
+        instructionDetail = Instantiate(Resources.Load("Instruction/InstructionDetail")) as GameObject;
+        instructionDetail.name = "InstructionDetail";
+        instructionDetail.transform.SetParent(this.transform);
+        RectTransform instructionDetailRect = instructionDetail.GetComponent<RectTransform>();
+        instructionDetailRect.localScale = new Vector3(1, 1, 1);
+        instructionDetailRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 300.0f);
+        instructionDetailRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 500.0f);//(Screen.height / 2 + -slotMainPaddingTop) * 2);
+        instructionDetailRect.transform.position = instructionRect.position + new Vector3(130.0f, 0.0f);
+
+        instructionDetailText = Instantiate(Resources.Load("Instruction/InstructionSlotText")) as GameObject;
+        instructionDetailText.name = "InstructionDetailText";
+        instructionDetailText.GetComponent<Text>().text = column3_1[0];
+        instructionDetailText.transform.SetParent(instructionDetail.transform);
+        RectTransform instructionDetailTextRect = instructionDetailText.GetComponent<RectTransform>();
+        instructionDetailTextRect.localScale = new Vector3(1, 1, 1);
+        instructionDetailTextRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, instructionDetailRect.sizeDelta.x);
+        instructionDetailTextRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, instructionDetailRect.sizeDelta.y);
+        instructionDetailTextRect.position = instructionDetailRect.transform.position;
+
+        
+        for (int i = 0; i < numRowsMain; i++)
+        {
+            GameObject newSlot = Instantiate(slotPrefab) as GameObject;
+
+            RectTransform slotRect = newSlot.GetComponent<RectTransform>();
+
+            GameObject newText = Instantiate(Resources.Load("Instruction/InstructionSlotText")) as GameObject;
+            newText.transform.SetParent(newSlot.transform);
+            newText.name = "InstructionSlotText_" + i + "_" + 0;
+            newText.GetComponent<Text>().text = column1[i];
+
+            newSlot.name = "InstructionSlot_" + i + "_" + 0;
+            newSlot.transform.SetParent(this.transform);
+            newSlot.transform.localScale = new Vector3(1, 1, 1);
+
+            slotWidth = 130.0f;//newSlot.GetComponent<RectTransform>().sizeDelta.x;
+            slotHeight = 50.0f;//newSlot.GetComponent<RectTransform>().sizeDelta.y;
+
+            slotRect.localPosition = instructionRect.localPosition + new Vector3(slotMainPaddingLeft, Screen.height/2 + -slotMainPaddingTop * (i + 1));
+            mainMenu.Add(newSlot);
+
+            /*** sub menu ***/
+
+            if (i == 0)
+            {
+                numRowsSub = numRows1;
+                subMenu1 = new List<GameObject>();
+            }
+            else if (i == 1)
+            {
+                numRowsSub = numRows2;
+                subMenu2 = new List<GameObject>();
+            }
+            else if (i == 2)
+            {
+                numRowsSub = numRows3;
+                subMenu3 = new List<GameObject>();
+            }
+
+            List<GameObject> tmpList = new List<GameObject>();
+
+            for (int j = 0; j < numRowsSub; j++)
+            {
+                newSlot = Instantiate(slotPrefab) as GameObject;
+                newSlot.AddComponent<CanvasGroup>();
+                newSlot.GetComponent<CanvasGroup>().alpha = 0;
+
+                slotRect = newSlot.GetComponent<RectTransform>();
+
+                newText = Instantiate(Resources.Load("Instruction/InstructionSlotText")) as GameObject;
+                newText.transform.SetParent(newSlot.transform);
+                newText.name = "InstructionSlotText_" + j + "_" + 1;
+                newText.GetComponent<Text>().text = column2[numTmp + j];
+
+                newSlot.name = "InstructionSlot_" + j + "_" + 1;
+                newSlot.transform.SetParent(this.transform);
+                newSlot.transform.localScale = new Vector3(1, 1, 1);
+
+                slotWidth = newSlot.GetComponent<RectTransform>().sizeDelta.x;
+                slotHeight = newSlot.GetComponent<RectTransform>().sizeDelta.y;
+
+                slotRect.localPosition = instructionRect.localPosition + new Vector3(slotMainPaddingLeft + slotWidth * 1.5f, Screen.height / 2 + -slotMainPaddingTop * (j + 1));
+                tmpList.Add(newSlot);
+            }
+
+            numTmp += numRowsSub;
+
+            if (i == 0)
+            {
+                subMenu1.AddRange(tmpList);
+            }
+            else if (i == 1)
+            {
+                subMenu2.AddRange(tmpList);
+            }
+            else if (i == 2)
+            {
+                subMenu3.AddRange(tmpList);
+            }
+
+            tmpList.Clear();
+            numRowsSub = numRows1;
+            DrawSelectionBox(0, 0);
+        }
+    }
+
     void Update()
     {
-        if (Input.GetKeyDown(instKey))
-        {
-            if (Time.timeScale == 1) Time.timeScale = 0; // pause
-            else if (Time.timeScale == 0) Time.timeScale = 1; // continue
-                        
-            showInstruction = !showInstruction;
-        }
-    }
-
-    void OnGUI()
-    {
-        GUI.skin = GUIskin;
-
-        // Set item information as blank
-        instructionItemDetailsText = "";
-
-        // is inventory visible?
         if (showInstruction)
         {
-            DrawInstruction();
-
-            // screen texture to make the screen dark when the gameplay is paused
-            //screenTexture = new Texture2D(100, 100, TextureFormat.ARGB32, false);
-            //screenTexture.SetPixel(0, 0, new Color(1.5f, 1.5f, 0, 1.5f)); // making it a little darker
-            //screenTexture.Apply();
-
-            // is mouse on item?, which makes showInstructionItemDetails = true
-            if (showInstructionItemDetails)
-                DrawInstructionDetails();
+            GetComponent<CanvasGroup>().alpha = 1;
+            MoveSelectionBox();
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            GetComponent<CanvasGroup>().alpha = 0;
+            Time.timeScale = 1.0f;
         }
     }
 
-    void DrawInstruction()
+    void ReadCSV()
     {
-        int i = 0;
+        TextAsset instructionRawText = Resources.Load<TextAsset>("Text/Instruction");
+        SplitCsvGrid(instructionRawText.text);
+        //DebugOutputGrid(grid);
+    }
 
-		// Calculate size of instruction window
-        instructionBook.width = (itemsSlotWidth + itemsSlotsPadding) * instructionColsCount + itemsSlotsPadding;
-        instructionBook.height = (itemsSlotHeight + itemsSlotsPadding) * instructionRowsCount + itemsSlotsPadding;
-
-		// Draw background
-		GUI.Box(instructionBook, "", GUIskin.GetStyle("Inventory Background"));
-
-		// Current GUI input event stored in an Event variable
-		Event currentGUIevent = Event.current;
-
-		// Position and size of each item slot saved in a temp variable used for drawing the slots
-        Rect slotRect = new Rect(instructionBook.x, instructionBook.y, itemsSlotWidth, itemsSlotHeight);
-
-        for (int y = 0; y < instructionRowsCount; y++)
+    static public void DebugOutputGrid(string[,] grid)
+    {
+        string textOutput = "";
+        for (int y = 0; y < grid.GetUpperBound(1); y++)
         {
-            for (int x = 0; x < instructionColsCount; x++)
+            for (int x = 0; x < grid.GetUpperBound(0); x++)
             {
-                // Modify slotRect based on the position of the inventory window and the current item the loop is on
-                slotRect.x = itemsSlotsPadding + instructionBook.x + x * (itemsSlotWidth + itemsSlotsPadding); // column position
-                slotRect.y = itemsSlotsPadding + instructionBook.y + y * (itemsSlotHeight + itemsSlotsPadding); // row position
+                textOutput += grid[x, y];
+                textOutput += "|";
+            }
+            textOutput += "\n";
+        }
+        Debug.Log(textOutput);
+    }
 
-                InstructionItem instItem = instItems[i];
+    public void SplitCsvGrid(string csvText)
+    {
+        string[] lines = csvText.Split("\n"[0]);
 
-                GUI.Box(slotRect, "", GUIskin.GetStyle("Box"));
+        //Debug.Log("lines[0] +" + lines[0]);
+        //Debug.Log("lines[1] +" + lines[1]);
+        //Debug.Log("lines[2] +" + lines[2]);
 
-                // Does slot have a name in it?
-                if (instItem.itemName != null)
+        column1 = new List<string>();
+        column2 = new List<string>();
+        column3_1 = new List<string>();
+        column3_2 = new List<string>();
+
+        string[] splitted = new string[3];
+        string tmpString1 = "";
+        string tmpString2 = "";
+
+        for (int y = 0; y < lines.Length - 1; y++)
+        {
+            splitted = lines[y].Split(","[0]);
+            
+            if (splitted[0].Substring(0, 3).Equals("1. ") ||
+                splitted[0].Substring(0, 3).Equals("2. ") ||
+                splitted[0].Substring(0, 3).Equals("3. "))
+            {
+                column1.Add(splitted[0]);
+                column3_1.Add(splitted[1].Substring(1)); // removing "/"
+            }
+            else if (splitted[0].Substring(0, 2).Equals("1.") ||
+                splitted[0].Substring(0, 2).Equals("2.") ||
+                splitted[0].Substring(0, 2).Equals("3."))
+            {
+                bool flag = false;
+                List<string> tmpList1 = new List<string>();
+                List<string> tmpList2 = new List<string>();
+
+                for (int i = 0; i < splitted.Length; i++)
                 {
-                    // Yes, draw the icon
-                    if (instItem.itemIcon != null)
+                    if (splitted[i].Contains("/"))
                     {
-                        GUI.DrawTexture(slotRect, instItem.itemIcon);
+                        splitted[i] = splitted[i].Substring(1); // removing "/"
+                        flag = true;
                     }
 
-                    // Is mouse position within the slot?
-                    if (slotRect.Contains(Event.current.mousePosition))
+                    if (!flag) // store stuff before "/" into tmpArray1
                     {
-                        instructionItemDetailsText = CreateItemDetails(instItem);
-                        showInstructionItemDetails = true;
+                        tmpList1.Add(splitted[i]);
                     }
-
-                    if (instructionItemDetailsText == "")
-                        showInstructionItemDetails = false;
+                    else // store stuff after "/" into tmpArray2
+                    {
+                        tmpList2.Add(splitted[i]);
+                    }
                 }
-                i++;
+                tmpString1 = Concatenate(tmpList1);
+                tmpString2 = Concatenate(tmpList2);
+                column2.Add(tmpString1);
+                column3_2.Add(tmpString2);
             }
         }
 
-        int headerWidth = 220;
-        int headerHeight = 40;
-        Rect instructionHeader = new Rect(instructionBook.x + instructionBook.width/2 - headerWidth/2, instructionBook.y - itemsSlotHeight/2, headerWidth, headerHeight);
-        GUI.Label(instructionHeader, "Instruction Book ", GUIskin.GetStyle("Inventory Empty Slot"));
+        /*** For Debug ***/
+        //int m = 0;
+        //foreach (string oh in column1)
+        //{
+        //    Debug.Log("column1[" + m + "] = " + oh);
+        //    m++;
+        //}
+        //m = 0;
+        //foreach (string oh in column2)
+        //{
+        //    Debug.Log("column2[" + m + "] = " + oh);
+        //    m++;
+        //}
+        //m = 0;
+        //foreach (string oh in column3_2)
+        //{
+        //    Debug.Log("column3_2[" + m + "] = " + oh);
+        //    m++;
+        //}
     }
 
-    void DrawInstructionDetails()
+    string Concatenate(List<string> splitted)
     {
-        //if (Event.current.mousePosition.x+10+300 < 'ScreenWidth') // currently working by Takahide : trying to make the box inside the screen
-        float tooltipHeight = GUIskin.GetStyle("Inventory Tooltip").CalcHeight(new GUIContent(instructionItemDetailsText), 200);
-        GUI.Box(new Rect(Event.current.mousePosition.x + 10, Event.current.mousePosition.y, 300, tooltipHeight), instructionItemDetailsText, GUIskin.GetStyle("Inventory Tooltip"));
+        string outcome = "";
+
+        if (splitted[0].Substring(splitted[0].Length - 1, 1).Equals("\""))
+        {
+            if (splitted.Count > 1)
+            {
+                outcome = splitted[0].Substring(0, splitted[0].Length - 1) + ", " + Concatenate(CutArrayByOne(splitted)).Substring(1); // splitted[1].Substring(1, splitted[1].Length - 1);
+            }
+        }
+        else
+        {
+            outcome = outcome + splitted[0];
+        }
+
+        return outcome;
     }
 
-    private string CreateItemDetails(InstructionItem instItem)
+    List<string> CutArrayByOne(List<string> tmp)
     {
-        instructionItemDetailsText = "";
-        instructionItemDetailsText += "<color=#b8c7ff><b>" + instItem.itemName + "</b></color>\n\n" + instItem.itemDescription;
-        return instructionItemDetailsText;
+        List<string> array = new List<string>();
+
+        for (int i = 1; i < tmp.Count; i++)
+        {
+            array.Add(tmp[i]);
+        }
+
+        return array;
+    }
+
+    void SetActiveSubMenu(List<GameObject> menus, int alpha)
+    {
+        foreach(GameObject menu in menus)
+        {
+            menu.GetComponent<CanvasGroup>().alpha = alpha;
+        }
+    }
+    
+    void MoveSelectionBox()
+    {
+        /*** ***/
+        if (mainNthRow == 0)
+        {
+            numRowsSub = numRows1;
+            subMenu.Clear();
+            subMenu.AddRange(subMenu1);
+        }
+        else if (mainNthRow == 1)
+        {
+            numRowsSub = numRows2;
+            subMenu.Clear();
+            subMenu.AddRange(subMenu2);
+        }
+        else if (mainNthRow == 2)
+        {
+            numRowsSub = numRows3;
+            subMenu.Clear();
+            subMenu.AddRange(subMenu3);
+        }
+
+        if (isOnMainMenu)
+        {
+            instructionDetailText.GetComponent<Text>().text = column3_1[mainNthRow];
+        }
+        else
+        {
+            if (mainNthRow == 0)
+            {
+                instructionDetailText.GetComponent<Text>().text = column3_2[subNthRow];
+            }
+            else if (mainNthRow == 1)
+            {
+                instructionDetailText.GetComponent<Text>().text = column3_2[subNthRow + numRows1];
+            }
+            else if (mainNthRow == 2)
+            {
+                instructionDetailText.GetComponent<Text>().text = column3_2[subNthRow + numRows1 + numRows2];
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if (isOnMainMenu)
+            {
+                if (mainNthRow > 0)
+                {
+                    mainNthRow--;
+                    MoveMenuBoxes(mainMenu, -1);
+                    CheckWhichSubMenu();
+                }
+            }
+            else
+            {
+                if (subNthRow > 0)
+                {
+                    subNthRow--;
+                    MoveMenuBoxes(subMenu, -1);
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (isOnMainMenu)
+            {
+                if (mainNthRow < numRowsMain - 1)
+                {
+                    mainNthRow++;
+                    MoveMenuBoxes(mainMenu, 1);
+                    CheckWhichSubMenu();
+                }
+            }
+            else
+            {
+                if (subNthRow < numRowsSub - 1)
+                {
+                    subNthRow++;
+                    MoveMenuBoxes(subMenu, 1);
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (isOnMainMenu)
+            {
+                isOnMainMenu = false;
+                selectionBoxRect.localPosition = instructionRect.localPosition + new Vector3(slotMainPaddingLeft + slotWidth * 1.5f - slotWidth / 2, Screen.height / 2 + -slotMainPaddingTop + slotHeight / 2);
+                subNthRow = 0;
+                MoveMenuBoxesDedfaultPosition();
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (!isOnMainMenu)
+            {
+                isOnMainMenu = true;
+                selectionBoxRect.localPosition = instructionRect.localPosition + new Vector3(slotMainPaddingLeft - slotWidth / 2, Screen.height / 2 + -slotMainPaddingTop + slotHeight / 2);
+                subNthRow = 0;
+                MoveMenuBoxesDedfaultPosition();
+            }
+        }
+    }
+
+    void CheckWhichSubMenu()
+    {
+        if (mainNthRow == 0)
+        {
+            SetActiveSubMenu(subMenu1, 1);
+            SetActiveSubMenu(subMenu2, 0);
+            SetActiveSubMenu(subMenu3, 0);
+        }
+        else if (mainNthRow == 1)
+        {
+            SetActiveSubMenu(subMenu1, 0);
+            SetActiveSubMenu(subMenu2, 1);
+            SetActiveSubMenu(subMenu3, 0);
+        }
+        else if (mainNthRow == 2)
+        {
+            SetActiveSubMenu(subMenu1, 0);
+            SetActiveSubMenu(subMenu2, 0);
+            SetActiveSubMenu(subMenu3, 1);
+        }
+    }
+
+    void DrawSelectionBox(int row, int column)
+    {
+        selectionBoxRect = selectionBox.GetComponent<RectTransform>();
+
+        selectionBox.name = "SelectionBoxForInstruction";
+        selectionBox.transform.SetParent(this.transform);
+        selectionBox.transform.localScale = new Vector3(1, 1, 1);
+
+        GameObject instructionSlot = GameObject.Find("InstructionSlot_" + row + "_" + column);
+
+        selectionBoxRect.localPosition = new Vector3(
+            instructionSlot.transform.localPosition.x - instructionSlot.GetComponent<RectTransform>().sizeDelta.x / 2,
+            instructionSlot.transform.localPosition.y + instructionSlot.GetComponent<RectTransform>().sizeDelta.y / 2);
+        selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, slotWidth);
+        selectionBoxRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, slotHeight);
+    }
+
+    void MoveMenuBoxes(List<GameObject> menus, int direction)
+    {
+        foreach (GameObject menu in menus)
+        {
+            menu.transform.localPosition = menu.transform.localPosition + new Vector3(0, slotMainPaddingTop * direction);
+        }
+    }
+
+    void MoveMenuBoxesDedfaultPosition()
+    {
+        int k = 0;
+
+        foreach (GameObject menu in subMenu)
+        {
+            menu.transform.localPosition = instructionRect.localPosition + new Vector3(slotMainPaddingLeft + slotWidth * 1.5f, Screen.height / 2 + -slotMainPaddingTop * (k + 1));
+            k++;
+        }
     }
 }
