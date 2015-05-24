@@ -17,8 +17,16 @@ public class Deployable : MonoBehaviour {
 	private Color color;
 
 	private bool canDeploy;
+	private bool sameModuleFlag;
 
 	private AudioController audioController;
+
+	private GameObject[] temp;
+
+	void ChangeSameModuleFlag(bool changeTo)
+	{
+		sameModuleFlag = changeTo;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -29,6 +37,7 @@ public class Deployable : MonoBehaviour {
 		color = new Color (0.5f, 0, 0, 0.7f);	// record the original sprite color
 		spriteRenderer.color = color;
 		detector = gameObject.GetComponentsInChildren<Detector>();
+		temp = new GameObject[detector.Length];
 
 		maxLength = 1.2f;
 
@@ -40,6 +49,7 @@ public class Deployable : MonoBehaviour {
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 
 		canDeploy = false;
+		sameModuleFlag = false;
 	}
 	
 	// Update is called once per frame
@@ -64,6 +74,8 @@ public class Deployable : MonoBehaviour {
 			gameObject.transform.Rotate(new Vector3(0, 0, 90));
 		}
 
+		for (int i = 0; i < detector.Length; i++)
+		{ temp[i] = detector[i].connectedTo;}
 		// See if any snap trigger is matched
 		for (int i = 0; i < detector.Length; i++) 
 		{
@@ -72,15 +84,62 @@ public class Deployable : MonoBehaviour {
 				matchedPoint = i;
 				break;
 			} 
-			else { matchedPoint = -1;}
+			else 
+			{
+				matchedPoint = -1;
+			}
 		}
 
-		if (matchedPoint != -1 && detector[matchedPoint].relation.x < maxLength && detector[matchedPoint].relation.y < maxLength) 
+		if (!sameModuleFlag) 
+		{
+			if (matchedPoint != -1)
+			{
+				Debug.Log("0");
+				for (int m = 0; m < detector.Length; m++) 
+				{
+					if (detector[m].connectedTo != null) 
+					{
+						Debug.Log("1");
+						for (int n = m + 1; n < detector.Length; n++)
+						{
+							Debug.Log("2");
+							if (temp[n] != null)
+							{
+								Debug.Log("3 " + "m:" + detector[m].connectedTo + " n:" + temp[n]);
+								if (detector[m].connectedTo == temp[n])
+								{ 
+									Debug.Log("4");
+									matchedPoint = -1;
+									sameModuleFlag = true;
+									break;
+								}
+							}
+						}
+						if (matchedPoint == -1)
+						{
+							Debug.Log("5");
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+
+		if (matchedPoint != -1 && !sameModuleFlag) 
 		{
 			gameObject.transform.position += detector[matchedPoint].relation;	// Snap!
-			canDeploy = true;
+			if (Mathf.Abs(gameObject.transform.localPosition.x) < maxLength && Mathf.Abs(gameObject.transform.localPosition.y) < maxLength)
+			{ canDeploy = true;}
+			else
+			{ 
+				canDeploy = false;
+				spriteRenderer.color = color;
+			}
+
 			// Change the sprite color to green
-			if (deployable && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) 
+			if (deployable && canDeploy && spriteRenderer.color != new Color(0, 0.5f, 0, 0.7f)) 
 			{
 				spriteRenderer.color = new Color (0, 0.5f, 0, 0.7f);
 			}
@@ -91,6 +150,8 @@ public class Deployable : MonoBehaviour {
 			canDeploy = false;
 		}
 
+
+
 		// Unsnap if on-player-blueprint get too far away from origin(player)
 		if (Mathf.Abs(gameObject.transform.localPosition.x) > maxLength || Mathf.Abs(gameObject.transform.localPosition.y) > maxLength) {
 			gameObject.transform.localPosition = new Vector3(0, 0, 0);
@@ -100,9 +161,8 @@ public class Deployable : MonoBehaviour {
 	// Cannot deploy when blocked
 	void OnTriggerStay2D (Collider2D other) {
 		if (other.gameObject.tag != "FinalTextures" && other.gameObject.tag != "Footprint" && !other.gameObject.name.Contains("PCG") && other.gameObject.tag != "Wall" && 
-		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point") && other.gameObject.tag == "Modules")
+		    other.gameObject.tag != "InitialTerrainTrigger" && !other.gameObject.name.Contains("Point") && other.gameObject.name.Contains("Modules"))
 		{
-			Debug.Log(other.gameObject);
 			deployable = false;
 			spriteRenderer.color = new Color (0.5f, 0, 0, 0.7f);;
 		}
@@ -120,5 +180,7 @@ public class Deployable : MonoBehaviour {
 		for (int i = 0; i < detector.Length; i++) 
 			detector[i].matched = false;
         Building.isDeploying = false;
+
+		canDeploy = false;
 	}
 }

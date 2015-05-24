@@ -70,8 +70,8 @@ public class Airlock : MonoBehaviour {
 		if (other.gameObject.tag == "Player") {
             if (playerEnterCheckFlag)
             {
-                x = playerController.x;
-                y = playerController.y;
+				x = mainPlayer.GetComponent<Rigidbody2D>().velocity.x;
+				y = mainPlayer.GetComponent<Rigidbody2D>().velocity.y;
                 playerEnterCheckFlag = false;
             }
         }
@@ -80,17 +80,32 @@ public class Airlock : MonoBehaviour {
 	void OnTriggerExit2D (Collider2D other) {
 		if (other.gameObject.tag == "Player") {
 			// should not show indoor if player enters and exits the trigger in a "z" route
-			if (xEnter) {
+			if (xEnter) 
+			{
 				// should not show indoor if player enters and exits the trigger in same direction
-                if (playerController.x == x)
-                {
+				if (mainPlayer.GetComponent<Rigidbody2D>().velocity.x * x > 0)
+				{
+					if (gameObject.transform.root.gameObject.tag == "HabitatModule")
+					{
+						gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+					}
+					else 
+					{
+						gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+					}
+				}
+			} 
+			else if (mainPlayer.GetComponent<Rigidbody2D>().velocity.y * y > 0)
+			{
+				if (gameObject.transform.root.gameObject.tag == "HabitatModule")
+				{
+					gameObject.SendMessageUpwards("HabitatModuleDoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
+				}
+				else 
+				{
 					gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-                }
-            }
-            else if (playerController.y == y)
-            {
-				gameObject.SendMessageUpwards("DoorWayTriggered", isDoorway, SendMessageOptions.RequireReceiver);
-            }
+				}
+			}
             playerEnterCheckFlag = true;
 		}
     }

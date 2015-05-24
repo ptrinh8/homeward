@@ -33,6 +33,8 @@ public class Detector : MonoBehaviour {
 			matched = false;
 
 			connectedTo = null;
+
+			gameObject.SendMessageUpwards("ChangeSameModuleFlag", false, SendMessageOptions.RequireReceiver);
 		}
 	}
 }

@@ -23,10 +23,6 @@ public class Enterable : MonoBehaviour {
 			xEnter = !xEnter;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	}
-
 	void OnTriggerEnter2D (Collider2D other) {
 		// Record the direction when player enters the trigger
 		if (other.gameObject.tag == "Player") {
