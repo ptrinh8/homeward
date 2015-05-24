@@ -7,6 +7,12 @@ public class AirPanel : MonoBehaviour {
 
     private KeyCode airLockInteractKey = KeyCode.F;
     private bool nearAirPenalFlag = false;
+	private PlayerController playerController;
+
+	void Start()
+	{
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
+	}
 
     void Update()
     {
@@ -14,6 +20,7 @@ public class AirPanel : MonoBehaviour {
         {
             if (Input.GetKeyDown(airLockInteractKey))
             {
+				playerController.PlayButtonPressAnimation();
                 gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
             }
         }

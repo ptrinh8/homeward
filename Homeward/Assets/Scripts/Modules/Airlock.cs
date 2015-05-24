@@ -155,7 +155,9 @@ public class Airlock : MonoBehaviour {
                             if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
                             {
                                 if (Input.GetKeyDown(manuallyOperateKey))
+								{
                                     gameObject.SendMessageUpwards("AirModuleActivite");
+								}
                             }
                         }
                         else
@@ -177,7 +179,9 @@ public class Airlock : MonoBehaviour {
                             if (moduleControl.isOn && moduleControl.IsPowered && !moduleControl.IsBroken)
                             {
                                 if (Input.GetKeyDown(manuallyOperateKey))
+								{
                                     gameObject.SendMessageUpwards("AirModuleActivite");
+								}
                             }
                         }
                         else

@@ -1485,6 +1485,11 @@ public class PlayerController : MonoBehaviour
 		anim.SetTrigger("Building");
 	}
 
+	public void PlayButtonPressAnimation()
+	{
+		anim.SetTrigger("ButtonPress");
+	}
+
 	private void CheckPlayerFacing()
 	{
 		if (Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.S) && !Input.GetKey (KeyCode.A))
@@ -1697,6 +1702,11 @@ public class PlayerController : MonoBehaviour
 	private void BuildingSound()
 	{
 		audioController.PlayBuildingSound(2);
+	}
+
+	private void ButtonPressSound()
+	{
+		audioController.PlayButtonPress();
 	}
 
     void Quit()
