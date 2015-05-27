@@ -210,18 +210,6 @@ public class Mining : MonoBehaviour
 
     public void Mine(int numberOfMinerals)
 	{
-		if (numberOfMinerals == 0)
-		{
-			rockParticleSystem.Emit (3);
-		}
-		else if (numberOfMinerals == 1)
-		{
-			rockParticleSystem.Emit (6);
-		}
-		else if (numberOfMinerals == 2)
-		{
-			rockParticleSystem.Emit (10);
-		}
 		Debug.Log ("mining");
 		MineSupportFunction(numberOfMinerals);
 		playerController.PlayMiningAnimation();
@@ -268,5 +256,11 @@ public class Mining : MonoBehaviour
             SetMiningBarInvisible();
         }
     }
+
+	public void PlayParticles()
+	{
+		Debug.Log ("playing");
+		rockParticleSystem.Emit (5);
+	}
 
 }

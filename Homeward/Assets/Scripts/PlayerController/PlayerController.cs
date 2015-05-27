@@ -92,6 +92,8 @@ public class PlayerController : MonoBehaviour
 
 	public bool isNearMachine = false;
 
+	private AirPanel airPanel;
+
     // Taylor
     public float CurrentStamina
     {
@@ -154,6 +156,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector]
     public float x, y;
 
+	private bool addedFirstTools;
     public static bool holdingRepairTool;
     public static bool holdingMiningTool;
     public static bool holdingBuildingTool;
@@ -487,7 +490,7 @@ public class PlayerController : MonoBehaviour
         moduleDescription.GetComponent<CanvasGroup>().alpha = 0;
 
         songLength = 120f;
-        songSilenceLength = 5f;
+        songSilenceLength = 50f;
         songTimer = 0f;
         songSilenceTimer = 120f;
         isSongQueued = false;
@@ -531,10 +534,26 @@ public class PlayerController : MonoBehaviour
         //rainParticleSystem.Play();
 
 		anim = GetComponent<Animator>();
+
+		addedFirstTools = false;
+
+
     }
 
     void Update()
     {
+		if (addedFirstTools == false)
+		{
+			Debug.Log ("first tools");
+			Item tool = GameObject.Find("BuildingTool").GetComponent<Item>();
+			playerInventory.GetComponent<Inventory>().AddItem(tool);
+			tool = GameObject.Find("MiningTool").GetComponent<Item>();
+			playerInventory.GetComponent<Inventory>().AddItem(tool);
+			tool = GameObject.Find("RepairingTool").GetComponent<Item>();
+			playerInventory.GetComponent<Inventory>().AddItem(tool);
+			addedFirstTools = true;
+		}
+
 		if (miningBarFlashing == true)
 		{
 			miningBarFlashTimer += Time.deltaTime;
@@ -1382,6 +1401,11 @@ public class PlayerController : MonoBehaviour
 		{
 			isNearMachine = true;
 		}
+
+		if (other.gameObject.tag == "AirPanel")
+		{
+			airPanel = other.GetComponent<AirPanel>();
+		}
 	}
 
 	void OnTriggerStay2D(Collider2D other)
@@ -1707,6 +1731,19 @@ public class PlayerController : MonoBehaviour
 	private void ButtonPressSound()
 	{
 		audioController.PlayButtonPress();
+	}
+
+	private void StartAirPanel()
+	{
+		airPanel.ActivateAirPanel();
+	}
+
+	private void PlayMiningParticles()
+	{
+		if (this.nearestMineral != null)
+		{
+			nearestMineral.PlayParticles();
+		}
 	}
 
     void Quit()

@@ -34,6 +34,8 @@ public class UIInventory : MonoBehaviour
 
 	private PlayerController player;
 
+	private AudioController audioController;
+
 	public Sprite miningToolEquippedSprite;
 	public Sprite repairingToolEquippedSprite;
 	public Sprite buildingToolEquippedSprite;
@@ -59,6 +61,7 @@ public class UIInventory : MonoBehaviour
         playerInventorySlots = playerInventory.GetComponent<Inventory>().slots;
         selectionBoxSize = playerInventory.GetComponent<Inventory>().slotSize + 3.0f;
 		player = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 
     }
 
@@ -313,18 +316,21 @@ public class UIInventory : MonoBehaviour
 
 						if (item.itemName == ItemName.MiningTool && PlayerController.holdingMiningTool == false)
 						{
+							audioController.PlayToolEquipSound();
 							PlayerController.holdingMiningTool = true;
 							PlayerController.holdingRepairTool = false;
 							PlayerController.holdingBuildingTool = false;
 						}
 						else if (item.itemName == ItemName.RepairingTool && PlayerController.holdingRepairTool == false)
 						{
+							audioController.PlayToolEquipSound();
 							PlayerController.holdingMiningTool = false;
 							PlayerController.holdingRepairTool = true;
 							PlayerController.holdingBuildingTool = false;
 						}
 						else if (item.itemName == ItemName.BuildingTool && PlayerController.holdingBuildingTool == false)
 						{
+							audioController.PlayToolEquipSound();
 							PlayerController.holdingMiningTool = false;
 							PlayerController.holdingBuildingTool = true;
 							PlayerController.holdingRepairTool = false;

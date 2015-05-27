@@ -21,7 +21,6 @@ public class AirPanel : MonoBehaviour {
             if (Input.GetKeyDown(airLockInteractKey))
             {
 				playerController.PlayButtonPressAnimation();
-                gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
             }
         }
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
@@ -45,4 +44,9 @@ public class AirPanel : MonoBehaviour {
             PlayerController.toolUsingEnable = true;
         }
     }
+
+	public void ActivateAirPanel()
+	{
+		gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
+	}
 }

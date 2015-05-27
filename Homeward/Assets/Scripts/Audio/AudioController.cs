@@ -23,6 +23,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance depositBoxOpen;
 	private FMOD.Studio.EventInstance inventoryOpen;
 	private FMOD.Studio.EventInstance inventoryClose;
+	private FMOD.Studio.EventInstance toolEquip;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -44,6 +45,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance depositBoxOpenSelector;
 	private FMOD.Studio.ParameterInstance inventoryOpenSelector;
 	private FMOD.Studio.ParameterInstance inventoryCloseSelector;
+	private FMOD.Studio.ParameterInstance toolEquipSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -59,6 +61,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance depositBoxOpenInsideOutside;
 	private FMOD.Studio.ParameterInstance inventoryOpenInsideOutside;
 	private FMOD.Studio.ParameterInstance inventoryCloseInsideOutside;
+	private FMOD.Studio.ParameterInstance toolEquipInsideOutside;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
@@ -73,6 +76,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance depositBoxOpenAirlockPressure;
 	private FMOD.Studio.ParameterInstance inventoryOpenAirlockPressure;
 	private FMOD.Studio.ParameterInstance inventoryCloseAirlockPressure;
+	private FMOD.Studio.ParameterInstance toolEquipAirlockPressure;
 
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
@@ -713,6 +717,18 @@ public class AudioController : MonoBehaviour {
 			building.start();
 			building.release();
 		}
+	}
+
+	public void PlayToolEquipSound()
+	{
+		toolEquip = FMOD_StudioSystem.instance.GetEvent("event:/ToolEquip");
+		toolEquip.getParameter("Selector", out toolEquipSelector);
+		toolEquip.getParameter("InsideOutside", out toolEquipInsideOutside);
+		toolEquip.getParameter("AirlockPressure", out toolEquipAirlockPressure);
+		toolEquipSelector.setValue(Random.Range (1f, 6f));
+		toolEquipAirlockPressure.setValue(controllerSoundPressure);
+		toolEquip.start();
+		toolEquip.release();
 	}
 	
 	public void RefineryMachineControl(int controlNumber)

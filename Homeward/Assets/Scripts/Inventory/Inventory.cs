@@ -144,41 +144,34 @@ public class Inventory : MonoBehaviour {
    
     public bool AddItem(Item item)
     {
-        if (item.maxSize == 1)
+        if (allSlots == null)
+        {
+            return false;
+        }
+
+        foreach (GameObject slot in allSlots)
+		{
+            Slot tmp = slot.GetComponent<Slot>();
+
+            if (!tmp.IsEmpty)
+            {
+                if (tmp.CurrentItem.itemName == item.itemName && tmp.IsAvailable)
+                {
+					Debug.Log ("adding");
+                    tmp.AddItem(item);
+                    return true;
+                }
+                //else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
+                //{
+                //    return false;
+                //}
+            }
+        }
+
+        if (emptySlots > 0)
         {
             PlaceEmpty(item);
-            return true;
-        }
-        else
-        {
-            if (allSlots == null)
-            {
-                return false;
-            }
-
-            foreach (GameObject slot in allSlots)
-			{
-                Slot tmp = slot.GetComponent<Slot>();
-
-                if (!tmp.IsEmpty)
-                {
-                    if (tmp.CurrentItem.itemName == item.itemName && tmp.IsAvailable)
-                    {
-                        tmp.AddItem(item);
-                        return true;
-                    }
-                    //else if (tmp.CurrentItem.itemName == item.itemName && !tmp.IsAvailable)
-                    //{
-                    //    return false;
-                    //}
-                }
-            }
-
-            if (emptySlots > 0)
-            {
-                PlaceEmpty(item);
-				return true;
-            }
+			return true;
         }
 
         return false;
