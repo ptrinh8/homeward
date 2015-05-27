@@ -732,7 +732,14 @@ public class PlayerController : MonoBehaviour
 									Debug.Log ("refining working");
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
-										Debug.Log ("inventory open");
+										if (showPlayerInventory == true)
+										{
+											audioController.PlayDepositBox(1);
+										}
+										else
+										{
+											audioController.PlayDepositBox(0);
+										}
 										showPlayerInventory = !showPlayerInventory;
 										refining.showPlayerAndModuleInventory = showPlayerInventory;
 									}
