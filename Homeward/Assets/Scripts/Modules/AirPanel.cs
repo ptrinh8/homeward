@@ -14,6 +14,7 @@ public class AirPanel : MonoBehaviour {
         {
             if (Input.GetKeyDown(airLockInteractKey))
             {
+				Debug.Log("Entered");
                 gameObject.SendMessageUpwards("AirModuleActivite", SendMessageOptions.RequireReceiver);
             }
         }
@@ -22,8 +23,7 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-		Debug.Log ("sup");
-        if (other.transform.root.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             nearAirPenalFlag = true;
             PlayerController.toolUsingEnable = false;
