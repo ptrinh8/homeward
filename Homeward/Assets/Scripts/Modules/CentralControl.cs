@@ -84,12 +84,14 @@ public class CentralControl : MonoBehaviour {
 
 		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
+
+
 	}
 
     void InitializeRefineryModule()
     {
         if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 8.64f, transform.position.y, 0), transform.rotation) as GameObject;
+            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 9.3f, transform.position.y + 0.025f, 0), transform.rotation) as GameObject;
         else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
             refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 8.64f, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 180)
@@ -104,7 +106,7 @@ public class CentralControl : MonoBehaviour {
     void InitializeAirlockModule()
     {
         if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 14.4f, transform.position.y, 0), transform.rotation) as GameObject;
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 18.6f, transform.position.y + 0.05f, 0), transform.rotation) as GameObject;
         else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
             airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y + 14.4f, 0), transform.rotation) as GameObject;
         else if (transform.rotation.eulerAngles.z == 180)
@@ -126,6 +128,7 @@ public class CentralControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
 		if (isEnterOutpost) {
 				ShowInside();
 		}
@@ -213,10 +216,9 @@ public class CentralControl : MonoBehaviour {
 			foreach (GameObject connection in locals[front].GetComponent<LocalControl>().connections) {
                 if (connection.tag == "HabitatModule")
                 {
-                    //Debug.Log(locals[front]);
                     if (!isBroken)
                     {
-                        powerInGeneral += 1;
+                        powerInGeneral += 2;
                     }
                 }
                 else 

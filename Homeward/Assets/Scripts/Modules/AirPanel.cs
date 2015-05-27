@@ -21,6 +21,7 @@ public class AirPanel : MonoBehaviour {
             if (Input.GetKeyDown(airLockInteractKey))
             {
 				playerController.PlayButtonPressAnimation();
+				Debug.Log("Entered");
             }
         }
 		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
@@ -28,8 +29,7 @@ public class AirPanel : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-		Debug.Log ("sup");
-        if (other.transform.root.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player")
         {
             nearAirPenalFlag = true;
             PlayerController.toolUsingEnable = false;

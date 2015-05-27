@@ -1,0 +1,103 @@
+fileFormatVersion: 2
+guid: f74de699c466ea84f91ce61af9f094d4
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Double Module 01
+    21300002: Double Module Exteriors_0
+    21300004: Double Module 02
+    21300006: Double Module 03
+    21300008: Double Module 04
+    21300010: Double Module 05
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 4096
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Double Module 01
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 90
+        width: 471
+        height: 328
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Double Module 02
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 90
+        width: 471
+        height: 328
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Double Module 03
+      rect:
+        serializedVersion: 2
+        x: 1041
+        y: 91
+        width: 471
+        height: 328
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Double Module 04
+      rect:
+        serializedVersion: 2
+        x: 1552
+        y: 92
+        width: 471
+        height: 328
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Double Module 05
+      rect:
+        serializedVersion: 2
+        x: 2065
+        y: 92
+        width: 471
+        height: 328
+      alignment: 0
+      pivot: {x: .5, y: .5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 

@@ -8,19 +8,7 @@ public class PowerIndicatorLight : MonoBehaviour {
 
 	void Update()
 	{
-		if (transform.root.gameObject.GetComponent<LocalControl>().isOn)
-		{
-			gameObject.GetComponent<SpriteRenderer>().sprite = lightOn;
-		}
-		else
-		{
-			gameObject.GetComponent<SpriteRenderer>().sprite = lightOff;
-		}
-	}
-
-	void LightTriggered(bool flag)
-	{
-		if (flag)
+		if (transform.root.gameObject.GetComponent<LocalControl>().PowerIndicator > 0 && transform.root.gameObject.GetComponent<LocalControl>().isOn)
 		{
 			gameObject.GetComponent<SpriteRenderer>().sprite = lightOn;
 		}

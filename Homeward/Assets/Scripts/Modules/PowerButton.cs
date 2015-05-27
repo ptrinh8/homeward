@@ -6,6 +6,11 @@ public class PowerButton : MonoBehaviour {
 	public Sprite powerButtonOn, powerButtonOff;
 	private KeyCode turnKey = KeyCode.F;
 
+	void Update()
+	{
+		gameObject.GetComponent<SpriteRenderer>().material = transform.root.gameObject.GetComponent<SpriteRenderer>().material;
+	}
+
 	void OnTriggerStay2D(Collider2D other)
 	{
 		if (other.gameObject.tag == "Player")
