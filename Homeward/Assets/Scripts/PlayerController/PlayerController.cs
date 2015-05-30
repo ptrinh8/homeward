@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour
     public float miningTimer;	        // record mining time
     public static bool isRepairing;
     public GameObject textFinder;
+	public bool miningModeActivated = false;
+	private bool miningAble = false;
+	private float rockTimer;
+	private float rockTime;
 
     private float zoomDuration = 1.0f;
     private float zoomElapsed = 0.0f;
@@ -591,6 +595,19 @@ public class PlayerController : MonoBehaviour
 				playerParticleSystem.startColor = new Color(tileColor.r + .3f, tileColor.g + .3f, tileColor.b);
 			}
             
+			if (miningModeActivated == true)
+			{
+				rockTime += Time.deltaTime;
+				if (rockTime >= rockTimer + .5f)
+				{
+					MineReset();
+				}
+				else if (rockTime >= rockTimer)
+				{
+					miningAble = true;
+					anim.SetBool("MiningReady", true);
+				}
+			}
 
             if (mainCamera.enabled)
             {
@@ -798,8 +815,23 @@ public class PlayerController : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.F))
                     {
-                        if (holdingMiningTool == true)
+                        if (holdingMiningTool == true && nearestMineral != null)
                         {
+							if (miningModeActivated == true)
+							{
+								if (miningAble == true)
+								{
+									nearestMineral.Mine(1);
+									MineReset();
+								}
+								Debug.Log (miningModeActivated);
+							}
+							else
+							{
+								miningModeActivated = true;
+								Debug.Log (miningModeActivated);
+							}
+							/*
 							if (miningBarActive == true)
 							{
 								if (0.45f < miningBarCurrentPosition && miningBarCurrentPosition < 0.55f)
@@ -833,7 +865,7 @@ public class PlayerController : MonoBehaviour
 								//addition = 1.0f;
 								nearestMineral.SetMiningBarVisible();
 								miningBarActive = true;
-							}
+							}*/
                         }
                     }
                     
@@ -1751,6 +1783,14 @@ public class PlayerController : MonoBehaviour
 		{
 			nearestMineral.PlayParticles();
 		}
+	}
+
+	private void MineReset()
+	{
+		rockTimer = Random.Range(2f, 7f);
+		rockTime = 0;
+		miningAble = false;
+		anim.SetBool("MiningReady", false);
 	}
 
     void Quit()

@@ -91,7 +91,11 @@ public class Mining : MonoBehaviour
 
     private void StartDestoryMineCoroutine()
     {
-        if ((randomMineralsQuantity == 0) && !animation.isPlaying && gameObject) { StartCoroutine(DestroyMine()); }
+        if ((randomMineralsQuantity == 0) && !animation.isPlaying && gameObject) 
+		{ 
+			playerController.miningModeActivated = false;
+			StartCoroutine(DestroyMine()); 
+		}
     }
 
     private void MineralsValidations()
