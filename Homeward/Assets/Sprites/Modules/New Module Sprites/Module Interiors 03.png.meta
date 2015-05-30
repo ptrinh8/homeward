@@ -6,6 +6,7 @@ TextureImporter:
     21300002: Double Module Interior
     21300004: Module Interiors 03_0
     21300006: Single Module Interior
+    21300008: Four-doorway Module Interior
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -47,7 +48,7 @@ TextureImporter:
   buildTargetSettings: []
   spriteSheet:
     sprites:
-    - name: Four-way Module Interior
+    - name: Four-doorway Module Interior
       rect:
         serializedVersion: 2
         x: 0
