@@ -822,7 +822,7 @@ public class PlayerController : MonoBehaviour
 								if (miningAble == true)
 								{
 									nearestMineral.Mine(1);
-									MineReset();
+									rockTime = 0f;
 								}
 								Debug.Log (miningModeActivated);
 							}
@@ -1787,10 +1787,11 @@ public class PlayerController : MonoBehaviour
 
 	private void MineReset()
 	{
-		rockTimer = Random.Range(2f, 7f);
+		rockTimer = Random.Range(1f, 3f);
 		rockTime = 0;
 		miningAble = false;
 		anim.SetBool("MiningReady", false);
+		anim.SetTrigger("MiningFailed");
 	}
 
     void Quit()
