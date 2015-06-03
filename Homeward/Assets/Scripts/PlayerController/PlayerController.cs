@@ -295,7 +295,7 @@ public class PlayerController : MonoBehaviour
 		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
 	}
 
-    GameObject miningProbe;
+    public GameObject miningProbe;
 	void SetMiningBar()
 	{
 		miningBarBackground = Instantiate(Resources.Load("Mining/Mining Bar Background")) as GameObject;

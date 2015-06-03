@@ -24,6 +24,12 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance inventoryOpen;
 	private FMOD.Studio.EventInstance inventoryClose;
 	private FMOD.Studio.EventInstance toolEquip;
+	private FMOD.Studio.EventInstance healthAlarm;
+	private FMOD.Studio.EventInstance oxygenAlarm;
+	private FMOD.Studio.EventInstance dawnDayTransition;
+	private FMOD.Studio.EventInstance dayDuskTransition;
+	private FMOD.Studio.EventInstance duskNightTransition;
+	private FMOD.Studio.EventInstance nightDawnTransition;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -62,6 +68,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryOpenInsideOutside;
 	private FMOD.Studio.ParameterInstance inventoryCloseInsideOutside;
 	private FMOD.Studio.ParameterInstance toolEquipInsideOutside;
+
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
 	private FMOD.Studio.ParameterInstance rightFootMetalAirlockPressure;
@@ -729,6 +736,34 @@ public class AudioController : MonoBehaviour {
 		toolEquipAirlockPressure.setValue(controllerSoundPressure);
 		toolEquip.start();
 		toolEquip.release();
+	}
+
+	public void PlayDawnDayTransition()
+	{
+		dawnDayTransition = FMOD_StudioSystem.instance.GetEvent("event:/DawnDayTransition");
+		dawnDayTransition.start();
+		dawnDayTransition.release();
+	}
+
+	public void PlayDayDuskTransition()
+	{
+		dayDuskTransition = FMOD_StudioSystem.instance.GetEvent("event:/DayDuskTransition");
+		dayDuskTransition.start();
+		dayDuskTransition.release();
+	}
+
+	public void PlayDuskNightTransition()
+	{
+		duskNightTransition = FMOD_StudioSystem.instance.GetEvent("event:/DuskNightTransition");
+		duskNightTransition.start();
+		duskNightTransition.release();
+	}
+
+	public void PlayNightDawnTransition()
+	{
+		nightDawnTransition = FMOD_StudioSystem.instance.GetEvent("event:/NightDawnTransition");
+		nightDawnTransition.start();
+		nightDawnTransition.release();
 	}
 	
 	public void RefineryMachineControl(int controlNumber)

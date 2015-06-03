@@ -28,6 +28,8 @@ public class MiningProbeController : MonoBehaviour
 	private float miningLooping;
 	private float miningProbeInsideOutsideFloat;
 
+	public bool setFromInventory;
+
 
 
     void Start()
@@ -65,7 +67,7 @@ public class MiningProbeController : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.H) && spawnFlag && CentralControl.isInside == false)
+        if (spawnFlag && CentralControl.isInside == false)
         {
             tiles = GameObject.FindGameObjectsWithTag("FinalTextures");
 
@@ -90,6 +92,7 @@ public class MiningProbeController : MonoBehaviour
 			miningProbeInsideOutsideFloat = 2.0f;
 			miningProbeInsideOutside.setValue(miningProbeInsideOutsideFloat);
 
+			gameObject.transform.position = player.transform.position;
             gameObject.transform.SetParent(player.transform.parent);
             gameObject.renderer.enabled = true;
 

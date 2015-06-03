@@ -311,6 +311,7 @@ public class UIInventory : MonoBehaviour
                     if (GetSlot(slot) != null)
                     {
                         Item item = GetSlot(slot).CheckItem();
+						Debug.Log (item.itemName);
 
 						//Debug.Log (slot.GetComponent<Slot>().isEmpty);
 
@@ -334,6 +335,10 @@ public class UIInventory : MonoBehaviour
 							PlayerController.holdingMiningTool = false;
 							PlayerController.holdingBuildingTool = true;
 							PlayerController.holdingRepairTool = false;
+						}
+						else if (item.itemName == ItemName.MiningProbe)
+						{
+							Instantiate(Resources.Load("Mining/MiningProbe"));
 						}
 						else if (item.itemName != ItemName.BuildingTool && item.itemName != ItemName.RepairingTool && item.itemName != ItemName.MiningTool)
 						{
