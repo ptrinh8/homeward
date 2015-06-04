@@ -411,13 +411,16 @@ public class UIInventory : MonoBehaviour
      * **************************************************************************/
     public void MoveItem(GameObject clicked)
     {
-		Debug.Log ("moving");
         if (from == null)
         {
             if (!clicked.GetComponent<Slot>().IsEmpty)
             {
                 from = clicked.GetComponent<Slot>();
                 from.GetComponent<Image>().color = Color.grey;
+				if (from.CheckItem().itemName == ItemName.Mineral1)
+				{
+					audioController.PlayRockPickupSound();
+				}
 
                 hoverObject = Instantiate(Resources.Load("Inventory/IconPrefab")) as GameObject;
                 hoverObject.GetComponent<Image>().sprite = clicked.GetComponent<Image>().sprite;
@@ -441,6 +444,10 @@ public class UIInventory : MonoBehaviour
 
         if (to != null && from != null)
         {
+			if (from.CheckItem().itemName == ItemName.Mineral1)
+			{
+				audioController.PlayRockPickupSound();
+			}
             if (!to.IsEmpty)
             {
                 if (to.CurrentItem.itemName == from.CurrentItem.itemName)

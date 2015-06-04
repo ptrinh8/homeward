@@ -30,6 +30,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance dayDuskTransition;
 	private FMOD.Studio.EventInstance duskNightTransition;
 	private FMOD.Studio.EventInstance nightDawnTransition;
+	private FMOD.Studio.EventInstance rockPickupSound;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -52,6 +53,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryOpenSelector;
 	private FMOD.Studio.ParameterInstance inventoryCloseSelector;
 	private FMOD.Studio.ParameterInstance toolEquipSelector;
+	private FMOD.Studio.ParameterInstance rockPickupSoundSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -68,6 +70,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryOpenInsideOutside;
 	private FMOD.Studio.ParameterInstance inventoryCloseInsideOutside;
 	private FMOD.Studio.ParameterInstance toolEquipInsideOutside;
+	private FMOD.Studio.ParameterInstance rockPickupSoundInsideOutside;
 
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
@@ -331,12 +334,12 @@ public class AudioController : MonoBehaviour {
 	{
 		if (controlNumber == 1)
 		{
-			Debug.Log ("starting");
+			//Debug.Log ("starting");
 			healthAlarm.start ();
 		}
 		else if (controlNumber == 2)
 		{
-			Debug.Log ("stop");
+			//Debug.Log ("stop");
 			healthAlarm.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 		}
 	}
@@ -345,12 +348,12 @@ public class AudioController : MonoBehaviour {
 	{
 		if (controlNumber == 1)
 		{
-			Debug.Log ("starting");
+			//Debug.Log ("starting");
 			oxygenAlarm.start ();
 		}
 		else if (controlNumber == 2)
 		{
-			Debug.Log ("stop");
+			//Debug.Log ("stop");
 			oxygenAlarm.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
 		}
 	}
@@ -503,13 +506,37 @@ public class AudioController : MonoBehaviour {
 		}
 		else
 		{
-			buttonPress = FMOD_StudioSystem.instance.GetEvent("event:/LeftFootSand");
+			buttonPress = FMOD_StudioSystem.instance.GetEvent("event:/ButtonPress");
 			buttonPress.getParameter("Selector", out buttonPressSelector);
 			buttonPress.getParameter("InsideOutside", out buttonPressInsideOutside);
 			buttonPressSelector.setValue(Random.Range (1f, 7f));
 			buttonPressInsideOutside.setValue(1.75f);
 			buttonPress.start();
 			buttonPress.release();
+		}
+	}
+
+	public void PlayRockPickupSound()
+	{
+		if (CentralControl.isInside == true)
+		{
+			rockPickupSound = FMOD_StudioSystem.instance.GetEvent("event:/RockPickupSound");
+			rockPickupSound.getParameter("Selector", out rockPickupSoundSelector);
+			rockPickupSound.getParameter("InsideOutside", out rockPickupSoundInsideOutside);
+			rockPickupSoundSelector.setValue(Random.Range (1f, 8f));
+			rockPickupSoundInsideOutside.setValue(.5f);
+			rockPickupSound.start();
+			rockPickupSound.release ();
+		}
+		else
+		{
+			rockPickupSound = FMOD_StudioSystem.instance.GetEvent("event:/RockPickupSound");
+			rockPickupSound.getParameter("Selector", out rockPickupSoundSelector);
+			rockPickupSound.getParameter("InsideOutside", out rockPickupSoundInsideOutside);
+			rockPickupSoundSelector.setValue(Random.Range (1f, 8f));
+			rockPickupSoundInsideOutside.setValue(1.75f);
+			rockPickupSound.start();
+			rockPickupSound.release();
 		}
 	}
 
