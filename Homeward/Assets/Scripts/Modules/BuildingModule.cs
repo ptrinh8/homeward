@@ -155,7 +155,7 @@ public class BuildingModule : MonoBehaviour
 		moduleInventory.GetComponent<Inventory>().rows = 1; //tak added 3/11
 		moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
 		showPlayerAndModuleInventory = false;
-		moduleInventory.SetActive(showPlayerAndModuleInventory);
+		moduleInventory.SetActive(true);
 		
 		mainPlayer = GameObject.Find("MainPlayer");
 		refineryModule = gameObject;
@@ -239,8 +239,8 @@ public class BuildingModule : MonoBehaviour
 		if (!addRefinedMineralOnce)
 		{
 			addRefinedMineralOnce = true;
-			Item item = GameObject.Find("Material").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
+			//Item item = GameObject.Find("Material").GetComponent<Item>();
+			//moduleInventory.GetComponent<Inventory>().AddItem(item);
 			//mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
 			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral1);
 			timerReached = false;
@@ -252,12 +252,14 @@ public class BuildingModule : MonoBehaviour
 		}
 		if (showPlayerAndModuleInventory == true)
 		{
-			moduleInventory.SetActive(true);
+			//moduleInventory.SetActive(true);
+			moduleInventory.GetComponent<CanvasRenderer>().SetAlpha(1);
 			moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
 		}
 		else if (showPlayerAndModuleInventory == false)
 		{
-			moduleInventory.SetActive(false);
+			moduleInventory.GetComponent<CanvasRenderer>().SetAlpha(0);
+			//moduleInventory.SetActive(false);
 			moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
 		}
 	}

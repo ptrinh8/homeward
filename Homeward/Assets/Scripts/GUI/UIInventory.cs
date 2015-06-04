@@ -89,8 +89,10 @@ public class UIInventory : MonoBehaviour
                     slots = playerInventory.GetComponent<Inventory>().slots + moduleInventory.GetComponent<Inventory>().slots;
                     allSlots.AddRange(playerInventory.GetComponent<Inventory>().allSlots);
                     allSlots.AddRange(moduleInventory.GetComponent<Inventory>().allSlots);
+					Debug.Log (slots);
+					Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots);
+					Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots.Count);
                     drawSelectionBox(0, playerInventory);
-                    //Debug.Log(moduleInventory.GetComponent<Inventory>().allSlots.Count);
                     if (moduleInventory.GetComponent<Inventory>().allSlots == null) Debug.Log("null");
                 }
             }
@@ -339,6 +341,7 @@ public class UIInventory : MonoBehaviour
 						else if (item.itemName == ItemName.MiningProbe)
 						{
 							Instantiate(Resources.Load("Mining/MiningProbe"));
+							Item miningProbe = GetSlot(slot).GetItem();
 						}
 						else if (item.itemName != ItemName.BuildingTool && item.itemName != ItemName.RepairingTool && item.itemName != ItemName.MiningTool)
 						{

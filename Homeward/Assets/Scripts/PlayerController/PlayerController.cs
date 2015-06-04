@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
 	private float eatingTimer;
 	private float eatingTime;
 
-	private float oxygen;
+	public float oxygen;
 	private float oxygenDEC = 1F;
 	private float oxygenTimer;
 	private float oxygenLossTime = 1f;
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
     private KeyCode consumeFoodKey = KeyCode.K;
 
     public Canvas canvas;
-    private float currentHealth, currentStamina;
+    public float currentHealth, currentStamina;
 
 	/** mining bar **/
 	public GameObject miningBarBackground;
@@ -121,6 +121,9 @@ public class PlayerController : MonoBehaviour
     public float songSilenceTimer;
     public bool isSongPlaying;
     public bool isSongQueued;
+
+	private bool healthAlarmStarted = false;
+	private bool oxygenAlarmStarted = false;
 
     //sleeping stuff
     private float sleepTimePassed;
@@ -736,17 +739,13 @@ public class PlayerController : MonoBehaviour
 
                     if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                     {
-						Debug.Log ("getkeydown");
 						if (isNearMachine == true)
 						{
-							Debug.Log ("near machine");
 							if (refining != null)
 							{
-								Debug.Log ("refining not null");
 								if (refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsPowered && !refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().IsBroken &&
 								    refining.gameObject.transform.root.gameObject.GetComponent<LocalControl>().isOn)
 								{
-									Debug.Log ("refining working");
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
 										if (showPlayerInventory == true)
@@ -769,6 +768,14 @@ public class PlayerController : MonoBehaviour
 								{
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
+										if (showPlayerInventory == true)
+										{
+											audioController.PlayDepositBox(1);
+										}
+										else
+										{
+											audioController.PlayDepositBox(0);
+										}
 										showPlayerInventory = !showPlayerInventory;
 										oxygenModule.showPlayerAndModuleInventory = showPlayerInventory;
 									}
@@ -781,6 +788,14 @@ public class PlayerController : MonoBehaviour
 								{
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
+										if (showPlayerInventory == true)
+										{
+											audioController.PlayDepositBox(1);
+										}
+										else
+										{
+											audioController.PlayDepositBox(0);
+										}
 										showPlayerInventory = !showPlayerInventory;
 										foodModule.showPlayerAndModuleInventory = showPlayerInventory;
 									}
@@ -793,6 +808,14 @@ public class PlayerController : MonoBehaviour
 								{
 									if (Input.GetKeyDown(KeyCode.I) && isNearMachine == true)
 									{
+										if (showPlayerInventory == true)
+										{
+											audioController.PlayDepositBox(1);
+										}
+										else
+										{
+											audioController.PlayDepositBox(0);
+										}
 										showPlayerInventory = !showPlayerInventory;
 										buildingModule.showPlayerAndModuleInventory = showPlayerInventory;
 									}
@@ -876,7 +899,7 @@ public class PlayerController : MonoBehaviour
                     if (showPlayerInventory) // player is able to control inventory only when inventory is visible
                     {
                         keyCode_B_Works = false;
-                        playerInventory.GetComponent<CanvasGroup>().alpha = 1;
+                        playerInventory.GetComponent<CanvasRenderer>().SetAlpha(1);
                         playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
                         ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
 
@@ -953,7 +976,7 @@ public class PlayerController : MonoBehaviour
                     else
                     {
                         keyCode_B_Works = true;
-                        playerInventory.GetComponent<CanvasGroup>().alpha = 0;
+                        playerInventory.GetComponent<CanvasRenderer>().SetAlpha(0);
                         playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
                         ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
                     }
@@ -1062,6 +1085,28 @@ public class PlayerController : MonoBehaviour
                         stamina -= staminaLostPerSecond;
                         staminaTimer = 0;
                     }
+
+					if (currentHealth <= 25 && healthAlarmStarted == false)
+					{
+						audioController.HealthAlarmControl(1);
+						healthAlarmStarted = true;
+					}
+					else if (currentHealth > 25)
+					{
+						audioController.HealthAlarmControl(2);
+						healthAlarmStarted = false;
+					}
+
+					if (oxygen <= 25 && oxygenAlarmStarted == false)
+					{
+						audioController.OxygenAlarmControl(1);
+						oxygenAlarmStarted = true;
+					}
+					else if (oxygen > 25)
+					{
+						audioController.OxygenAlarmControl(2);
+						oxygenAlarmStarted = false;
+					}
 
                     x = y = 0.0f;
                     Vector2 direction = new Vector2(x, y);      // storing the x and y Inputs from GetAxisRaw in a Vector2
@@ -1449,7 +1494,10 @@ public class PlayerController : MonoBehaviour
 
 	void OnTriggerStay2D(Collider2D other)
 	{
-		
+		if (other.gameObject.tag == "Machine")
+		{
+			isNearMachine = true;
+		}
 	}
 
 	void OnTriggerExit2D(Collider2D other)

@@ -33,7 +33,13 @@ public class FoodModule : MonoBehaviour
 	public Sprite noPowerSupplyTexture;
 	private GameObject refineryModule;
 	
-	private int mineralCount;
+	private int mineralType1Count;
+	private int mineralType2Count;
+	private int mineralType3Count;
+	
+	private bool hasMineralType1;
+	private bool hasMineralType2;
+	private bool hasMineralType3;
 	
 	public bool showPlayerAndModuleInventory; // takahide made it public to use this outside
 	public GameObject moduleInventory;
@@ -88,14 +94,31 @@ public class FoodModule : MonoBehaviour
 				
 				if (!addRefinedMineralOnce)
 				{
+					if (hasMineralType3 == true)
+					{
+						Item item = GameObject.Find("Food1").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral3);
+					}
+					else if (hasMineralType2 == true)
+					{
+						Item item = GameObject.Find("Food1").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral2);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral2);
+					}
+					else if (hasMineralType1 == true)
+					{
+						Item item = GameObject.Find("Food1").GetComponent<Item>();
+						moduleInventory.GetComponent<Inventory>().AddItem(item);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+						moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
+
+					}
 					addRefinedMineralOnce = true;
-					Item item = GameObject.Find("Food1").GetComponent<Item>();
-					moduleInventory.GetComponent<Inventory>().AddItem(item);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
-					moduleInventory.GetComponent<Inventory>().GetItem(ItemName.Mineral1);
 					timerReached = false;
 				}
 			}
@@ -114,7 +137,7 @@ public class FoodModule : MonoBehaviour
 		moduleInventory.GetComponent<Inventory>().rows = 1; //tak added 3/11
 		moduleInventory.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
 		showPlayerAndModuleInventory = false;
-		moduleInventory.SetActive(showPlayerAndModuleInventory);
+		moduleInventory.SetActive(true);
 		
 		mainPlayer = GameObject.Find("MainPlayer");
 		refineryModule = gameObject;
@@ -142,8 +165,10 @@ public class FoodModule : MonoBehaviour
 		// Taylor
 		
 		refineryDistance = Vector2.Distance(this.transform.position, playerController.transform.position);
-		mineralCount = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
-		//Debug.Log (mineralCount);
+		mineralType1Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1);
+		mineralType2Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral2);
+		mineralType3Count = moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral3);
+		//Debug.Log (mineralType1Count);
 		//Debug.Log(distanceBetweenPlayerAndRefinery);
 		refineryMachine.getPlaybackState(out refineryPlaybackState);
 		startingStopping.setValue(refineryStartingStopping);
@@ -162,6 +187,7 @@ public class FoodModule : MonoBehaviour
 		
 		changeLoadingToPercent();
 		MineralsValidations();
+		CheckMineralTypes();
 		
 		if (moduleInventory.GetComponent<Inventory>().CountItems(ItemName.Mineral1) == 10)
 		{
@@ -169,16 +195,13 @@ public class FoodModule : MonoBehaviour
 			stopMineralsIntake = true;
 		}
 		
-		
-		
-		if (mineralCount >= 5)
+		if (mineralType1Count >= 5 || mineralType2Count >= 2 || mineralType3Count >= 1)
 		{
 			RefiningProcess(refineryModuleSpriteRenderer);
 		}
 		
-		if (mineralCount >= 5)
+		if (mineralType1Count >= 5 || mineralType2Count >= 2 || mineralType3Count >= 1)
 		{
-			RefiningProcess(refineryModuleSpriteRenderer);
 			if (refineryStarted == false)
 			{
 				refineryMachine.start();
@@ -211,12 +234,14 @@ public class FoodModule : MonoBehaviour
 		}
 		if (showPlayerAndModuleInventory == true)
 		{
-			moduleInventory.SetActive(true);
+			//moduleInventory.SetActive(true);
+			moduleInventory.GetComponent<CanvasRenderer>().SetAlpha(1);
 			moduleInventory.GetComponent<Inventory>().SetSlotsActive(true);
 		}
 		else if (showPlayerAndModuleInventory == false)
 		{
-			moduleInventory.SetActive(false);
+			moduleInventory.GetComponent<CanvasRenderer>().SetAlpha(0);
+			//moduleInventory.SetActive(false);
 			moduleInventory.GetComponent<Inventory>().SetSlotsActive(false);
 		}
 	}
@@ -227,7 +252,38 @@ public class FoodModule : MonoBehaviour
 		//Taylor
 		if (other.gameObject.tag == "Player")
 		{
+			Debug.Log ("entered");
 			PlayerController.toolUsingEnable = false;
+		}
+	}
+	
+	void CheckMineralTypes()
+	{
+		if (mineralType1Count >= 1)
+		{
+			hasMineralType1 = true;
+		}
+		else
+		{
+			hasMineralType1 = false;
+		}
+		
+		if (mineralType2Count >= 1)
+		{
+			hasMineralType2 = true;
+		}
+		else
+		{
+			hasMineralType2 = false;
+		}
+		
+		if (mineralType3Count >= 1)
+		{
+			hasMineralType3 = true;
+		}
+		else
+		{
+			hasMineralType3 = false;
 		}
 	}
 	

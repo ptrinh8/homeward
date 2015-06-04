@@ -163,6 +163,9 @@ public class AudioController : MonoBehaviour {
 		playerLeft = false;
 		airlockSoundStarted = false;
 		audioPressureTimer = 0f;
+
+		healthAlarm = FMOD_StudioSystem.instance.GetEvent("event:/HealthAlarm");
+		oxygenAlarm = FMOD_StudioSystem.instance.GetEvent("event:/OxygenAlarm");
 	}
 	// Update is called once per frame
 	void Update () {
@@ -322,6 +325,34 @@ public class AudioController : MonoBehaviour {
 		music2.release();
 		music3.release();
 		music4.release();
+	}
+
+	public void HealthAlarmControl(int controlNumber)
+	{
+		if (controlNumber == 1)
+		{
+			Debug.Log ("starting");
+			healthAlarm.start ();
+		}
+		else if (controlNumber == 2)
+		{
+			Debug.Log ("stop");
+			healthAlarm.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+		}
+	}
+
+	public void OxygenAlarmControl(int controlNumber)
+	{
+		if (controlNumber == 1)
+		{
+			Debug.Log ("starting");
+			oxygenAlarm.start ();
+		}
+		else if (controlNumber == 2)
+		{
+			Debug.Log ("stop");
+			oxygenAlarm.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+		}
 	}
 
 	public void MusicControl(int controlNumber, int songNumber)
