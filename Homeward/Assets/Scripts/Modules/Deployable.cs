@@ -23,6 +23,8 @@ public class Deployable : MonoBehaviour {
 
 	private GameObject[] temp;
 
+	public GameObject flippedModuleDeploying;
+
 	void ChangeSameModuleFlag(bool changeTo)
 	{
 		sameModuleFlag = changeTo;
@@ -71,7 +73,9 @@ public class Deployable : MonoBehaviour {
 
 		// Rotation
 		if (Input.GetKeyDown(rotateKey)) {
-			gameObject.transform.Rotate(new Vector3(0, 0, 90));
+			//gameObject = flippedModuleDeploying;
+			//gameObject = Instantiate(flippedModuleDeploying, gameObject.transform.position, Quaternion.identity);
+			//GameObject.Destroy(gameObject);
 		}
 
 		for (int i = 0; i < detector.Length; i++)
@@ -94,21 +98,21 @@ public class Deployable : MonoBehaviour {
 		{
 			if (matchedPoint != -1)
 			{
-				Debug.Log("0");
+				//Debug.Log("0");
 				for (int m = 0; m < detector.Length; m++) 
 				{
 					if (detector[m].connectedTo != null) 
 					{
-						Debug.Log("1");
+						//Debug.Log("1");
 						for (int n = m + 1; n < detector.Length; n++)
 						{
-							Debug.Log("2");
+							//Debug.Log("2");
 							if (temp[n] != null)
 							{
-								Debug.Log("3 " + "m:" + detector[m].connectedTo + " n:" + temp[n]);
+								//Debug.Log("3 " + "m:" + detector[m].connectedTo + " n:" + temp[n]);
 								if (detector[m].connectedTo == temp[n])
 								{ 
-									Debug.Log("4");
+									//Debug.Log("4");
 									matchedPoint = -1;
 									sameModuleFlag = true;
 									break;
@@ -117,7 +121,7 @@ public class Deployable : MonoBehaviour {
 						}
 						if (matchedPoint == -1)
 						{
-							Debug.Log("5");
+							//Debug.Log("5");
 							break;
 						}
 					}
