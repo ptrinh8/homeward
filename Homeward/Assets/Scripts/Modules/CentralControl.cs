@@ -48,6 +48,8 @@ public class CentralControl : MonoBehaviour {
     private bool repairingFlag;
 	private bool repairArrowQueueFlag;
 
+	private LightScript[] lights;
+
 	private GameObject repairArrowQueue;
 
 	private AudioController audioController;
@@ -86,6 +88,10 @@ public class CentralControl : MonoBehaviour {
 
 		repairArrowQueue = GameObject.Find("Canvas").transform.FindChild("Repair Arrow Queue").gameObject;
 		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
+		if (gameObject.GetComponentsInChildren<LightScript>() != null)
+		{
+			lights = this.gameObject.GetComponentsInChildren<LightScript>();
+		}
 
 
 	}
@@ -138,6 +144,17 @@ public class CentralControl : MonoBehaviour {
 
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
+
+		if (Input.GetKey (KeyCode.Space))
+		{
+			if (lights != null)
+			{
+				for (int i = 0; i < lights.Count(); i++)
+				{
+					lights[i].LightSwitch(2);
+				}
+			}
+		}
 	}
 
 	void ShowInside () {

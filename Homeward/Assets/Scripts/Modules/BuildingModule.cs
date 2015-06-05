@@ -61,6 +61,7 @@ public class BuildingModule : MonoBehaviour
 	private bool startRefiningProcess = false;
 	public float time = 0.0F;
 	public float refinerySoundPressure;
+	private bool machineFinished;
 	
 	private void MineralsValidations()
 	{
@@ -139,6 +140,11 @@ public class BuildingModule : MonoBehaviour
 					addRefinedMineralOnce = true;
 					timerReached = false;
 				}
+
+				if (hasMineralType1 == false && hasMineralType2 == false && hasMineralType3 == false)
+				{
+					machineFinished = true;
+				}
 			}
 		}
 	}
@@ -172,6 +178,7 @@ public class BuildingModule : MonoBehaviour
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
 		time = 1000.0F;
+		machineFinished = false;
 		
 	}
 	
@@ -216,6 +223,7 @@ public class BuildingModule : MonoBehaviour
 		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
 		{
 			RefiningProcess(refineryModuleSpriteRenderer);
+			machineFinished = false;
 		}
 		
 		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
