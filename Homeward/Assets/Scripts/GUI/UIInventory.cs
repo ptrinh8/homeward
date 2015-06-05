@@ -417,7 +417,7 @@ public class UIInventory : MonoBehaviour
             {
                 from = clicked.GetComponent<Slot>();
                 from.GetComponent<Image>().color = Color.grey;
-				if (from.CheckItem().itemName == ItemName.Mineral1)
+				if (from.CheckItem().itemName == ItemName.Mineral1 || from.CheckItem().itemName == ItemName.Mineral2 || from.CheckItem().itemName == ItemName.Mineral3)
 				{
 					audioController.PlayRockPickupSound();
 				}
@@ -444,7 +444,7 @@ public class UIInventory : MonoBehaviour
 
         if (to != null && from != null)
         {
-			if (from.CheckItem().itemName == ItemName.Mineral1)
+			if (from.CheckItem().itemName == ItemName.Mineral1 || from.CheckItem().itemName == ItemName.Mineral2 || from.CheckItem().itemName == ItemName.Mineral3)
 			{
 				audioController.PlayRockPickupSound();
 			}

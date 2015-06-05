@@ -40,6 +40,8 @@ public class CentralControl : MonoBehaviour {
     public static bool radarModuleExists;
 	public static bool oxygenModuleExists;
 	private KeyCode repairKey = KeyCode.F;
+	private float selector;
+	private ItemName neededItem;
 
     private GameObject player;
     private float repairActionTime;
@@ -293,7 +295,7 @@ public class CentralControl : MonoBehaviour {
 		
 		if (isEnter) 
 		{
-			if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(ItemName.Material) > 0 && durability != 100)
+			if (player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().CountItems(neededItem) > 0 && durability != 100)
 			{
 				if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
 				{
@@ -342,7 +344,8 @@ public class CentralControl : MonoBehaviour {
 		PlayerController.showRepairArrows = false;
 		repairArrowQueue.SendMessage("Reset", SendMessageOptions.DontRequireReceiver);
 		repairArrowQueue.SetActive(false);
-        player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(ItemName.Material);
+        player.gameObject.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().GetItem(neededItem);
+		RepairItemSelect();
     }
 
     void TimeWait()
@@ -350,6 +353,23 @@ public class CentralControl : MonoBehaviour {
         repairingFlag = true;
 		RepairAction();
     }
+
+	private void RepairItemSelect()
+	{
+		selector = UnityEngine.Random.Range(1f, 10f);
+		if (selector < 5f)
+		{
+			neededItem = ItemName.Wire;
+		}
+		else if (selector >= 5f && selector < 8.5f)
+		{
+			neededItem = ItemName.Screw;
+		}
+		else if (selector >= 8.5f)
+		{
+			neededItem = ItemName.Metal;
+		}
+	}
 
     void DisplayText(bool flag)
     {

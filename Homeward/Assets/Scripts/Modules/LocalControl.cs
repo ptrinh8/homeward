@@ -9,322 +9,350 @@ using System.Collections.Generic;
 public class LocalControl : MonoBehaviour
 {
 
-		public Sprite indoorSprite;
-		public Sprite outdoorSprite;
-		public Sprite noPowerSprite;
-		public Sprite turnedOffSprite;
-		public int powerConsumption;
-		private SpriteRenderer spriteRenderer;
-		public float minimumPowerLevel;
-		private bool isPowered, isEnter;
-		[HideInInspector]
-		public float
-				powerLevel;
-		[HideInInspector]
-		public List <GameObject>
-				connections;
-		[HideInInspector]
-		public GameObject
-				center;
-		[HideInInspector]
-		public bool
-				centerLock = false;
-		[HideInInspector]
-		public int
-				moduleID;
-		[HideInInspector]
-		public bool
-				checkFlag = false;
-		[HideInInspector]
-		public bool
-				isOn;
-		public int durability;
-		private DayNightController dayNightController;
-		private float durabilityTimer;
-		public float durabilityLossTime;
-		public float durabilityLossSpeed;
-		private bool isBroken, flag;
-		private Text moduleStatusText;
+	public Sprite indoorSprite;
+	public Sprite outdoorSprite;
+	public Sprite noPowerSprite;
+	public Sprite turnedOffSprite;
+	public int powerConsumption;
+	private SpriteRenderer spriteRenderer;
+	public float minimumPowerLevel;
+	private bool isPowered, isEnter;
+	[HideInInspector]
+	public float
+			powerLevel;
+	[HideInInspector]
+	public List <GameObject>
+			connections;
+	[HideInInspector]
+	public GameObject
+			center;
+	[HideInInspector]
+	public bool
+			centerLock = false;
+	[HideInInspector]
+	public int
+			moduleID;
+	[HideInInspector]
+	public bool
+			checkFlag = false;
+	[HideInInspector]
+	public bool
+			isOn;
+	public int durability;
+	private DayNightController dayNightController;
+	private float durabilityTimer;
+	public float durabilityLossTime;
+	public float durabilityLossSpeed;
+	private bool isBroken, flag;
+	private Text moduleStatusText;
 
-		public Text ModuleStatusText {
-				get { return moduleStatusText; }
-				set { value = moduleStatusText; }
-		}
+	public Text ModuleStatusText {
+			get { return moduleStatusText; }
+			set { value = moduleStatusText; }
+	}
 
-		private KeyCode repairKey = KeyCode.F;
-		private GameObject player;
-		private float repairActionTime;
-		private bool repairingFlag;
-		private bool showTextFlag;
-		private bool repairArrowQueueFlag;
-		private GameObject repairArrowQueue;
-		private AudioController audioController;
+	private KeyCode repairKey = KeyCode.F;
+	private GameObject player;
+	private float repairActionTime;
+	private bool repairingFlag;
+	private bool showTextFlag;
+	private bool repairArrowQueueFlag;
+	private GameObject repairArrowQueue;
+	private AudioController audioController;
+	private ItemName neededItem;
+	private float selector;
 
-		public bool ShowTextFlag {
-				get { return showTextFlag; }
-				set { value = showTextFlag; }
-		}
 
-		public bool IsEnter {
-				get { return isEnter;}
-				set { this.isEnter = value;}
-		}
+	public bool ShowTextFlag {
+			get { return showTextFlag; }
+			set { value = showTextFlag; }
+	}
 
-		public bool IsPowered {
-				get { return isPowered;}
-		}
+	public bool IsEnter {
+			get { return isEnter;}
+			set { this.isEnter = value;}
+	}
 
-		public bool IsBroken {
-				get { return isBroken;}
-		}
+	public bool IsPowered {
+			get { return isPowered;}
+	}
 
-		private int powerIndicator;
+	public bool IsBroken {
+			get { return isBroken;}
+	}
 
-		public int PowerIndicator {
-				get { return powerIndicator;}
-		}
-		// Use this for initialization
-		void Start ()
-		{
-				repairArrowQueueFlag = false;
+	private int powerIndicator;
 
-				connections = new List<GameObject> ();
-				spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();
-				spriteRenderer.sprite = indoorSprite;
-				spriteRenderer.sortingOrder = -3;
-				CentralControl.isInside = true;
-				isOn = true;
-				moduleStatusText = gameObject.GetComponentInChildren<Text> ();
-				dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController> ();
-				durability = 100;
-				durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
-				flag = true;
-				if (!GameObject.Find ("Module Building").GetComponent<Building> ().NewGameFlag)
-						isEnter = true;
-				else
-						isEnter = false;
+	public int PowerIndicator {
+			get { return powerIndicator;}
+	}
+	// Use this for initialization
+	void Start ()
+	{
+			repairArrowQueueFlag = false;
 
-				player = GameObject.FindWithTag ("Player");
-				repairingFlag = true;
-				repairActionTime = 1f;
+			connections = new List<GameObject> ();
+			spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();
+			spriteRenderer.sprite = indoorSprite;
+			spriteRenderer.sortingOrder = -3;
+			CentralControl.isInside = true;
+			isOn = true;
+			moduleStatusText = gameObject.GetComponentInChildren<Text> ();
+			dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController> ();
+			durability = 100;
+			durabilityLossTime = (dayNightController.dayCycleLength * 2) / 100;
+			flag = true;
+			if (!GameObject.Find ("Module Building").GetComponent<Building> ().NewGameFlag)
+					isEnter = true;
+			else
+					isEnter = false;
 
-				player.SendMessage ("LocalModuleGenerated", gameObject);
+			player = GameObject.FindWithTag ("Player");
+			repairingFlag = true;
+			repairActionTime = 1f;
 
-				repairArrowQueue = GameObject.Find ("Canvas").transform.FindChild ("Repair Arrow Queue").gameObject;
-				audioController = GameObject.Find ("AudioObject").GetComponent<AudioController> ();
-		}
-	
-		// Update is called once per frame
-		void Update ()
-		{
-				if (checkFlag) {
-						center.SendMessage ("CheckPowerSupply");
-						checkFlag = false;
-				}
-				if (isEnter) {
-						if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
-								GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
-						}
-				}
-				DurabilityLoss ();
-				DisplayText (ModuleControl.ShowModuleControl);
-		}
+			player.SendMessage ("LocalModuleGenerated", gameObject);
 
-		void DoorWayTriggered (bool isDoorway)
-		{
-				if (isDoorway)
-						center.SendMessage ("DoorWayTriggered", SendMessageOptions.RequireReceiver);
-				isEnter = !isEnter;
-		}
+			repairArrowQueue = GameObject.Find ("Canvas").transform.FindChild ("Repair Arrow Queue").gameObject;
+			audioController = GameObject.Find ("AudioObject").GetComponent<AudioController> ();
+		RepairItemSelect();
+	}
 
-		void ChangeLocation (bool isEnter)
-		{
-				center.SendMessage ("ChangeLocation", isEnter);
-		}
+	// Update is called once per frame
+	void Update ()
+	{
+			if (checkFlag) {
+					center.SendMessage ("CheckPowerSupply");
+					checkFlag = false;
+			}
+			if (isEnter) {
+					if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
+							GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
+					}
+			}
+			DurabilityLoss ();
+			DisplayText (ModuleControl.ShowModuleControl);
+	}
 
-		void ShowInside ()
-		{
-				spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();	
-				if (!isOn || isBroken) {
-						spriteRenderer.sprite = turnedOffSprite;
-						gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
-				} else if (isPowered) {
-						spriteRenderer.sprite = indoorSprite;
-						gameObject.SendMessage ("LightTriggered", true, SendMessageOptions.DontRequireReceiver);
-				} else {
-						spriteRenderer.sprite = noPowerSprite;
-						gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
-				}
+	void DoorWayTriggered (bool isDoorway)
+	{
+			if (isDoorway)
+					center.SendMessage ("DoorWayTriggered", SendMessageOptions.RequireReceiver);
+			isEnter = !isEnter;
+	}
 
-				spriteRenderer.sortingOrder = -3;
-		}
+	void ChangeLocation (bool isEnter)
+	{
+			center.SendMessage ("ChangeLocation", isEnter);
+	}
 
-		void ShowOutside ()
-		{
-				spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();
-				spriteRenderer.sprite = outdoorSprite;
-				spriteRenderer.sortingOrder = -1;
-		}
+	void ShowInside ()
+	{
+			spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();	
+			if (!isOn || isBroken) {
+					spriteRenderer.sprite = turnedOffSprite;
+					gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
+			} else if (isPowered) {
+					spriteRenderer.sprite = indoorSprite;
+					gameObject.SendMessage ("LightTriggered", true, SendMessageOptions.DontRequireReceiver);
+			} else {
+					spriteRenderer.sprite = noPowerSprite;
+					gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
+			}
 
-		void SetCenter (GameObject center)
-		{
-				if (!centerLock) {
-						this.center = center;
-						center.SendMessage ("AddLocal", gameObject);
-						centerLock = true;
-				}
-		}
+			spriteRenderer.sortingOrder = -3;
+	}
 
-		void CheckPowerSupply ()
-		{
-				if (isBroken) {
-						// do nothing
-				} else {
-						if (powerConsumption > 0) {
-								powerIndicator = (int)(powerLevel / minimumPowerLevel);
-						} else {
-								powerIndicator = -1;
-						}
+	void ShowOutside ()
+	{
+			spriteRenderer = gameObject.GetComponent<SpriteRenderer> ();
+			spriteRenderer.sprite = outdoorSprite;
+			spriteRenderer.sortingOrder = -1;
+	}
 
-						if (!isOn) 
-								moduleStatusText.text = "Off";
-						else if (powerLevel >= minimumPowerLevel) {
-								isPowered = true;
-						} else {
-								isPowered = false;
-						}
-				}
-		}
+	void SetCenter (GameObject center)
+	{
+			if (!centerLock) {
+					this.center = center;
+					center.SendMessage ("AddLocal", gameObject);
+					centerLock = true;
+			}
+	}
 
-		void SwitchTriggered (bool flag)
-		{
-				isOn = flag;
-				center.SendMessage ("CheckPowerSupply");
-				if (!isOn) {
-						if (center.GetComponent<CentralControl> ().isEnterOutpost) {
-								spriteRenderer.sprite = turnedOffSprite;
-						}
-						gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
-				} else {
-						if (isPowered) {
-								spriteRenderer.sprite = indoorSprite;
-								gameObject.SendMessage ("LightTriggered", true, SendMessageOptions.DontRequireReceiver);
-						} else {
-								spriteRenderer.sprite = noPowerSprite;
-								gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
-						}
-				}
+	void CheckPowerSupply ()
+	{
+			if (isBroken) {
+					// do nothing
+			} else {
+					if (powerConsumption > 0) {
+							powerIndicator = (int)(powerLevel / minimumPowerLevel);
+					} else {
+							powerIndicator = -1;
+					}
 
-				spriteRenderer.sortingOrder = -3;
-		}
+					if (!isOn) 
+							moduleStatusText.text = "Off";
+					else if (powerLevel >= minimumPowerLevel) {
+							isPowered = true;
+					} else {
+							isPowered = false;
+					}
+			}
+	}
 
-		void OnTriggerEnter2D (Collider2D other)
-		{
-				if (other.gameObject.tag == "Player") {
-						PlayerController.toolUsingEnable = false;
-				}
-		}
+	void SwitchTriggered (bool flag)
+	{
+			isOn = flag;
+			center.SendMessage ("CheckPowerSupply");
+			if (!isOn) {
+					if (center.GetComponent<CentralControl> ().isEnterOutpost) {
+							spriteRenderer.sprite = turnedOffSprite;
+					}
+					gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
+			} else {
+					if (isPowered) {
+							spriteRenderer.sprite = indoorSprite;
+							gameObject.SendMessage ("LightTriggered", true, SendMessageOptions.DontRequireReceiver);
+					} else {
+							spriteRenderer.sprite = noPowerSprite;
+							gameObject.SendMessage ("LightTriggered", false, SendMessageOptions.DontRequireReceiver);
+					}
+			}
 
-		void OnTriggerExit2D (Collider2D other)
-		{
-				if (other.gameObject.tag == "Player") {
-						PlayerController.toolUsingEnable = true;
-				}
-		}
+			spriteRenderer.sortingOrder = -3;
+	}
 
-		void AddConnection (GameObject other)
-		{
-				if (connections == null)
-						connections = new List<GameObject> ();
-				connections.Add (other);
-		}
+	void OnTriggerEnter2D (Collider2D other)
+	{
+			if (other.gameObject.tag == "Player") {
+					PlayerController.toolUsingEnable = false;
+			}
+	}
 
-		void DurabilityLoss ()
-		{
-				if (durability > 0) {
-						durabilityTimer += Time.deltaTime * durabilityLossSpeed;
-						if (durabilityTimer > durabilityLossTime) {
-								durability -= 1;
-								durabilityTimer = 0;
-						}
-				} else {
-						isBroken = true;
-						if (flag) {
-								SwitchTriggered (false);
-								flag = false;
-						}
-				}
+	void OnTriggerExit2D (Collider2D other)
+	{
+			if (other.gameObject.tag == "Player") {
+					PlayerController.toolUsingEnable = true;
+			}
+	}
 
-				if (isEnter) {
-						if (player.gameObject.GetComponent<PlayerController> ().playerInventory.GetComponent<Inventory> ().CountItems (ItemName.Material) > 0 && durability != 100) {
-								if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable) {
-										if (repairingFlag) {
-												if (Input.GetKeyDown (repairKey)) {
-														audioController.PlayRepairSound (2);
-														repairArrowQueueFlag = !repairArrowQueueFlag;
-														PlayerController.showRepairArrows = repairArrowQueueFlag;
-														repairArrowQueue.SendMessage ("Reset", SendMessageOptions.DontRequireReceiver);
-														repairArrowQueue.SetActive (repairArrowQueueFlag);
-												}
-												if (repairArrowQueue.GetComponent<ArrowQueueControl> ().CorrectInput) {
-														repairArrowQueue.GetComponent<ArrowQueueControl> ().CorrectInput = false;
-														repairingFlag = false;
-														Invoke ("TimeWait", repairActionTime);
-												}
-										}
-								}
-						}
-				}
+	void AddConnection (GameObject other)
+	{
+			if (connections == null)
+					connections = new List<GameObject> ();
+			connections.Add (other);
+	}
 
-				if (durability > 0) {
-						moduleStatusText.text = durability.ToString ();
-				} else
-						moduleStatusText.text = "Broken";
-		}
+	void DurabilityLoss ()
+	{
+			if (durability > 0) {
+					durabilityTimer += Time.deltaTime * durabilityLossSpeed;
+					if (durabilityTimer > durabilityLossTime) {
+							durability -= 1;
+							durabilityTimer = 0;
+					}
+			} else {
+					isBroken = true;
+					if (flag) {
+							SwitchTriggered (false);
+							flag = false;
+					}
+			}
 
-		void RepairAction ()
-		{
-				if (!isBroken) {
-						if (durability + 10 <= 100) {
-								durability += 10;
-						} else {
-								durability = 100;
-						}
-				} else {
+			if (isEnter) 
+			{
+					if (player.gameObject.GetComponent<PlayerController> ().playerInventory.GetComponent<Inventory> ().CountItems (neededItem) > 0 && durability != 100) 
+					{
+							if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable) 
+							{
+									if (repairingFlag) 
+									{
+											if (Input.GetKeyDown (repairKey)) 
+											{
+													audioController.PlayRepairSound (2);
+													repairArrowQueueFlag = !repairArrowQueueFlag;
+													PlayerController.showRepairArrows = repairArrowQueueFlag;
+													repairArrowQueue.SendMessage ("Reset", SendMessageOptions.DontRequireReceiver);
+													repairArrowQueue.SetActive (repairArrowQueueFlag);
+											}
+											if (repairArrowQueue.GetComponent<ArrowQueueControl> ().CorrectInput) 
+											{
+													repairArrowQueue.GetComponent<ArrowQueueControl> ().CorrectInput = false;
+													repairingFlag = false;
+													Invoke ("TimeWait", repairActionTime);
+											}
+									}
+							}
+					}
+			}
+
+			if (durability > 0) {
+					moduleStatusText.text = durability.ToString ();
+			} else
+					moduleStatusText.text = "Broken";
+	}
+
+	void RepairAction ()
+	{
+		if (!isBroken) {
+				if (durability + 10 <= 100) {
 						durability += 10;
-						isBroken = false;
-						SwitchTriggered (true);
-						flag = true;
-						// arrow reset
-				}
-				audioController.PlayRepairSound (3);
-				repairArrowQueueFlag = false;
-				PlayerController.showRepairArrows = false;
-				repairArrowQueue.SendMessage ("Reset", SendMessageOptions.DontRequireReceiver);
-				repairArrowQueue.SetActive (false);
-				player.gameObject.GetComponent<PlayerController> ().playerInventory.GetComponent<Inventory> ().GetItem (ItemName.Material);
-		}
-
-		void TimeWait ()
-		{
-				repairingFlag = true;
-				RepairAction ();
-		}
-
-		void DisplayText (bool flag)
-		{
-				if (flag) {
-						moduleStatusText.enabled = true;
 				} else {
-						if (isEnter) {
-								if (moduleStatusText.enabled == false) {
-										moduleStatusText.enabled = true;
-								}
-						} else {
-								if (moduleStatusText.enabled == true) {
-										moduleStatusText.enabled = false;
-								}
-						}
+						durability = 100;
 				}
+		} else {
+				durability += 10;
+				isBroken = false;
+				SwitchTriggered (true);
+				flag = true;
+				// arrow reset
 		}
+		audioController.PlayRepairSound (3);
+		repairArrowQueueFlag = false;
+		PlayerController.showRepairArrows = false;
+		repairArrowQueue.SendMessage ("Reset", SendMessageOptions.DontRequireReceiver);
+		repairArrowQueue.SetActive (false);
+		player.gameObject.GetComponent<PlayerController> ().playerInventory.GetComponent<Inventory> ().GetItem (neededItem);
+		RepairItemSelect();
+	}
+
+	private void RepairItemSelect()
+	{
+		selector = UnityEngine.Random.Range(1f, 10f);
+		if (selector < 5f)
+		{
+			neededItem = ItemName.Wire;
+		}
+		else if (selector >= 5f && selector < 8.5f)
+		{
+			neededItem = ItemName.Screw;
+		}
+		else if (selector >= 8.5f)
+		{
+			neededItem = ItemName.Metal;
+		}
+	}
+
+	void TimeWait ()
+	{
+			repairingFlag = true;
+			RepairAction ();
+	}
+
+	void DisplayText (bool flag)
+	{
+			if (flag) {
+					moduleStatusText.enabled = true;
+			} else {
+					if (isEnter) {
+							if (moduleStatusText.enabled == false) {
+									moduleStatusText.enabled = true;
+							}
+					} else {
+							if (moduleStatusText.enabled == true) {
+									moduleStatusText.enabled = false;
+							}
+					}
+			}
+	}
 }

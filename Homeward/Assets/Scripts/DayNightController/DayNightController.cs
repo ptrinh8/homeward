@@ -48,6 +48,8 @@ public class DayNightController : MonoBehaviour
     private float for_temp;
     private bool resetValues;
 
+	private AudioController audioController;
+
     /// <summary>
     /// The number of days passed from the beginning
     /// </summary>
@@ -168,7 +170,7 @@ public class DayNightController : MonoBehaviour
     void Initialize()
     {
         //remainingTransition = skyTransitionTime; //Would indicate that the game should start with an active transition, if UpdateSkybox were used.
-		dayCycleLength = 400f;
+		dayCycleLength = 300f;
         dayCount = 0;
         quarterDay = dayCycleLength * 0.25f;
         dawnTime = 0.0f;
@@ -180,6 +182,7 @@ public class DayNightController : MonoBehaviour
         temp = 10.0F;
         for_temp = 0.0F;
         resetValues = false;
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
     }
  
     /// <summary>
@@ -258,18 +261,22 @@ public class DayNightController : MonoBehaviour
         // Rudementary phase-check algorithm:
         if (currentCycleTime > nightTime && currentPhase == DayPhase.Dusk)
         {
+			audioController.PlayDuskNightTransition();
             SetNight();
         }
         else if (currentCycleTime > duskTime && currentPhase == DayPhase.Day)
         {
+			audioController.PlayDayDuskTransition();
             SetDusk();
         }
         else if (currentCycleTime > dayTime && currentPhase == DayPhase.Dawn)
         {
+			audioController.PlayDawnDayTransition();
             SetDay();
         }
         else if (currentCycleTime > dawnTime && currentCycleTime < dayTime && currentPhase == DayPhase.Night)
         {
+			audioController.PlayNightDawnTransition();
             SetDawn();
             dayCount++;
         }
