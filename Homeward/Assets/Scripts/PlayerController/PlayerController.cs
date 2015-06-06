@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 	private bool leftRightFootstep = false;
 	private float animationTime;
-	private int animationFacing;
+	public int animationFacing;
 
 	private Animator anim;
 	private bool playerMoving = false;
@@ -240,6 +240,15 @@ public class PlayerController : MonoBehaviour
 	private OxygenModule oxygenModule;
 
 	private float miningBarCurrentPosition;
+
+	public bool wasMovingNorth;
+	public bool wasMovingNorthEast;
+	public bool wasMovingEast;
+	public bool wasMovingSouthEast;
+	public bool wasMovingSouth;
+	public bool wasMovingSouthWest;
+	public bool wasMovingWest;
+	public bool wasMovingNorthWest;
 
     //Taylor
     private bool environmentAir;
@@ -1651,6 +1660,14 @@ public class PlayerController : MonoBehaviour
 	{
 		if (Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.S) && !Input.GetKey (KeyCode.A))
 		{
+			wasMovingNorth = true;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", true);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
@@ -1663,6 +1680,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.W) && Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.A))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = true;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", true);
 			anim.SetBool("WasMovingEast", false);
@@ -1675,6 +1700,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.W))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = true;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", true);
@@ -1687,6 +1720,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.D) && Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.A))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = true;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
@@ -1699,6 +1740,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.D) && !Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = true;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
@@ -1711,6 +1760,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.S) && Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.D))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = true;
+			wasMovingWest = false;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
@@ -1723,6 +1780,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.A) && !Input.GetKey (KeyCode.W) && !Input.GetKey (KeyCode.S) && !Input.GetKey (KeyCode.D))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = true;
+			wasMovingNorthWest = false;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
@@ -1735,6 +1800,14 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKey (KeyCode.A) && Input.GetKey (KeyCode.W) && !Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.D))
 		{
+			wasMovingNorth = false;
+			wasMovingNorthEast = false;
+			wasMovingEast = false;
+			wasMovingSouthEast = false;
+			wasMovingSouth = false;
+			wasMovingSouthWest = false;
+			wasMovingWest = false;
+			wasMovingNorthWest = true;
 			anim.SetBool("WasMovingNorth", false);
 			anim.SetBool("WasMovingNorthEast", false);
 			anim.SetBool("WasMovingEast", false);
