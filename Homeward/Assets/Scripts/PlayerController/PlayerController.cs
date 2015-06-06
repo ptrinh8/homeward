@@ -292,10 +292,26 @@ public class PlayerController : MonoBehaviour
 		}
 		if (oxygen < 0.0F) { oxygen = 0.0F; }
 		if (oxygen > 100.0F) { oxygen = 100.0F; }
-		oxygenText.text = "Oxygen: " + (int)oxygen;
+		//oxygenText.text = "Oxygen: " + (int)oxygen;
 		GameObject oxygenBar = GameObject.Find("OxygenBar");
 		Image oxygenBarImage = oxygenBar.GetComponent<Image>();
-		oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
+		Color oxygenBarColor = new Color (0f, 0f, 1f);
+		if (oxygen >= 50)
+		{
+			oxygenBarColor = new Color(0f, 0f, 1f);
+			oxygenBarImage.color = oxygenBarColor;
+		}
+		else if (oxygen >= 25 && oxygen < 50)
+		{
+			oxygenBarColor = new Color(0f, 0f, .66f);
+			oxygenBarImage.color = oxygenBarColor;
+		}
+		else if (oxygen < 25)
+		{
+			oxygenBarColor = new Color(0f, 0f, .25f);
+			oxygenBarImage.color = oxygenBarColor;
+		}
+		//oxygenBarImage.fillAmount = (float)oxygen / 100.0F;
 	}
 
     public GameObject miningProbe;
@@ -544,6 +560,9 @@ public class PlayerController : MonoBehaviour
 
 		addedFirstTools = false;
 
+		manageHealth();
+		manageStamina();
+
 
     }
 
@@ -619,6 +638,7 @@ public class PlayerController : MonoBehaviour
             EndDemo();
             ManageOxygenLevels();
 
+			/*
             if (CentralControl.healthStaminaModuleExists == true)
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
@@ -637,7 +657,7 @@ public class PlayerController : MonoBehaviour
 			else
 			{
 				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-			}
+			}*/
 
 			if (CentralControl.radarModuleExists == true)
 			{
@@ -844,7 +864,7 @@ public class PlayerController : MonoBehaviour
 							{
 								if (miningAble == true)
 								{
-									nearestMineral.Mine(1);
+									PlayMiningAnimation();
 									rockTime = 0f;
 								}
 								Debug.Log (miningModeActivated);
@@ -1382,18 +1402,44 @@ public class PlayerController : MonoBehaviour
 
     private void manageHealth()
     {
-        healthText.text = "Health: " + (int)currentHealth;
-        GameObject healthBar = GameObject.Find("HealthBar");
-        Image healthBarImage = healthBar.GetComponent<Image>();
-        healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
+        //healthText.text = "Health: " + (int)currentHealth;
+		GameObject healthBar = GameObject.Find("HealthBar");
+		Image healthBarImage = healthBar.GetComponent<Image>();
+		if (currentHealth >= 50)
+		{
+			healthBarImage.color = Color.green;
+		}
+		else if (currentHealth >= 25 && currentHealth < 50)
+		{
+			healthBarImage.color = Color.yellow;
+		}
+		else if (currentHealth < 25)
+		{
+			healthBarImage.color = Color.red;
+		}
+        //healthBarImage.fillAmount = (float)CurrentHealth / 100.0F;
     }
 
     private void manageStamina()
     {
-        staminaText.text = "Stamina: " + (int)currentStamina;
-        GameObject healthBar = GameObject.Find("StaminaBar");
-        Image healthBarImage = healthBar.GetComponent<Image>();
-        healthBarImage.fillAmount = (float)currentStamina / 100.0F;
+		GameObject staminaBar = GameObject.Find("StaminaBar");
+		Image staminaBarImage = staminaBar.GetComponent<Image>();
+		Color staminaColor = new Color (1f, .5f, 0f);
+       	if (currentStamina >= 50)
+		{
+			staminaColor = new Color (1f, .5f, 0f);
+			staminaBarImage.color = staminaColor;
+		}
+		else if (currentStamina >= 25 && currentStamina < 50)
+		{
+			staminaColor = new Color (.75f, .25f, 0f);
+			staminaBarImage.color = staminaColor;
+		}
+		else if (currentStamina < 25)
+		{
+			staminaColor = new Color (.5f, .1f, 0f);
+			staminaBarImage.color = staminaColor;
+		}
     }
 
     private void Sleep()
@@ -1808,6 +1854,14 @@ public class PlayerController : MonoBehaviour
 	private void MiningSound()
 	{
 		audioController.PlayMiningSound();
+	}
+
+	private void MineMineral()
+	{
+		if (nearestMineral != null)
+		{
+			nearestMineral.Mine (1);
+		}
 	}
 
 	private void BuildingSound()

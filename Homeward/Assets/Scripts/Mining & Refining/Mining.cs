@@ -216,7 +216,7 @@ public class Mining : MonoBehaviour
 	{
 		Debug.Log ("mining");
 		MineSupportFunction(numberOfMinerals);
-		playerController.PlayMiningAnimation();
+		//playerController.PlayMiningAnimation();
 	}
 
     IEnumerator DestroyMine()
