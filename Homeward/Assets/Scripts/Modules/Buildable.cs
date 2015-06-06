@@ -319,7 +319,7 @@ public class Buildable : MonoBehaviour
 			{
 				built = true;
 				Debug.Log ("building");
-				Instantiate(module, gameObject.transform.position, gameObject.transform.rotation);
+				Instantiate(module, gameObject.transform.position, Quaternion.identity);
 				Destroy(this.gameObject);
 			}
 		}
