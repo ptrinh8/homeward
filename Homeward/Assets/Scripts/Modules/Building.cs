@@ -178,7 +178,7 @@ public class Building : MonoBehaviour
         foreach (var key in moduleDictionary.Keys.ToList())
             moduleDictionary[key] = true;
         moduleDictionary[module] = false;
-
+		/**
         if (connectorModuleDeployable.isDeploying && moduleDictionary["ConnectorModule"])
         {
             connectorModuleDeployable.isDeploying = !connectorModuleDeployable.isDeploying;
@@ -254,6 +254,7 @@ public class Building : MonoBehaviour
 			miningProbeModuleDeployable.isDeploying = !miningProbeModuleDeployable.isDeploying;
 			miningProbeModuleDeploying.SetActive(miningProbeModuleDeployable.isDeploying);
 		}
+		**/
 	}
 	
 	// Update is called once per frame
