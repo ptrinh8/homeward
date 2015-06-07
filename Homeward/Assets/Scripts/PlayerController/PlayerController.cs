@@ -672,7 +672,8 @@ public class PlayerController : MonoBehaviour
             EndDemo();
             ManageOxygenLevels();
 
-			/*
+
+			//UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
             if (CentralControl.healthStaminaModuleExists == true)
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
@@ -683,6 +684,7 @@ public class PlayerController : MonoBehaviour
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
             }
+			UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
 
 			if (CentralControl.oxygenModuleExists == true)
 			{
@@ -691,7 +693,7 @@ public class PlayerController : MonoBehaviour
 			else
 			{
 				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-			}*/
+			}
 
 			if (CentralControl.radarModuleExists == true)
 			{
