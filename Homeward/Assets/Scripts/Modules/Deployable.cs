@@ -10,8 +10,6 @@ public class Deployable : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		isDeploying = false;
-
 		transform.parent = GameObject.Find("MainPlayer").transform;
 		transform.localPosition = new Vector3 (0, 0, 0);
 	}
