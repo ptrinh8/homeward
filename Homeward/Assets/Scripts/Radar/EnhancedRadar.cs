@@ -99,9 +99,9 @@ public class EnhancedRadar : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            showEnhancedRadar = !showEnhancedRadar;
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    showEnhancedRadar = !showEnhancedRadar;
             
             if (showEnhancedRadar)
             {
@@ -138,7 +138,7 @@ public class EnhancedRadar : MonoBehaviour {
                 mainCamera.enabled = true;
                 enhancedRadarCamera.enabled = false;
             }
-        }
+        //}
 	}
 
     void DestroyRadarObjects(List<GameObject> radarObjects)

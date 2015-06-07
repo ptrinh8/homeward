@@ -231,12 +231,10 @@ public class Instruction : MonoBehaviour
         {
             GetComponent<CanvasGroup>().alpha = 1;
             MoveSelectionBox();
-            Time.timeScale = 0.0f;
         }
         else
         {
             GetComponent<CanvasGroup>().alpha = 0;
-            Time.timeScale = 1.0f;
         }
     }
 
