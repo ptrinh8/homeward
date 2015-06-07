@@ -45,7 +45,7 @@ public class PlayerStatusLight : MonoBehaviour {
 
 		if (playerController.wasMovingNorth == true)
 		{
-			lightPosition = new Vector3(0.015f, .84f, -.025f);
+			lightPosition = new Vector3(0.01f, .84f, -.025f);
 			statusLight.transform.localPosition = lightPosition;
 		}
 		else if (playerController.wasMovingNorthEast == true)

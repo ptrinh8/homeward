@@ -520,7 +520,7 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(7.0f, Screen.height - 7.0f, 0.0f);
+        playerInventory.transform.position = new Vector3(760.0f, Screen.height - 135.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.AddComponent<CanvasGroup>();
@@ -1405,7 +1405,7 @@ public class PlayerController : MonoBehaviour
             zoomExitElapsed = 0.0f;
 
             zoomElapsed += Time.deltaTime / zoomDuration;
-            Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
+            Camera.main.orthographicSize = Mathf.Lerp(4, 2, zoomElapsed);
             zoomTransition = false;
         }
         else
@@ -1416,11 +1416,11 @@ public class PlayerController : MonoBehaviour
             zoomExitElapsed += Time.deltaTime / zoomExitDuration;
             if (Time.timeSinceLevelLoad < 1f)
             {
-                Camera.main.orthographicSize = Mathf.Lerp(5, 5, zoomExitElapsed);
+                Camera.main.orthographicSize = Mathf.Lerp(4, 4, zoomExitElapsed);
             }
             else
             {
-                Camera.main.orthographicSize = Mathf.Lerp(2, 5, zoomExitElapsed);
+                Camera.main.orthographicSize = Mathf.Lerp(2, 4, zoomExitElapsed);
             }
         }
     }
@@ -1436,7 +1436,7 @@ public class PlayerController : MonoBehaviour
             zoomExitElapsed = 0.0f;
 
             zoomElapsed += Time.deltaTime / zoomDuration;
-            Camera.main.orthographicSize = Mathf.Lerp(5, 2, zoomElapsed);
+            Camera.main.orthographicSize = Mathf.Lerp(4, 2, zoomElapsed);
             zoomTransition = false;
         }
         else
@@ -1447,7 +1447,7 @@ public class PlayerController : MonoBehaviour
             zoomExitElapsed += Time.deltaTime / zoomExitDuration;
             if (Time.timeSinceLevelLoad < 1f)
             {
-                Camera.main.orthographicSize = Mathf.Lerp(5, 5, zoomExitElapsed);
+                Camera.main.orthographicSize = Mathf.Lerp(4, 4, zoomExitElapsed);
             }
             else
             {
@@ -1895,7 +1895,7 @@ public class PlayerController : MonoBehaviour
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .4f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x + .15f, this.transform.position.y - .35f), Quaternion.Euler(0, 0, -90));
 				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
@@ -1915,7 +1915,7 @@ public class PlayerController : MonoBehaviour
 				playerParticleSystem.Emit (5);
 				break;
 			case 6:
-				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -270));
+				footprint = (GameObject) Instantiate(leftFootprint, new Vector3(this.transform.position.x - .15f, this.transform.position.y - .45f), Quaternion.Euler(0, 0, -270));
 				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
@@ -1948,7 +1948,7 @@ public class PlayerController : MonoBehaviour
 				playerParticleSystem.Emit (5);
 				break;
 			case 2:
-				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .2f, this.transform.position.y - .5f), Quaternion.Euler(0, 0, -90));
+				footprint = (GameObject) Instantiate(rightFootprint, new Vector3(this.transform.position.x + .1f, this.transform.position.y - .43f), Quaternion.Euler(0, 0, -90));
 				footprint.transform.parent = GameObject.Find ("Footsteps").transform;
 				playerParticleSystem.Emit (5);
 				break;
