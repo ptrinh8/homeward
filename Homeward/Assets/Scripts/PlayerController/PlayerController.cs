@@ -192,6 +192,14 @@ public class PlayerController : MonoBehaviour
     // Taylor
     public static bool toolUsingEnable = true;
 
+    private static bool keyCode_T_Works;
+
+    public static bool KeyCode_T_Works
+    {
+        get { return keyCode_T_Works; }
+        set {keyCode_T_Works = value;}
+    }
+
     private static bool keyCode_I_Works;
 
     public static bool KeyCode_I_Works
@@ -201,6 +209,20 @@ public class PlayerController : MonoBehaviour
     }
 
     private static bool keyCode_B_Works;
+
+    public static bool KeyCode_B_Works
+    {
+        get { return keyCode_B_Works; }
+        set { keyCode_B_Works = value; }
+    }
+
+    private static bool keyCode_Tab_Works;
+
+    public static bool KeyCode_Tab_Works
+    {
+        get { return keyCode_Tab_Works; }
+        set { keyCode_Tab_Works = value; }
+    }
 
     /*** Tool Box UI ***/
     public Image toolBoxUIImage;
@@ -492,6 +514,9 @@ public class PlayerController : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera").GetComponent<Camera>();
         enhancedRadarCamera = GameObject.Find("EnhancedRadarCamera");
 
+        /*** Radar ***/
+        keyCode_T_Works = true;
+
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
@@ -766,6 +791,11 @@ public class PlayerController : MonoBehaviour
                         moduleSelection.GetComponent<ModuleSelection>().SetModuleSlotsActive(showModuleSelection);
                     }
 
+                    if (Input.GetKeyDown(KeyCode.T) && keyCode_T_Works)
+                    {
+                        EnhancedRadar.showEnhancedRadar = !EnhancedRadar.showEnhancedRadar;
+                    }
+
                     if (Input.GetKeyDown(KeyCode.I) && keyCode_I_Works)
                     {
 						if (isNearMachine == true)
@@ -1031,6 +1061,21 @@ public class PlayerController : MonoBehaviour
                     /****************************************************************
                      * ModuleSelection END
                      * **************************************************************/
+
+                    if (Computer.journalFlag || DigitalPad.journalFlag || Instruction.showInstruction)
+                    {
+                        Time.timeScale = 0.0f;
+                        PlayerController.KeyCode_I_Works = false;
+                        PlayerController.KeyCode_B_Works = false;
+                        PlayerController.KeyCode_T_Works = false;
+                    }
+                    else
+                    {
+                        Time.timeScale = 1.0f;
+                        PlayerController.KeyCode_I_Works = true;
+                        PlayerController.KeyCode_B_Works = true;
+                        PlayerController.KeyCode_T_Works = true;
+                    }
 
                     if (CentralControl.isInside)
                     {
@@ -1540,11 +1585,21 @@ public class PlayerController : MonoBehaviour
 		{
 			isNearMachine = true;
 		}
-
+		
 		if (other.gameObject.tag == "AirPanel")
 		{
 			airPanel = other.GetComponent<AirPanel>();
 		}
+        if (other.gameObject.tag == "Computer")
+        {
+            Computer.journalFlag = true;
+        }
+
+        if (other.gameObject.tag == "DigitalPad")
+        {
+            DigitalPad.journalFlag = true;
+        }
+		
 	}
 
 	void OnTriggerStay2D(Collider2D other)
