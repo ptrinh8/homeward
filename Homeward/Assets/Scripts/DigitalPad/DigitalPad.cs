@@ -39,6 +39,8 @@ public class DigitalPad : MonoBehaviour
 
     private int maxNumCharsOnList; // maximum number of characters shown on the list
 
+    private bool firstFlag;
+
     /*** edit screen ***/
     private GameObject editBackground;
 
@@ -62,6 +64,7 @@ public class DigitalPad : MonoBehaviour
 
     void Initialize()
     {
+        firstFlag = true;
         journalFlag = false;
         cursorCurrentPositionVertical = 0;
         cursorCurrentPositionHorizontal = -1; // 0: center, -1: left, 1: right
@@ -150,11 +153,21 @@ public class DigitalPad : MonoBehaviour
         CurrentTextRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Screen.height * 0.6f);
     }
 
+    
     void Update()
     {
         if (journalFlag)
         {
             gameObject.GetComponent<CanvasGroup>().alpha = 1;
+
+            if (firstFlag)
+            {
+                inEditMode = true;
+                cursorCurrentPositionVertical = itemList.Count;
+                CreateItem();
+                SwitchModes();
+                firstFlag = false;
+            }
             HandleKeyInput();
         }
         else
@@ -404,6 +417,7 @@ public class DigitalPad : MonoBehaviour
                 else if (cursorCurrentPositionHorizontal == 1) // cursor is on quit
                 {
                     journalFlag = false;
+                    firstFlag = true;
                 }
                 else if (cursorCurrentPositionHorizontal == 0) // cursor is on journal item
                 {
@@ -432,7 +446,7 @@ public class DigitalPad : MonoBehaviour
         }
         catch (Exception e)
         {
-            currentText.GetComponent<Text>().text = "new file";
+            currentText.GetComponent<Text>().text = "new journal";
             SaveText(); // cursorCurrentPositionHorizontal should be the last index of itemlist
             sr = fi.OpenText();
         }

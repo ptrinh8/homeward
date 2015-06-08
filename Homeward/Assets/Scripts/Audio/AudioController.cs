@@ -31,6 +31,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance duskNightTransition;
 	private FMOD.Studio.EventInstance nightDawnTransition;
 	private FMOD.Studio.EventInstance rockPickupSound;
+	private FMOD.Studio.EventInstance breath;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -54,6 +55,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryCloseSelector;
 	private FMOD.Studio.ParameterInstance toolEquipSelector;
 	private FMOD.Studio.ParameterInstance rockPickupSoundSelector;
+	private FMOD.Studio.ParameterInstance breathSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -71,6 +73,7 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryCloseInsideOutside;
 	private FMOD.Studio.ParameterInstance toolEquipInsideOutside;
 	private FMOD.Studio.ParameterInstance rockPickupSoundInsideOutside;
+	private FMOD.Studio.ParameterInstance breathInsideOutside;
 
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
@@ -92,6 +95,8 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
 	private FMOD.Studio.ParameterInstance droneVolume;
 	private FMOD.Studio.ParameterInstance startingStopping;
+
+	private FMOD.Studio.ParameterInstance breathOxygenVolume;
 
 
 	public FMOD.Studio.PLAYBACK_STATE dronePlaybackState;
@@ -119,6 +124,10 @@ public class AudioController : MonoBehaviour {
 	private AirControl airControl;
 	public float controllerSoundPressure;
 	public float controllerPressure;
+
+	private float oxygenVolume;
+	private PlayerController playerController;
+	private bool breathStarted = false;
 
 	//airlock stuff
 	private FMOD.Studio.EventInstance airlockSound;
@@ -160,6 +169,11 @@ public class AudioController : MonoBehaviour {
 		songPlaying = false;
 		controllerSoundPressure = 0f;
 
+		breath = FMOD_StudioSystem.instance.GetEvent("event:/Breath");
+
+
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
+
 		airlockSound = FMOD_StudioSystem.instance.GetEvent("event:/Airlock");
 		airlockSound.getParameter("AirlockPressure", out airlockPressure);
 		airlockSound.getParameter("AirlockTransition", out airlockTransition);
@@ -169,6 +183,8 @@ public class AudioController : MonoBehaviour {
 
 		healthAlarm = FMOD_StudioSystem.instance.GetEvent("event:/HealthAlarm");
 		oxygenAlarm = FMOD_StudioSystem.instance.GetEvent("event:/OxygenAlarm");
+		breath.getParameter("OxygenVolume", out breathOxygenVolume);
+		breath.getParameter("InsideOutside", out breathInsideOutside);
 	}
 	// Update is called once per frame
 	void Update () {
@@ -183,6 +199,34 @@ public class AudioController : MonoBehaviour {
 
 
 		//controllerSoundPressure = GameObject.Find ("Airlock Module(Clone)").GetComponent<AirControl>().soundPressure;
+
+		if (CentralControl.isInside == false && breathStarted == false)
+		{
+			breath.start();
+			breathInsideOutside.setValue(1.75f);
+			breathStarted = true;
+		}
+		else if (CentralControl.isInside == true)
+		{
+			breath.stop (FMOD.Studio.STOP_MODE.IMMEDIATE);
+			breathStarted = false;
+		}
+
+		if (playerController.oxygen < 100)
+		{
+			if (playerController.oxygen >= 50)
+			{
+				breathOxygenVolume.setValue(.25f);
+			}
+			else if (playerController.oxygen >= 25 && playerController.oxygen < 50)
+			{
+				breathOxygenVolume.setValue(1.5f);
+			}
+			else if (playerController.oxygen < 25)
+			{
+				breathOxygenVolume.setValue(2.5f);
+			}
+		}
 
 		if (songPlaying == true)
 		{

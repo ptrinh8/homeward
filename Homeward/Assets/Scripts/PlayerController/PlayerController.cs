@@ -672,7 +672,8 @@ public class PlayerController : MonoBehaviour
             EndDemo();
             ManageOxygenLevels();
 
-			/*
+
+			//UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
             if (CentralControl.healthStaminaModuleExists == true)
             {
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 1;
@@ -683,6 +684,7 @@ public class PlayerController : MonoBehaviour
                 UIHealthBar.GetComponent<CanvasGroup>().alpha = 0;
                 UIStaminaBar.GetComponent<CanvasGroup>().alpha = 0;
             }
+			UIStaminaBar.GetComponent<CanvasGroup>().alpha = 1;
 
 			if (CentralControl.oxygenModuleExists == true)
 			{
@@ -691,7 +693,7 @@ public class PlayerController : MonoBehaviour
 			else
 			{
 				UIOxygenBar.GetComponent<CanvasGroup>().alpha = 0;
-			}*/
+			}
 
 			if (CentralControl.radarModuleExists == true)
 			{
@@ -1314,8 +1316,10 @@ public class PlayerController : MonoBehaviour
                     }
                     tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
                     sleepTexture.color = tempColor;
+                    Invoke("FadingForSleep", sleepFadeOutLength);
+                    
                 }
-                else if (isSleeping == true && slept == true)
+                else if (isSleeping == true && slept == true && DigitalPad.journalFlag == false)
                 {
                     sleepTimer -= Time.deltaTime;
                     if (sleepTimer < 0f)
@@ -1345,6 +1349,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void FadingForSleep()
+    {
+        DigitalPad.journalFlag = true;
     }
 
 	void FixedUpdate()
@@ -1595,10 +1604,10 @@ public class PlayerController : MonoBehaviour
             Computer.journalFlag = true;
         }
 
-        if (other.gameObject.tag == "DigitalPad")
-        {
-            DigitalPad.journalFlag = true;
-        }
+        //if (other.gameObject.tag == "DigitalPad")
+        //{
+        //    DigitalPad.journalFlag = true;
+        //}
 		
 	}
 
