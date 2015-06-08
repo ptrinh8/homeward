@@ -75,7 +75,6 @@ public class AirControl : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log(flag);
 		airlockSound.getPlaybackState(out airlockPlaybackState);
         if (flag == 0) { 
             // do nothing

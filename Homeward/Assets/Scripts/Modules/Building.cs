@@ -23,7 +23,7 @@ public class Building : MonoBehaviour
 	private GameObject buildingModuleDeploying;
 	private GameObject miningProbeModuleDeploying;
 
-    private HabitatModuleDeployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
+	private Deployable habitatModuleDeployable;	// Script in Habitat Module Deploying(prefabs)
     private Deployable connectorModuleDeployable;	// Script in any Module Deploying(prefabs)
     private Deployable refineryModuleDeployable;
     private Deployable foodModuleDeployable;
@@ -121,7 +121,7 @@ public class Building : MonoBehaviour
 		miningProbeModuleDeploying = Instantiate(Resources.Load("Prefabs/Modules/Mining Probe Module/Mining Probe Module Deploying")) as GameObject;
 		miningProbeModuleDeploying.SetActive(false);
 
-        habitatModuleDeployable = habitatModuleDeploying.GetComponent<HabitatModuleDeployable>();
+        habitatModuleDeployable = habitatModuleDeploying.GetComponent<Deployable>();
         connectorModuleDeployable = connectorModuleDeploying.GetComponent<Deployable>();
         refineryModuleDeployable = refineryModuleDeploying.GetComponent<Deployable>();
         foodModuleDeployable = foodModuleDeploying.GetComponent<Deployable>();

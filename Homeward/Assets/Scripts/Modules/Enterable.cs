@@ -18,9 +18,6 @@ public class Enterable : MonoBehaviour {
 		x = y = 0;
 		isDoorway = true;
 		// Change the xEnter to meet the rotation
-		int rotation = (int) gameObject.transform.root.rotation.eulerAngles.z;
-		if (rotation == 90 || rotation == 270)
-			xEnter = !xEnter;
 	}
 	
 	void OnTriggerEnter2D (Collider2D other) {

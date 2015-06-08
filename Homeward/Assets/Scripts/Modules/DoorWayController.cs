@@ -34,16 +34,16 @@ public class DoorWayController : MonoBehaviour {
             }
 
 			// Situations whether "other" module is habitat module or other modules
-			if (gameObject.transform.root.gameObject.tag != "HabitatModule") {
-				center = other.gameObject.transform.root.gameObject.GetComponent<CentralControl>();
-				local = other.gameObject.transform.root.gameObject.GetComponent<LocalControl>();
+			if (gameObject.transform.parent.gameObject.tag != "HabitatModule") {
+				center = other.gameObject.transform.parent.gameObject.GetComponent<CentralControl>();
+				local = other.gameObject.transform.parent.gameObject.GetComponent<LocalControl>();
 				if (center != null) 
-					gameObject.SendMessageUpwards("SetCenter", other.gameObject.transform.root.gameObject, SendMessageOptions.DontRequireReceiver);
+					gameObject.SendMessageUpwards("SetCenter", other.gameObject.transform.parent.gameObject, SendMessageOptions.DontRequireReceiver);
 				if (local != null) {
 					gameObject.SendMessageUpwards("SetCenter", local.center, SendMessageOptions.DontRequireReceiver);
 				} 	
-				gameObject.SendMessageUpwards("AddConnection", other.gameObject.transform.root.gameObject);
-				gameObject.transform.root.gameObject.GetComponent<LocalControl>().checkFlag = true;
+				gameObject.SendMessageUpwards("AddConnection", other.gameObject.transform.parent.gameObject);
+				gameObject.transform.parent.gameObject.GetComponent<LocalControl>().checkFlag = true;
 
 	// 			Lagecy Code Just In Case
 	//			if ((gameObject.transform.root.gameObject.GetComponent<LocalControl>().moduleID) 
