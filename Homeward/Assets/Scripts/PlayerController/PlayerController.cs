@@ -1319,8 +1319,10 @@ public class PlayerController : MonoBehaviour
                     }
                     tempColor = Color.Lerp(Color.clear, Color.black, sleepTimer);
                     sleepTexture.color = tempColor;
+                    Invoke("FadingForSleep", sleepFadeOutLength);
+                    
                 }
-                else if (isSleeping == true && slept == true)
+                else if (isSleeping == true && slept == true && DigitalPad.journalFlag == false)
                 {
                     sleepTimer -= Time.deltaTime;
                     if (sleepTimer < 0f)
@@ -1350,6 +1352,11 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    void FadingForSleep()
+    {
+        DigitalPad.journalFlag = true;
     }
 
 	void FixedUpdate()
@@ -1600,10 +1607,10 @@ public class PlayerController : MonoBehaviour
             Computer.journalFlag = true;
         }
 
-        if (other.gameObject.tag == "DigitalPad")
-        {
-            DigitalPad.journalFlag = true;
-        }
+        //if (other.gameObject.tag == "DigitalPad")
+        //{
+        //    DigitalPad.journalFlag = true;
+        //}
 		
 	}
 
