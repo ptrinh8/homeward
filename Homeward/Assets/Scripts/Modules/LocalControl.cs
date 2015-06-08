@@ -10,9 +10,11 @@ public class LocalControl : MonoBehaviour
 {
 
 	public Sprite indoorSprite;
-	public Sprite outdoorSprite;
-	public Sprite noPowerSprite;
-	public Sprite turnedOffSprite;
+	public Sprite[] exteriors;
+	private Sprite outdoorSprite;
+	private Sprite noPowerSprite;
+	private Sprite turnedOffSprite;
+
 	public int powerConsumption;
 	private SpriteRenderer spriteRenderer;
 	public float minimumPowerLevel;
@@ -62,8 +64,6 @@ public class LocalControl : MonoBehaviour
 	private ItemName neededItem;
 	private float selector;
 
-	private LightScript[] lights;
-
 
 	public bool ShowTextFlag {
 			get { return showTextFlag; }
@@ -91,6 +91,8 @@ public class LocalControl : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+			noPowerSprite = indoorSprite;
+			turnedOffSprite = indoorSprite;
 			repairArrowQueueFlag = false;
 
 			connections = new List<GameObject> ();
@@ -117,58 +119,24 @@ public class LocalControl : MonoBehaviour
 
 			repairArrowQueue = GameObject.Find ("Canvas").transform.FindChild ("Repair Arrow Queue").gameObject;
 			audioController = GameObject.Find ("AudioObject").GetComponent<AudioController> ();
-		RepairItemSelect();
-		if (gameObject.GetComponentsInChildren<LightScript>() != null)
-		{
-			lights = this.gameObject.GetComponentsInChildren<LightScript>();
-		}
+			RepairItemSelect();
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
-
-		if (CentralControl.isInside == false)
-		{
-			spriteRenderer.sortingOrder = 1;
-		}
-		else
-		{
-			spriteRenderer.sortingOrder = -3;
-		}
-
-		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
-		{
-			if (lights != null)
-			{
-				for (int i = 0; i < lights.Length; i++)
-				{
-					lights[i].LightSwitch(1);
-				}
+			if (checkFlag) {
+					center.SendMessage ("CheckPowerSupply");
+					checkFlag = false;
 			}
-		}
-		else if (dayNightController.currentPhase == DayNightController.DayPhase.Dawn)
-		{
-			if (lights != null)
-			{
-				for (int i = 0; i < lights.Length; i++)
-				{
-					lights[i].LightSwitch(2);
-				}
+			if (isEnter) {
+				Debug.Log(gameObject + " " + durability);
+					if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
+							GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
+					}
 			}
-		}
-
-		if (checkFlag) {
-				center.SendMessage ("CheckPowerSupply");
-				checkFlag = false;
-		}
-		if (isEnter) {
-				if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
-						GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
-				}
-		}
-		DurabilityLoss ();
-		DisplayText (ModuleControl.ShowModuleControl);
+			DurabilityLoss ();
+			DisplayText (ModuleControl.ShowModuleControl);
 	}
 
 	void DoorWayTriggered (bool isDoorway)
@@ -296,12 +264,42 @@ public class LocalControl : MonoBehaviour
 					}
 			}
 
+			if (durability <= 0)
+			{
+				outdoorSprite = exteriors[4];
+			}
+			else if (durability > 0 && durability <= 25)
+			{
+				outdoorSprite = exteriors[3];
+			}
+			else if (durability > 25 && durability <= 50)
+			{
+				outdoorSprite = exteriors[2];
+			}
+			else if (durability > 50 && durability <= 75)
+			{
+				outdoorSprite = exteriors[1];
+			}
+			else if (durability > 75 && durability <= 100)
+			{
+				outdoorSprite = exteriors[0];
+			}
+
+			if (!CentralControl.isInside)
+			{
+				spriteRenderer.sprite = outdoorSprite;
+			}	
+
 			if (isEnter) 
 			{
 					if (player.gameObject.GetComponent<PlayerController> ().playerInventory.GetComponent<Inventory> ().CountItems (neededItem) > 0 && durability != 100) 
 					{
 							if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable) 
 							{
+							// do exterior sprite
+							GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().enabled = true;
+							GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().sprite = outdoorSprite;
+							GameObject.FindWithTag("RepairScreen").transform.position = transform.position;
 									if (repairingFlag) 
 									{
 											if (Input.GetKeyDown (repairKey)) 
@@ -320,6 +318,8 @@ public class LocalControl : MonoBehaviour
 											}
 									}
 							}
+							else GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().enabled = false;
+							
 					}
 			}
 

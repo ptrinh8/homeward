@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ 	 	using UnityEngine;
 using UnityEngine.UI;
 using System;
 using System.Collections;
@@ -9,7 +9,9 @@ using System.Linq;
 public class CentralControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
-	public Sprite outdoorSprite;
+	public Sprite[] exteriors;
+	private Sprite outdoorSprite;
+
 	public static bool isInside; // This static variable is the general location of player(whether inside)
 	private SpriteRenderer spriteRenderer;
 	[HideInInspector]
@@ -68,7 +70,7 @@ public class CentralControl : MonoBehaviour {
 		ShowInside();
 		moduleStatusText = gameObject.GetComponentInChildren<Text>();
 		dayNightController = GameObject.Find ("DayNightController").GetComponent<DayNightController>();
-		durability = 10;
+		durability = 100;
 		durabilityLossTime = (dayNightController.dayCycleLength * 4) / 100;
 
         /*** UI module flags ***/
@@ -125,26 +127,7 @@ public class CentralControl : MonoBehaviour {
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
-		if (isInside == false)
-		{
-			this.spriteRenderer.sortingOrder = 1;
-		}
-		else
-		{
-			this.spriteRenderer.sortingOrder = -3;
-		}
-
-		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
-		{
-			if (lights != null)
-			{
-				for (int i = 0; i < lights.Count(); i++)
-				{
-					lights[i].LightSwitch(1);
-				}
-			}
-		}
-		else if (dayNightController.currentPhase == DayNightController.DayPhase.Dawn)
+		if (Input.GetKey (KeyCode.Space))
 		{
 			if (lights != null)
 			{
@@ -303,6 +286,32 @@ public class CentralControl : MonoBehaviour {
 			CheckPowerSupply();
 		}
 
+		if (durability <= 0)
+		{
+			outdoorSprite = exteriors[4];
+		}
+		else if (durability > 0 && durability <= 25)
+		{
+			outdoorSprite = exteriors[3];
+		}
+		else if (durability > 25 && durability <= 50)
+		{
+			outdoorSprite = exteriors[2];
+		}
+		else if (durability > 50 && durability <= 75)
+		{
+			outdoorSprite = exteriors[1];
+		}
+		else if (durability > 75 && durability <= 100)
+		{
+			outdoorSprite = exteriors[0];
+		}
+		
+		if (!CentralControl.isInside)
+		{
+			spriteRenderer.sprite = outdoorSprite;
+		}	
+
 		if (!isBroken) {
 			moduleStatusText.text = "";
 		}
@@ -315,6 +324,9 @@ public class CentralControl : MonoBehaviour {
 			{
 				if (PlayerController.holdingRepairTool && PlayerController.toolUsingEnable)
 				{
+					GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().enabled = true;
+					GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().sprite = outdoorSprite;
+					GameObject.FindWithTag("RepairScreen").transform.position = transform.position;
 					if (repairingFlag)
 					{
 						if (Input.GetKeyDown(repairKey))
@@ -333,6 +345,7 @@ public class CentralControl : MonoBehaviour {
 						}
 					}
 				}
+				else GameObject.FindWithTag("RepairScreen").GetComponent<SpriteRenderer>().enabled = false;
 			}
 		}
 	}
@@ -355,6 +368,7 @@ public class CentralControl : MonoBehaviour {
             durability += 10;
             isBroken = false;
         }
+
 		audioController.PlayRepairSound(3);
 		repairArrowQueueFlag = false;
 		PlayerController.showRepairArrows = false;
