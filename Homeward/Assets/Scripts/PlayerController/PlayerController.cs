@@ -520,7 +520,7 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(760.0f, Screen.height - 135.0f, 0.0f);
+        playerInventory.transform.position = new Vector3(940.0f, Screen.height - 160.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.AddComponent<CanvasGroup>();
