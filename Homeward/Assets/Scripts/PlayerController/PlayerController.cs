@@ -611,8 +611,11 @@ public class PlayerController : MonoBehaviour
 			playerInventory.GetComponent<Inventory>().AddItem(tool);
 			tool = GameObject.Find("RepairingTool").GetComponent<Item>();
 			playerInventory.GetComponent<Inventory>().AddItem(tool);
+			tool = GameObject.Find ("MiningProbe").GetComponent<Item>();
+			playerInventory.GetComponent<Inventory>().AddItem(tool);
 			addedFirstTools = true;
 		}
+
 
 		if (miningBarFlashing == true)
 		{
