@@ -178,7 +178,7 @@ public class BuildingModule : MonoBehaviour
 		refineryDistance = 0f;
 		refineryStartingStopping = 0f;
 		refineryStarted = false;
-		time = 1000.0F;
+		time = 20.0F;
 		machineFinished = false;
 
 		currentlyRefining = false;

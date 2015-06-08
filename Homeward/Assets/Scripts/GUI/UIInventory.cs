@@ -444,6 +444,7 @@ public class UIInventory : MonoBehaviour
 
         if (to != null && from != null)
         {
+			Debug.Log ("to && from");
 			if (from.CheckItem().itemName == ItemName.Mineral1 || from.CheckItem().itemName == ItemName.Mineral2 || from.CheckItem().itemName == ItemName.Mineral3)
 			{
 				audioController.PlayRockPickupSound();

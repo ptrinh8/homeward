@@ -18,7 +18,7 @@ public class PlayerStatusLight : MonoBehaviour {
 		lightPosition = new Vector3(-.478f, .937f, -.025f);
 		statusLight.transform.localPosition = lightPosition;
 		lightStrobeUp = true;
-		statusLight.range = .4f;
+		//statusLight.range = .4f;
 	
 	}
 	
@@ -58,7 +58,7 @@ public class PlayerStatusLight : MonoBehaviour {
 		{
 			lightPosition = new Vector3(-.478f, .937f, -.025f);
 			statusLight.transform.localPosition = lightPosition;
-			//statusLight.range = .3f;
+			statusLight.range = .2f;
 		}
 		else if (playerController.wasMovingSouthEast == true)
 		{
@@ -79,7 +79,7 @@ public class PlayerStatusLight : MonoBehaviour {
 		{
 			lightPosition = new Vector3(0.42f, 1.023f, -.025f);
 			statusLight.transform.localPosition = lightPosition;
-			//statusLight.range = .3f;
+			statusLight.range = .2f;
 		}
 		else if (playerController.wasMovingNorthWest == true)
 		{

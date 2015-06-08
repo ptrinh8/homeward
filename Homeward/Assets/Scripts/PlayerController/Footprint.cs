@@ -48,7 +48,7 @@ public class Footprint : MonoBehaviour {
 		_renderer.color = footstepColor;
 	}
 
-	void OnTriggerStay2D(Collider2D other)
+	void OnTriggerEnter2D(Collider2D other)
 	{
 		if (other.gameObject.tag == "HabitatModule" || other.gameObject.tag == "HealthStaminaModule" || other.gameObject.tag == "ModuleControlModule" || other.gameObject.tag == "RadarModule" || other.gameObject.tag == "FoodModule" ||
 		    other.gameObject.tag == "OxygenModule" || other.gameObject.tag == "RefineryModule" || other.gameObject.tag == "BuildingModule" || other.gameObject.tag == "Modules" || other.gameObject.tag == "ConnectPoints" || other.gameObject.tag == "ConnectorModule")

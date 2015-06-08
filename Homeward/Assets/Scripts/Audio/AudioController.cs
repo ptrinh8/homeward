@@ -32,6 +32,8 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.EventInstance nightDawnTransition;
 	private FMOD.Studio.EventInstance rockPickupSound;
 	private FMOD.Studio.EventInstance breath;
+	private FMOD.Studio.EventInstance airlockDoorOpen;
+	private FMOD.Studio.EventInstance airlockDoorClose;
 
 
 	public FMOD.Studio.ParameterInstance stemTrigger1;
@@ -56,6 +58,8 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance toolEquipSelector;
 	private FMOD.Studio.ParameterInstance rockPickupSoundSelector;
 	private FMOD.Studio.ParameterInstance breathSelector;
+	private FMOD.Studio.ParameterInstance airlockDoorOpenSelector;
+	private FMOD.Studio.ParameterInstance airlockDoorCloseSelector;
 
 	private FMOD.Studio.ParameterInstance leftFootMetalInsideOutside;
 	private FMOD.Studio.ParameterInstance rightFootMetalInsideOutside;
@@ -74,6 +78,8 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance toolEquipInsideOutside;
 	private FMOD.Studio.ParameterInstance rockPickupSoundInsideOutside;
 	private FMOD.Studio.ParameterInstance breathInsideOutside;
+	private FMOD.Studio.ParameterInstance airlockDoorOpenInsideOutside;
+	private FMOD.Studio.ParameterInstance airlockDoorCloseInsideOutside;
 
 
 	private FMOD.Studio.ParameterInstance leftFootMetalAirlockPressure;
@@ -90,6 +96,8 @@ public class AudioController : MonoBehaviour {
 	private FMOD.Studio.ParameterInstance inventoryOpenAirlockPressure;
 	private FMOD.Studio.ParameterInstance inventoryCloseAirlockPressure;
 	private FMOD.Studio.ParameterInstance toolEquipAirlockPressure;
+	private FMOD.Studio.ParameterInstance airlockDoorOpenAirlockPressure;
+	private FMOD.Studio.ParameterInstance airlockDoorCloseAirlockPressure;
 
 	private FMOD.Studio.ParameterInstance miningSelector;
 	private FMOD.Studio.ParameterInstance miningInsideOutside;
@@ -798,6 +806,64 @@ public class AudioController : MonoBehaviour {
 				repairEndAirlockPressure.setValue(controllerSoundPressure);
 				repairEnd.start();
 				repairEnd.release();
+			}
+		}
+	}
+
+	public void PlayAirlockDoorSound(int airlockSound)
+	{
+		if (airlockSound == 1)
+		{
+			if (CentralControl.isInside == true)
+			{
+				airlockDoorOpen = FMOD_StudioSystem.instance.GetEvent("event:/AirlockDoorOpen");
+				airlockDoorOpen.getParameter("Selector", out airlockDoorOpenSelector);
+				airlockDoorOpen.getParameter("InsideOutside", out airlockDoorOpenInsideOutside);
+				airlockDoorOpen.getParameter("AirlockPressure", out airlockDoorOpenAirlockPressure);
+				airlockDoorOpenSelector.setValue(Random.Range (1f, 3f));
+				airlockDoorOpenAirlockPressure.setValue(controllerSoundPressure);
+				airlockDoorOpenInsideOutside.setValue(.5f);
+				airlockDoorOpen.start();
+				airlockDoorOpen.release();
+			}
+			else
+			{
+				airlockDoorOpen = FMOD_StudioSystem.instance.GetEvent("event:/AirlockDoorOpen");
+				airlockDoorOpen.getParameter("Selector", out airlockDoorOpenSelector);
+				airlockDoorOpen.getParameter("InsideOutside", out airlockDoorOpenInsideOutside);
+				airlockDoorOpen.getParameter("AirlockPressure", out airlockDoorOpenAirlockPressure);
+				airlockDoorOpenSelector.setValue(Random.Range (1f, 3f));
+				airlockDoorOpenAirlockPressure.setValue(controllerSoundPressure);
+				airlockDoorOpenInsideOutside.setValue(1.75f);
+				airlockDoorOpen.start();
+				airlockDoorOpen.release();
+			}
+		}
+		else if (airlockSound == 2)
+		{
+			if (CentralControl.isInside == true)
+			{
+				airlockDoorClose = FMOD_StudioSystem.instance.GetEvent("event:/AirlockDoorClose");
+				airlockDoorClose.getParameter("Selector", out airlockDoorCloseSelector);
+				airlockDoorClose.getParameter("InsideOutside", out airlockDoorCloseInsideOutside);
+				airlockDoorClose.getParameter("AirlockPressure", out airlockDoorCloseAirlockPressure);
+				airlockDoorCloseSelector.setValue(Random.Range (1f, 3f));
+				airlockDoorCloseAirlockPressure.setValue(controllerSoundPressure);
+				airlockDoorCloseInsideOutside.setValue(.5f);
+				airlockDoorClose.start();
+				airlockDoorClose.release();
+			}
+			else
+			{
+				airlockDoorClose = FMOD_StudioSystem.instance.GetEvent("event:/AirlockDoorClose");
+				airlockDoorClose.getParameter("Selector", out airlockDoorCloseSelector);
+				airlockDoorClose.getParameter("InsideOutside", out airlockDoorCloseInsideOutside);
+				airlockDoorClose.getParameter("AirlockPressure", out airlockDoorCloseAirlockPressure);
+				airlockDoorCloseSelector.setValue(Random.Range (1f, 3f));
+				airlockDoorCloseAirlockPressure.setValue(controllerSoundPressure);
+				airlockDoorCloseInsideOutside.setValue(1.75f);
+				airlockDoorClose.start();
+				airlockDoorClose.release();
 			}
 		}
 	}

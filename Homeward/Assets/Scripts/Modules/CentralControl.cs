@@ -127,11 +127,16 @@ public class CentralControl : MonoBehaviour {
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
+		if (isInside == false)
+		{
+			spriteRenderer.sortingOrder = 1;
+		}
+
 		if (isInside == true && dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 		{
 			if (lights != null)
 			{
-				for (int i = 0; i < lights.Count(); i++)
+				for (int i = 0; i < lights.Length; i++)
 				{
 					lights[i].LightSwitch(1);
 				}
@@ -141,7 +146,7 @@ public class CentralControl : MonoBehaviour {
 		{
 			if (lights != null)
 			{
-				for (int i = 0; i < lights.Count(); i++)
+				for (int i = 0; i < lights.Length; i++)
 				{
 					lights[i].LightSwitch(2);
 				}

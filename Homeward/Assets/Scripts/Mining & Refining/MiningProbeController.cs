@@ -19,6 +19,10 @@ public class MiningProbeController : MonoBehaviour
 
     GameObject GameObject;
 
+	private float mineTimer;
+	private float mineTime;
+	private int mineralsMined;
+
     int abc = 0;
 
 	private FMOD.Studio.EventInstance miningProbeSound;
@@ -61,11 +65,24 @@ public class MiningProbeController : MonoBehaviour
 		miningProbeSound.getParameter("InsideOutside", out miningProbeInsideOutside);
 		miningProbeSound.getParameter("ProbeLooping", out miningProbeLooping);
 		miningLooping = 0f;
+		mineralsMined = 0;
+		mineTime = 3f;
     }
 
 
     void Update()
     {
+		if (mineralsMined < 20)
+		{
+			mineTimer += Time.deltaTime;
+			if (mineTimer >= mineTime)
+			{
+				Item item = GameObject.Find("Mineral1").GetComponent<Item>();
+				probeInventory.GetComponent<Inventory>().AddItem(item);
+				mineTimer = 0;
+				mineralsMined++;
+			}
+		}
 
         if (spawnFlag && CentralControl.isInside == false)
         {
@@ -96,7 +113,7 @@ public class MiningProbeController : MonoBehaviour
             gameObject.transform.SetParent(player.transform.parent);
             gameObject.renderer.enabled = true;
 
-            InvokeRepeating("Mine", 3, 3); // mines once in 3 seconds
+            //InvokeRepeating("Mine", 3, 3); // mines once in 3 seconds
         }
 
     }
