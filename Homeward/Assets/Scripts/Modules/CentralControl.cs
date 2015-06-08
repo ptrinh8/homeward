@@ -10,6 +10,8 @@ public class CentralControl : MonoBehaviour {
 
 	public Sprite indoorSprite;
 	public Sprite[] exteriors;
+	[HideInInspector]
+	public int exteriorIndex;
 	private Sprite outdoorSprite;
 
 	public static bool isInside; // This static variable is the general location of player(whether inside)
@@ -289,22 +291,27 @@ public class CentralControl : MonoBehaviour {
 		if (durability <= 0)
 		{
 			outdoorSprite = exteriors[4];
+			exteriorIndex = 4;
 		}
 		else if (durability > 0 && durability <= 25)
 		{
 			outdoorSprite = exteriors[3];
+			exteriorIndex = 3;
 		}
 		else if (durability > 25 && durability <= 50)
 		{
 			outdoorSprite = exteriors[2];
+			exteriorIndex = 2;
 		}
 		else if (durability > 50 && durability <= 75)
 		{
 			outdoorSprite = exteriors[1];
+			exteriorIndex = 1;
 		}
 		else if (durability > 75 && durability <= 100)
 		{
 			outdoorSprite = exteriors[0];
+			exteriorIndex = 0;
 		}
 		
 		if (!CentralControl.isInside)
