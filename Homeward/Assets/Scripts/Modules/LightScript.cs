@@ -36,7 +36,7 @@ public class LightScript : MonoBehaviour {
 		}
 		else if (onOff == 2)
 		{
-			lightColor= Color.black;
+			lightColor = Color.black;
 			light.color = lightColor;
 		}
 	}
