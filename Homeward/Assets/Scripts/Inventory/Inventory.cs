@@ -157,7 +157,7 @@ public class Inventory : MonoBehaviour {
             {
                 if (tmp.CurrentItem.itemName == item.itemName && tmp.IsAvailable)
                 {
-					Debug.Log ("adding");
+//					Debug.Log ("adding");
                     tmp.AddItem(item);
                     return true;
                 }

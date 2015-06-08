@@ -694,7 +694,7 @@ public class AudioController : MonoBehaviour {
 
 	public void PlayMiningSound()
 	{
-		Debug.Log ("mining sound");
+//		Debug.Log ("mining sound");
 		if (CentralControl.isInside == true)
 		{
 			mining = FMOD_StudioSystem.instance.GetEvent("event:/Mining");
