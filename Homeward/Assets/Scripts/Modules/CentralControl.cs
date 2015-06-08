@@ -125,6 +125,15 @@ public class CentralControl : MonoBehaviour {
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
+		if (isInside == false)
+		{
+			this.spriteRenderer.sortingOrder = 1;
+		}
+		else
+		{
+			this.spriteRenderer.sortingOrder = -3;
+		}
+
 		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 		{
 			if (lights != null)

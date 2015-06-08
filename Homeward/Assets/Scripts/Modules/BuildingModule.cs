@@ -13,10 +13,12 @@ public class BuildingModule : MonoBehaviour
 	private PlayerController playerController;
 	private Mining minerals = new Mining();
 	private Inventory inventory = new Inventory();
+
+	public bool currentlyRefining;
 	
 	private Vector2 worldSpacePos;
 	private float loadingStartTime;
-	public float loadingUpdateTime;
+	public float loadingUpdateTime = 0f;
 	private float loadingPercent;
 	private bool timerReached = false;
 	
@@ -62,7 +64,7 @@ public class BuildingModule : MonoBehaviour
 	public float time = 0.0F;
 	public float refinerySoundPressure;
 	private bool machineFinished;
-	
+
 	private void MineralsValidations()
 	{
 		/*
@@ -78,14 +80,13 @@ public class BuildingModule : MonoBehaviour
 	
 	private void RefiningProcess(SpriteRenderer refineryModuleSpriteRenderer)
 	{
-		startTimer();
 		updateNumberOfRefinedMinerals = false;
 		refineryModuleSpriteRenderer.sprite = activeTexture;
 		
-		if (loadingUpdateTime == time)
+		if (loadingUpdateTime >= time)
 		{
 			Debug.Log("ClockStarted");
-			stopTimer();
+			loadingUpdateTime = 0f;
 			refineryModuleSpriteRenderer.sprite = deactiveTexture;
 			
 			if (!updateNumberOfRefinedMinerals)
@@ -179,6 +180,8 @@ public class BuildingModule : MonoBehaviour
 		refineryStarted = false;
 		time = 1000.0F;
 		machineFinished = false;
+
+		currentlyRefining = false;
 		
 	}
 	
@@ -222,8 +225,18 @@ public class BuildingModule : MonoBehaviour
 		
 		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
 		{
+			currentlyRefining = true;
 			RefiningProcess(refineryModuleSpriteRenderer);
 			machineFinished = false;
+		}
+		else
+		{
+			currentlyRefining = false;
+		}
+
+		if (currentlyRefining == true)
+		{
+			loadingUpdateTime += Time.deltaTime;
 		}
 		
 		if (mineralType1Count >= 1 || mineralType2Count >= 1 || mineralType3Count >= 1)
@@ -315,8 +328,14 @@ public class BuildingModule : MonoBehaviour
 	
 	void startTimer()
 	{
-		if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
-		if (loadingUpdateTime == time) { timerReached = true; }
+		if (!timerReached) 
+		{ 
+			loadingUpdateTime += Time.deltaTime; 
+		}
+		if (loadingUpdateTime >= time) 
+		{ 
+			timerReached = true; 
+		}
 	}
 	
 	void stopTimer()

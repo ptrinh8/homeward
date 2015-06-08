@@ -117,7 +117,7 @@ public class MiningProbeController : MonoBehaviour
     {
         if (miningCount < maxMiningCount)
         {
-            Item item = GameObject.Find("Mineral").GetComponent<Item>();
+            Item item = GameObject.Find("Mineral1").GetComponent<Item>();
             probeInventory.GetComponent<Inventory>().AddItem(item);
             probeInventory.GetComponent<Inventory>().DebugShowInventory();
             miningCount++;

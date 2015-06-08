@@ -159,6 +159,7 @@ public class PlayerController : MonoBehaviour
 
 	private ParticleSystem playerParticleSystem;
     private ParticleSystem rainParticleSystem;
+	private bool isRaining = false;
 
     [HideInInspector]
     public float x, y;
@@ -520,7 +521,7 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-        playerInventory.transform.position = new Vector3(970.0f, Screen.height - 170.0f, 0.0f);
+		playerInventory.transform.position = new Vector3(Screen.width - 165f, Screen.height - 120.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.AddComponent<CanvasGroup>();
@@ -585,9 +586,9 @@ public class PlayerController : MonoBehaviour
 		playerParticleSystem.renderer.sortingLayerName = "GameplayLayer";
 		playerParticleSystem.loop = false;
 
-        //rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
-        //rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
-        //rainParticleSystem.loop = true;
+        rainParticleSystem = GameObject.Find("RAIN").GetComponent<ParticleSystem>();
+        rainParticleSystem.renderer.sortingLayerName = "GameplayLayer";
+        rainParticleSystem.loop = true;
         //rainParticleSystem.Play();
 
 		anim = GetComponent<Animator>();
@@ -597,7 +598,7 @@ public class PlayerController : MonoBehaviour
 		manageHealth();
 		manageStamina();
 
-
+		ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
     }
 
     void Update()
@@ -774,11 +775,11 @@ public class PlayerController : MonoBehaviour
             {
 				if (CentralControl.isInside == true)
 				{
-					//rainParticleSystem.Stop();
+					rainParticleSystem.Stop();
 				}
-				else
+				else if (CentralControl.isInside == false && isRaining == true)
 				{
-					//rainParticleSystem.Play ();
+					rainParticleSystem.Play ();
 				}
                 if (isSleeping == false)
                 {
@@ -965,7 +966,6 @@ public class PlayerController : MonoBehaviour
                         keyCode_B_Works = false;
                         playerInventory.GetComponent<CanvasRenderer>().SetAlpha(1);
                         playerInventory.GetComponent<Inventory>().SetSlotsActive(true);
-                        ToolBoxObject.GetComponent<CanvasGroup>().alpha = 1;
 
                         if (Input.GetKeyDown(KeyCode.P))
                         {
@@ -1042,7 +1042,6 @@ public class PlayerController : MonoBehaviour
                         keyCode_B_Works = true;
                         playerInventory.GetComponent<CanvasRenderer>().SetAlpha(0);
                         playerInventory.GetComponent<Inventory>().SetSlotsActive(false);
-                        ToolBoxObject.GetComponent<CanvasGroup>().alpha = 0;
                     }
                     /*******************************************************************
                      * Inventory END
@@ -1375,7 +1374,7 @@ public class PlayerController : MonoBehaviour
 			rigidbody2D.AddForce(direction * 6f);
 			CheckPlayerFacing();
 		}
-		if (rigidbody2D.velocity.magnitude > .01f)
+		if (rigidbody2D.velocity.magnitude > .1f)
 		{
 			playerMoving = true;
 		}
@@ -1383,7 +1382,7 @@ public class PlayerController : MonoBehaviour
 		{
 			playerMoving = false;
 		}
-		if (rigidbody2D.velocity.magnitude < .01f)
+		if (rigidbody2D.velocity.magnitude < .05f)
 		{
 			rigidbody2D.velocity = Vector2.zero;
 		}
@@ -1461,7 +1460,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                Camera.main.orthographicSize = Mathf.Lerp(2, 5, zoomExitElapsed);
+                Camera.main.orthographicSize = Mathf.Lerp(2, 4, zoomExitElapsed);
             }
         }
     }
@@ -2024,6 +2023,18 @@ public class PlayerController : MonoBehaviour
 		if (this.nearestMineral != null)
 		{
 			nearestMineral.PlayParticles();
+		}
+	}
+
+	public void switchRaining(bool raining)
+	{
+		if (raining == true)
+		{
+			isRaining = true;
+		}
+		else if (raining == false)
+		{
+			isRaining = false;
 		}
 	}
 

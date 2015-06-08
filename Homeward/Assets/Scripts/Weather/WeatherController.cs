@@ -12,6 +12,8 @@ public class WeatherController : MonoBehaviour
     bool isDaySame;
     bool isDayChanging;
 
+	private PlayerController playerController;
+
     string CurrentWeatherState
     {
         get { return currentWeatherState; }
@@ -28,6 +30,7 @@ public class WeatherController : MonoBehaviour
     void Start()
     {
         dayNight = FindObjectOfType(typeof(DayNightController)) as DayNightController;
+		playerController = GameObject.Find ("MainPlayer").GetComponent<PlayerController>();
         Initialization();
     }
 
@@ -57,6 +60,14 @@ public class WeatherController : MonoBehaviour
         {
             if (!isDayChanging)
             {
+				if (currentWeatherState == "Severe")
+				{
+					playerController.switchRaining(true);
+				}
+				else
+				{
+					playerController.switchRaining(false);
+				}
                 isDayChanging = true;
                 currentDayIncrementor++;
                 isDaySame = false;

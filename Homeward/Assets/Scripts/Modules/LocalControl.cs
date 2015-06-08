@@ -128,6 +128,15 @@ public class LocalControl : MonoBehaviour
 	void Update ()
 	{
 
+		if (CentralControl.isInside == false)
+		{
+			spriteRenderer.sortingOrder = 1;
+		}
+		else
+		{
+			spriteRenderer.sortingOrder = -3;
+		}
+
 		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
 		{
 			if (lights != null)
