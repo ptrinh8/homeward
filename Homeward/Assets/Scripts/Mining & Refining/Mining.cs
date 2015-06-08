@@ -7,6 +7,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections.Generic;
 
 public class Mining : MonoBehaviour
 {
@@ -63,8 +65,6 @@ public class Mining : MonoBehaviour
 	private Sprite mineralSprite7;
 	private Sprite mineralSprite8;
 
-
-
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -92,7 +92,9 @@ public class Mining : MonoBehaviour
     private void StartDestoryMineCoroutine()
     {
         if ((randomMineralsQuantity == 0) && !animation.isPlaying && gameObject) 
-		{ 
+		{
+            //mineralParentName.Add(gameObject.transform.parent.transform.name);
+            gameObject.transform.parent.transform.tag = "DeletedMinerals";
 			playerController.miningModeActivated = false;
 			StartCoroutine(DestroyMine()); 
 		}
@@ -214,7 +216,8 @@ public class Mining : MonoBehaviour
 
     public void Mine(int numberOfMinerals)
 	{
-		Debug.Log ("mining");
+        
+//		Debug.Log ("mining");
 		MineSupportFunction(numberOfMinerals);
 		//playerController.PlayMiningAnimation();
 	}
@@ -263,7 +266,7 @@ public class Mining : MonoBehaviour
 
 	public void PlayParticles()
 	{
-		Debug.Log ("playing");
+//		Debug.Log ("playing");
 		rockParticleSystem.Emit (5);
 	}
 

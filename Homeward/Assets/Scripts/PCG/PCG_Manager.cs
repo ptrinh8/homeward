@@ -147,6 +147,126 @@ public class PCG_Manager : MonoBehaviour
         }
     }
 
+    //public void Generate_Content_Rocks(GameObject asset, GameObject[] assets, float areaSpan, List<Sprite> textures, string tagName, string assetType, int max_size, List<string>mineralParentName, params int[] assetValue)
+    //{
+    //    GameObject player = GameObject.Find("MainPlayer");
+    //    Vector2 playerPos = player.transform.position;
+
+    //    if (triggerEntered == true || initial_call == false)
+    //    {
+    //        initial_call = true;
+    //        if (!addRemove)
+    //        {
+    //            addRemove = true;
+    //            triggerEntered = false;
+    //            moveTrigger = false;
+
+    //            GameObject[] gameObjectTile = GameObject.FindGameObjectsWithTag(tagName);
+    //            List<GameObject> gameObjectTileList = gameObjectTile.ToList();
+    //            List<GameObject> finalList = gameObjectTileList.Distinct().ToList();
+
+    //            for (int i = 0; i < max_size; i++)
+    //            {
+    //                distance_bw_player_asset = Vector2.Distance(new Vector2(X_GRID[i], Y_GRID[i]), playerPos);
+    //                if (distance_bw_player_asset < areaSpan)
+    //                {
+    //                    assets[i] = Instantiate(asset, new Vector3(X_GRID[i], Y_GRID[i], 0), transform.rotation) as GameObject;
+    //                    assets[i].tag = tagName;
+    //                    assets[i].name = tagName + " " + i;
+    //                    assets[i].transform.parent = GameObject.Find("PCG_World").transform;
+    //                    assetValue[i] = UnityEngine.Random.Range(0, 10);
+    //                    Change_Textures(textures, assets[i], i);
+
+    //                    foreach (GameObject item in finalList) { if (item.name == assets[i].name) { Destroy(assets[i]); } }
+    //                }
+    //            }
+
+    //            GameObject[] allTexturesMyFriend = GameObject.FindGameObjectsWithTag(tagName);
+    //            foreach (GameObject texture in allTexturesMyFriend)
+    //            {
+    //                var distance = Vector2.Distance(texture.transform.position, playerPos);
+    //                if (distance > areaSpan)
+    //                {
+    //                    GameObject.Destroy(texture);
+    //                }
+    //            }
+
+    //            Debug.Log("LOL: " + mineralParentName.Count);
+
+    //            foreach (GameObject texture in allTexturesMyFriend)
+    //            {
+    //                foreach (string name in mineralParentName)
+    //                {
+    //                    if (texture.name == name)
+    //                    {
+    //                        GameObject.Destroy(texture);
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+    public void Generate_Content_Rocks(GameObject asset, GameObject[] assets, float areaSpan, List<Sprite> textures, string tagName, string assetType, int max_size, params int[] assetValue)
+    {
+        GameObject player = GameObject.Find("MainPlayer");
+        Vector2 playerPos = player.transform.position;
+
+        if (triggerEntered == true || initial_call == false)
+        {
+            initial_call = true;
+            if (!addRemove)
+            {
+                addRemove = true;
+                triggerEntered = false;
+                moveTrigger = false;
+
+                GameObject[] gameObjectTile = GameObject.FindGameObjectsWithTag(tagName);
+                List<GameObject> gameObjectTileList = gameObjectTile.ToList();
+                List<GameObject> finalList = gameObjectTileList.Distinct().ToList();
+
+                for (int i = 0; i < max_size; i++)
+                {
+                    distance_bw_player_asset = Vector2.Distance(new Vector2(X_GRID[i], Y_GRID[i]), playerPos);
+                    if (distance_bw_player_asset < areaSpan)
+                    {
+                        assets[i] = Instantiate(asset, new Vector3(X_GRID[i], Y_GRID[i], 0), transform.rotation) as GameObject;
+                        assets[i].tag = tagName;
+                        assets[i].name = tagName + " " + i;
+                        assets[i].transform.parent = GameObject.Find("PCG_World").transform;
+                        assetValue[i] = UnityEngine.Random.Range(0, 10);
+                        Change_Textures(textures, assets[i], i);
+
+                        foreach (GameObject item in finalList) { if (item.name == assets[i].name) { Destroy(assets[i]); } }
+                    }
+                }
+
+                GameObject[] allTexturesMyFriend = GameObject.FindGameObjectsWithTag(tagName);
+                foreach (GameObject texture in allTexturesMyFriend)
+                {
+                    var distance = Vector2.Distance(texture.transform.position, playerPos);
+                    if (distance > areaSpan)
+                    {
+                        GameObject.Destroy(texture);
+                    }
+                }
+
+                GameObject[] deletedMinerals = GameObject.FindGameObjectsWithTag("DeletedMinerals");
+
+                foreach(GameObject mineral in deletedMinerals)
+                {
+                    foreach(GameObject texture in allTexturesMyFriend)
+                    {
+                        if (texture.name == mineral.name)
+                        {
+                            GameObject.Destroy(texture);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void Change_Textures(List<Sprite> textures, GameObject asset, int pos)
     {
         float remainder = 1.00F / textures.Count;

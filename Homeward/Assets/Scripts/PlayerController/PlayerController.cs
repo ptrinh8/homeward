@@ -604,7 +604,7 @@ public class PlayerController : MonoBehaviour
     {
 		if (addedFirstTools == false)
 		{
-			Debug.Log ("first tools");
+//			Debug.Log ("first tools");
 			Item tool = GameObject.Find("BuildingTool").GetComponent<Item>();
 			playerInventory.GetComponent<Inventory>().AddItem(tool);
 			tool = GameObject.Find("MiningTool").GetComponent<Item>();
@@ -906,12 +906,12 @@ public class PlayerController : MonoBehaviour
 									PlayMiningAnimation();
 									rockTime = 0f;
 								}
-								Debug.Log (miningModeActivated);
+//								Debug.Log (miningModeActivated);
 							}
 							else
 							{
 								miningModeActivated = true;
-								Debug.Log (miningModeActivated);
+//								Debug.Log (miningModeActivated);
 							}
 							/*
 							if (miningBarActive == true)

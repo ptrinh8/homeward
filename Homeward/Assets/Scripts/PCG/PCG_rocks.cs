@@ -17,6 +17,7 @@ public class PCG_Rocks : PCG_Manager
     PCG_TriggerB trigger2 = new PCG_TriggerB();
     PCG_TriggerC trigger3 = new PCG_TriggerC();
     PCG_TriggerD trigger4 = new PCG_TriggerD();
+    Mining mining_ = new Mining();
 
     public GameObject rock;
     public List<Sprite> textures;
@@ -66,6 +67,7 @@ public class PCG_Rocks : PCG_Manager
         trigger2 = FindObjectOfType(typeof(PCG_TriggerB)) as PCG_TriggerB;
         trigger3 = FindObjectOfType(typeof(PCG_TriggerC)) as PCG_TriggerC;
         trigger4 = FindObjectOfType(typeof(PCG_TriggerD)) as PCG_TriggerD;
+        mining_ = FindObjectOfType(typeof(Mining)) as Mining;
 
         Initialization();
         Generate_Grid("MineableRocks");
@@ -73,7 +75,7 @@ public class PCG_Rocks : PCG_Manager
 
     void Update()
     {
-        Generate_Content(rock, rocks, areaSpan, textures, "RocksOnScreen", "MineableRocks", MAX_SIZE_MINEABLE_ROCKS, extractableValue);
+        Generate_Content_Rocks(rock, rocks, areaSpan, textures, "RocksOnScreen", "MineableRocks", MAX_SIZE_MINEABLE_ROCKS, extractableValue);
         Reposition_Triggers();
     }
 }

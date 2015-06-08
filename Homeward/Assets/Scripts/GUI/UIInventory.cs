@@ -313,7 +313,7 @@ public class UIInventory : MonoBehaviour
                     if (GetSlot(slot) != null)
                     {
                         Item item = GetSlot(slot).CheckItem();
-						Debug.Log (item.itemName);
+//						Debug.Log (item.itemName);
 
 						//Debug.Log (slot.GetComponent<Slot>().isEmpty);
 

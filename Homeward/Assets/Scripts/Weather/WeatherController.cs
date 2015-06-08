@@ -35,8 +35,6 @@ public class WeatherController : MonoBehaviour
     {
         currentDay = dayNight.dayCount;
 
-        Debug.Log(currentWeatherState);
-
         if (currentDay != currentDayIncrementor)
         {
             if (!isDaySame)
