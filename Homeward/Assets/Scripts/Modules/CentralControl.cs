@@ -145,7 +145,17 @@ public class CentralControl : MonoBehaviour {
 		DurabilityLoss();
         DisplayText(ModuleControl.ShowModuleControl);
 
-		if (Input.GetKey (KeyCode.Space))
+		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
+		{
+			if (lights != null)
+			{
+				for (int i = 0; i < lights.Count(); i++)
+				{
+					lights[i].LightSwitch(1);
+				}
+			}
+		}
+		else if (dayNightController.currentPhase == DayNightController.DayPhase.Dawn)
 		{
 			if (lights != null)
 			{

@@ -62,6 +62,8 @@ public class LocalControl : MonoBehaviour
 	private ItemName neededItem;
 	private float selector;
 
+	private LightScript[] lights;
+
 
 	public bool ShowTextFlag {
 			get { return showTextFlag; }
@@ -116,22 +118,48 @@ public class LocalControl : MonoBehaviour
 			repairArrowQueue = GameObject.Find ("Canvas").transform.FindChild ("Repair Arrow Queue").gameObject;
 			audioController = GameObject.Find ("AudioObject").GetComponent<AudioController> ();
 		RepairItemSelect();
+		if (gameObject.GetComponentsInChildren<LightScript>() != null)
+		{
+			lights = this.gameObject.GetComponentsInChildren<LightScript>();
+		}
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
-			if (checkFlag) {
-					center.SendMessage ("CheckPowerSupply");
-					checkFlag = false;
+
+		if (dayNightController.currentPhase == DayNightController.DayPhase.Dusk)
+		{
+			if (lights != null)
+			{
+				for (int i = 0; i < lights.Length; i++)
+				{
+					lights[i].LightSwitch(1);
+				}
 			}
-			if (isEnter) {
-					if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
-							GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
-					}
+		}
+		else if (dayNightController.currentPhase == DayNightController.DayPhase.Dawn)
+		{
+			if (lights != null)
+			{
+				for (int i = 0; i < lights.Length; i++)
+				{
+					lights[i].LightSwitch(2);
+				}
 			}
-			DurabilityLoss ();
-			DisplayText (ModuleControl.ShowModuleControl);
+		}
+
+		if (checkFlag) {
+				center.SendMessage ("CheckPowerSupply");
+				checkFlag = false;
+		}
+		if (isEnter) {
+				if (GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir != gameObject.GetComponent<AirControl> ().Air) {
+						GameObject.FindWithTag ("Player").GetComponent<PlayerController> ().EnvironmentalAir = gameObject.GetComponent<AirControl> ().Air;
+				}
+		}
+		DurabilityLoss ();
+		DisplayText (ModuleControl.ShowModuleControl);
 	}
 
 	void DoorWayTriggered (bool isDoorway)

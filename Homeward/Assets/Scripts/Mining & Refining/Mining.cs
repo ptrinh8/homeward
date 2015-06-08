@@ -65,6 +65,17 @@ public class Mining : MonoBehaviour
 	private Sprite mineralSprite7;
 	private Sprite mineralSprite8;
 
+	private Sprite ground1;
+	private Sprite ground2;
+	private Sprite ground3;
+	private Sprite ground4;
+	private Sprite ground5;
+	private Sprite ground6;
+	private Sprite ground7;
+	private Sprite ground8;
+
+	private SpriteRenderer ground;
+
     void StartTimer()
     {
         if (!timerReached) { loadingUpdateTime = loadingStartTime++; }
@@ -122,14 +133,24 @@ public class Mining : MonoBehaviour
         rockParticleSystem.renderer.sortingOrder = 1;
         rockParticleSystem.loop = false;
 
-		mineralSprite1 = Resources.Load<Sprite>("Sprites/Rocks/1");
-		mineralSprite2 = Resources.Load<Sprite>("Sprites/Rocks/2");
-		mineralSprite3 = Resources.Load<Sprite>("Sprites/Rocks/3");
-		mineralSprite4 = Resources.Load<Sprite>("Sprites/Rocks/4");
-		mineralSprite5 = Resources.Load<Sprite>("Sprites/Rocks/5");
-		mineralSprite6 = Resources.Load<Sprite>("Sprites/Rocks/6");
-		mineralSprite7 = Resources.Load<Sprite>("Sprites/Rocks/7");
-		mineralSprite8 = Resources.Load<Sprite>("Sprites/Rocks/8");
+		ground = this.transform.FindChild("Ground").GetComponent<SpriteRenderer>();
+
+		mineralSprite1 = Resources.Load<Sprite>("Sprites/Rocks/rock1Mineral");
+		mineralSprite2 = Resources.Load<Sprite>("Sprites/Rocks/rock2Mineral");
+		mineralSprite3 = Resources.Load<Sprite>("Sprites/Rocks/rock3Mineral");
+		mineralSprite4 = Resources.Load<Sprite>("Sprites/Rocks/rock4Mineral");
+		mineralSprite5 = Resources.Load<Sprite>("Sprites/Rocks/rock5Mineral");
+		mineralSprite6 = Resources.Load<Sprite>("Sprites/Rocks/rock6Mineral");
+		mineralSprite7 = Resources.Load<Sprite>("Sprites/Rocks/rock7Mineral");
+		mineralSprite8 = Resources.Load<Sprite>("Sprites/Rocks/rock8Mineral");
+		ground1 = Resources.Load<Sprite>("Sprites/Rocks/rock1Ground");
+		ground2 = Resources.Load<Sprite>("Sprites/Rocks/rock2Ground");
+		ground3 = Resources.Load<Sprite>("Sprites/Rocks/rock3Ground");
+		ground4 = Resources.Load<Sprite>("Sprites/Rocks/rock4Ground");
+		ground5 = Resources.Load<Sprite>("Sprites/Rocks/rock5Ground");
+		ground6 = Resources.Load<Sprite>("Sprites/Rocks/rock6Ground");
+		ground7 = Resources.Load<Sprite>("Sprites/Rocks/rock7Ground");
+		ground8 = Resources.Load<Sprite>("Sprites/Rocks/rock8Ground");
 
 		mineralTypeSelector = Random.Range (1.0f, 10.0f);
 		if (mineralTypeSelector < 5.0f)
@@ -140,12 +161,15 @@ public class Mining : MonoBehaviour
 			{
 			case 1:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite7;
+				ground.sprite = ground7;
 				break;
 			case 2:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite2;
+				ground.sprite = ground2;
 				break;
 			case 3:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite4;
+				ground.sprite = ground4;
 				break;
 			}
 		}
@@ -157,12 +181,15 @@ public class Mining : MonoBehaviour
 			{
 			case 1:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite1;
+				ground.sprite = ground1;
 				break;
 			case 2:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite3;
+				ground.sprite = ground3;
 				break;
 			case 3:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite5;
+				ground.sprite = ground5;
 				break;
 			}
 		}
@@ -174,9 +201,11 @@ public class Mining : MonoBehaviour
 			{
 			case 1:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite6;
+				ground.sprite = ground6;
 				break;
 			case 2:
 				gameObject.GetComponent<SpriteRenderer>().sprite = mineralSprite8;
+				ground.sprite = ground8;
 				break;
 			}
 		}
