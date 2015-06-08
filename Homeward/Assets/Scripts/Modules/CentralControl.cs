@@ -54,6 +54,8 @@ public class CentralControl : MonoBehaviour {
 
 	private AudioController audioController;
 
+	public bool isFlipped;
+
 	// Use this for initialization
 	void Start () {
 		repairArrowQueueFlag = false;
@@ -79,7 +81,7 @@ public class CentralControl : MonoBehaviour {
         repairActionTime = 1f;
 
         if (!GameObject.Find("Module Building").GetComponent<Building>().NewGameFlag)
-            Invoke("InitializeRefineryModule", Time.deltaTime);
+			Invoke("InitializeAirlockModule", Time.deltaTime);
 
         player.SendMessage("OutpostGenerated", gameObject); // takahide added 04/02
         GameObject moduleControl = Instantiate(Resources.Load("ModuleControl/ModuleControl")) as GameObject;
@@ -92,41 +94,19 @@ public class CentralControl : MonoBehaviour {
 		{
 			lights = this.gameObject.GetComponentsInChildren<LightScript>();
 		}
-
-
 	}
-
-    void InitializeRefineryModule()
-    {
-        if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 9.3f, transform.position.y + 0.025f, 0), transform.rotation) as GameObject;
-        else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 8.64f, 0), transform.rotation) as GameObject;
-        else if (transform.rotation.eulerAngles.z == 180)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 8.64f, transform.position.y, 0), transform.rotation) as GameObject;
-        else if (transform.rotation.eulerAngles.z == 270)
-            refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 8.64f, 0), transform.rotation) as GameObject;
-
-        Invoke("InitializeRefineryModuleVariable", Time.deltaTime);
-        Invoke("InitializeAirlockModule", Time.deltaTime);
-    }
 
     void InitializeAirlockModule()
     {
-        if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 18.6f, transform.position.y + 0.05f, 0), transform.rotation) as GameObject;
-        else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y + 14.4f, 0), transform.rotation) as GameObject;
-        else if (transform.rotation.eulerAngles.z == 180)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x - 14.4f, transform.position.y, 0), transform.rotation) as GameObject;
-        else if (transform.rotation.eulerAngles.z == 270)
-            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x, transform.position.y - 14.4f, 0), transform.rotation) as GameObject;
+        if (isFlipped)
+		{
+            airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x + 9.06f, transform.position.y + 0.1f, 0), Quaternion.identity) as GameObject;
+		}
+        else
+		{
+			airlockModule = Instantiate(airlockModule, new Vector3(transform.position.x - 9.06f, transform.position.y + 0.1f, 0), Quaternion.identity) as GameObject;
+		}
         Invoke("InitializeAirlockModuleVariable", Time.deltaTime);
-    }
-
-    void InitializeRefineryModuleVariable()
-    {
-        refineryModule.GetComponent<LocalControl>().IsEnter = false;
     }
 
     void InitializeAirlockModuleVariable()
@@ -315,10 +295,10 @@ public class CentralControl : MonoBehaviour {
 		}
 
 		if (!isBroken) {
-			moduleStatusText.text = "2+, " + durability.ToString();
+			moduleStatusText.text = "";
 		}
 		else
-			moduleStatusText.text = "Broken";
+			moduleStatusText.text = "";
 		
 		if (isEnter) 
 		{
@@ -423,3 +403,23 @@ public class CentralControl : MonoBehaviour {
         }
     }
 }
+/**
+void InitializeRefineryModule()
+{
+	if (transform.rotation.eulerAngles.z == 0 || transform.rotation.eulerAngles.z == 360)
+		refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x + 9.3f, transform.position.y + 0.025f, 0), transform.rotation) as GameObject;
+	else if (Mathf.Round(transform.rotation.eulerAngles.z) == 90)
+		refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y + 8.64f, 0), transform.rotation) as GameObject;
+	else if (transform.rotation.eulerAngles.z == 180)
+		refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x - 8.64f, transform.position.y, 0), transform.rotation) as GameObject;
+	else if (transform.rotation.eulerAngles.z == 270)
+		refineryModule = Instantiate(refineryModule, new Vector3(transform.position.x, transform.position.y - 8.64f, 0), transform.rotation) as GameObject;
+	
+	Invoke("InitializeRefineryModuleVariable", Time.deltaTime);
+	Invoke("InitializeAirlockModule", Time.deltaTime);
+}
+void InitializeRefineryModuleVariable()
+    {
+        refineryModule.GetComponent<LocalControl>().IsEnter = false;
+    }
+**/

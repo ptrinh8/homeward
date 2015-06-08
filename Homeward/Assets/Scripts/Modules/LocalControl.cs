@@ -219,7 +219,7 @@ public class LocalControl : MonoBehaviour
 					}
 
 					if (!isOn) 
-							moduleStatusText.text = "Off";
+							moduleStatusText.text = "";
 					else if (powerLevel >= minimumPowerLevel) {
 							isPowered = true;
 					} else {
@@ -315,9 +315,9 @@ public class LocalControl : MonoBehaviour
 			}
 
 			if (durability > 0) {
-					moduleStatusText.text = durability.ToString ();
+					moduleStatusText.text = "";
 			} else
-					moduleStatusText.text = "Broken";
+					moduleStatusText.text = "";
 	}
 
 	void RepairAction ()

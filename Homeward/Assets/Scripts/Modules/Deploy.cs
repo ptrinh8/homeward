@@ -3,7 +3,6 @@ using System.Collections;
 
 // This class is for handling any modules "on-player-blueprint" 
 public class Deploy : MonoBehaviour {
-
 	private SpriteRenderer spriteRenderer;	// Change the color of sprite when needed
 	private KeyCode deployKey = KeyCode.F;
 	private bool deployable;	// Whether the blueprint can be deployed 
