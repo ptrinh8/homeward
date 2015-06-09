@@ -1579,7 +1579,7 @@ public class PlayerController : MonoBehaviour
 		{
 			refining = other.GetComponent<Refining>();
 		}
-		else if (other.gameObject.transform.root.gameObject.tag == "HealthStaminaModule")
+		else if (other.gameObject.transform.root.gameObject.tag == "FoodModule")
 		{
 			foodModule = other.GetComponent<FoodModule>();
 		}

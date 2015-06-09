@@ -221,8 +221,6 @@ public class FoodModule : MonoBehaviour
 		if (!addRefinedMineralOnce)
 		{
 			addRefinedMineralOnce = true;
-			Item item = GameObject.Find("Material").GetComponent<Item>();
-			moduleInventory.GetComponent<Inventory>().AddItem(item);
 			//mainPlayer.GetComponent<PlayerController>().playerInventory.GetComponent<Inventory>().AddItem(item);
 			moduleInventory.GetComponent<Inventory>().ClearSlot(ItemName.Mineral1);
 			timerReached = false;
