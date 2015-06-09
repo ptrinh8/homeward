@@ -11,6 +11,8 @@ public class LocalControl : MonoBehaviour
 
 	public Sprite indoorSprite;
 	public Sprite[] exteriors;
+	[HideInInspector]
+	public int exteriorIndex;
 	private Sprite outdoorSprite;
 	private Sprite noPowerSprite;
 	private Sprite turnedOffSprite;
@@ -93,6 +95,8 @@ public class LocalControl : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+			exteriorIndex = 0;
+
 			noPowerSprite = indoorSprite;
 			turnedOffSprite = indoorSprite;
 			repairArrowQueueFlag = false;
@@ -300,22 +304,27 @@ public class LocalControl : MonoBehaviour
 			if (durability <= 0)
 			{
 				outdoorSprite = exteriors[4];
+				exteriorIndex = 4;
 			}
 			else if (durability > 0 && durability <= 25)
 			{
 				outdoorSprite = exteriors[3];
+				exteriorIndex = 3;
 			}
 			else if (durability > 25 && durability <= 50)
 			{
 				outdoorSprite = exteriors[2];
+				exteriorIndex = 2;
 			}
 			else if (durability > 50 && durability <= 75)
 			{
 				outdoorSprite = exteriors[1];
+				exteriorIndex = 1;
 			}
 			else if (durability > 75 && durability <= 100)
 			{
 				outdoorSprite = exteriors[0];
+				exteriorIndex = 0;
 			}
 
 			if (!CentralControl.isInside)
