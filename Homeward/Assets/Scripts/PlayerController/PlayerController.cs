@@ -521,7 +521,7 @@ public class PlayerController : MonoBehaviour
         /*** PlayerInventory ***/
         playerInventory = Instantiate(playerInventory) as GameObject;
         playerInventory.transform.SetParent(GameObject.Find("Canvas").transform);
-		playerInventory.transform.position = new Vector3(Screen.width - 165f, Screen.height - 120.0f, 0.0f);
+		playerInventory.transform.position = new Vector3(Screen.width - 250f, Screen.height - 250.0f, 0.0f);
         showPlayerInventory = false;
         keyCode_I_Works = true;
         playerInventory.AddComponent<CanvasGroup>();
@@ -1355,7 +1355,7 @@ public class PlayerController : MonoBehaviour
 
     void FadingForSleep()
     {
-        DigitalPad.journalFlag = true;
+        //DigitalPad.journalFlag = true;
     }
 
 	void FixedUpdate()
