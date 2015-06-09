@@ -21,6 +21,8 @@ public class Airlock : MonoBehaviour {
     private KeyCode manuallyOperateKey = KeyCode.F;
     private LocalControl moduleControl;
 
+	private AudioController audioController;
+
     public bool IsToOustside
     {
         get { return isToOutside;}
@@ -49,6 +51,7 @@ public class Airlock : MonoBehaviour {
         colliders = gameObject.GetComponents<BoxCollider2D>().ToList();
         airControl = gameObject.transform.root.gameObject.GetComponent<AirControl>();
         moduleControl = gameObject.transform.root.gameObject.GetComponent<LocalControl>();
+		audioController = GameObject.Find ("AudioObject").GetComponent<AudioController>();
 	}
 	
 	// Update is called once per frame
@@ -140,6 +143,7 @@ public class Airlock : MonoBehaviour {
     {
         if (spriteRenderer.enabled != disabled)
         {
+			audioController.PlayAirlockDoorSound(1);
             spriteRenderer.enabled = disabled;
 			foreach (BoxCollider2D collider in colliders)
 			{
